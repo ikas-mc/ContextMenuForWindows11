@@ -1,0 +1,11 @@
+0.
+winget install  Microsoft.VC++2015-2019Redist-x64
+
+1.
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+2.
+./Install.ps1
+
+3.
+Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
