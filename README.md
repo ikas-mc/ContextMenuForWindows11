@@ -45,6 +45,7 @@ Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
 ```
 
 more
+https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/desktop-to-uwp-extensions#context-menu
 
 https://github.com/microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/winui/shell/appshellintegration/ExplorerCommandVerb
 
