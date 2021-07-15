@@ -52,3 +52,7 @@ https://github.com/MicrosoftDocs/winrt-related/blob/docs/winrt-related-src/schem
 https://github.com/microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/winui/shell/appshellintegration/ExplorerCommandVerb
 
 https://github.com/microsoft/AppModelSamples/tree/0f88fe0a8bbb90051f6c126741b881288bb5cabb/Samples/SparsePackages/PhotoStoreContextMenu
+
+https://github.com/microsoft/terminal/blob/c90de692509b074bfde191910d67154cfe389911/src/cascadia/CascadiaPackage/Package.appxmanifest
+
+https://github.com/microsoft/terminal/tree/fb597ed304ec6eef245405c9652e9b8a029b821f/src/cascadia/ShellExtension
