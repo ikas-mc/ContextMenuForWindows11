@@ -5,8 +5,6 @@ Demos  For Add Context Menu
 * 7zContextMenu : add [7z Extract Here] Menu
 
 
-
-
 ```xml
 
     <desktop4:Extension Category="windows.fileExplorerContextMenus">
@@ -26,23 +24,6 @@ Demos  For Add Context Menu
 
 ```
 
-
-Install
-
-```powershell
-0.
-winget install  Microsoft.VC++2015-2019Redist-x64
-
-1.
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-2.
-./Install.ps1
-
-3.
-Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
-
-```
 
 more  
 https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/desktop-to-uwp-extensions#context-menu
