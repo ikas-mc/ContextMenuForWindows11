@@ -30,6 +30,15 @@
     <ClInclude Include="VsCodeExplorerCommand.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomeExplorerCommand.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultExplorerCommand.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -47,5 +56,21 @@
     <ClCompile Include="VsCodeExplorerCommand.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CustomeExplorerCommand.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultExplorerCommand.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="7zContextMenuHost.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
