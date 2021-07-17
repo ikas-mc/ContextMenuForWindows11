@@ -20,7 +20,7 @@ DefaultCommands::DefaultCommands()
 {
 	m_commands.push_back(Make<VsCodeExplorerCommand>());
 	m_commands.push_back(Make<SzExplorerCommand>());
-	m_commands.push_back(Make<CustomeExplorerCommand>());
+	//m_commands.push_back(Make<CustomeExplorerCommand>());
 	m_current = m_commands.cbegin();
 }
 
