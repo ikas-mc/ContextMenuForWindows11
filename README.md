@@ -5,8 +5,6 @@ Demos  For Add Context Menu
 * 7zContextMenu : add [7z Extract Here] Menu
 
 
-
-
 ```xml
 
     <desktop4:Extension Category="windows.fileExplorerContextMenus">
@@ -27,24 +25,8 @@ Demos  For Add Context Menu
 ```
 
 
-Install
-
-```powershell
-0.
-winget install  Microsoft.VC++2015-2019Redist-x64
-
-1.
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-2.
-./Install.ps1
-
-3.
-Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
-
-```
-
 more  
+
 https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/desktop-to-uwp-extensions#context-menu
 
 https://github.com/MicrosoftDocs/winrt-related/blob/docs/winrt-related-src/schemas/appxpackage/uapmanifestschema/element-desktop5-itemtype.md
@@ -56,3 +38,5 @@ https://github.com/microsoft/AppModelSamples/tree/0f88fe0a8bbb90051f6c126741b881
 https://github.com/microsoft/terminal/blob/c90de692509b074bfde191910d67154cfe389911/src/cascadia/CascadiaPackage/Package.appxmanifest
 
 https://github.com/microsoft/terminal/tree/fb597ed304ec6eef245405c9652e9b8a029b821f/src/cascadia/ShellExtension
+
+https://github.com/MicrosoftDocs/windows-uwp/blob/docs/hub/apps/desktop/modernize/integrate-packaged-app-with-file-explorer.md
