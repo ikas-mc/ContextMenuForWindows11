@@ -1,12 +1,12 @@
 # Context Menu For Windows11
 
-Demos  For Add Context Menu
+## Demos For Context Menu
 
-* 7zContextMenu : add [7z Extract Here] Menu
-
+```
+ContextMenuCustom/ContextMenuCustomHost/SzExplorerCommand.cpp
+```
 
 ```xml
-
     <desktop4:Extension Category="windows.fileExplorerContextMenus">
           <desktop4:FileExplorerContextMenus>
             <desktop5:ItemType Type="*"  >
@@ -17,15 +17,21 @@ Demos  For Add Context Menu
         <com:Extension Category="windows.comServer">
           <com:ComServer>
             <com:SurrogateServer  DisplayName="Context menu verb handler">
-              <com:Class Id="46F650E5-9959-48D6-AC13-A9637C5B3787" Path="7zContextMenu2\7zContextMenuHost.dll" ThreadingModel="STA"/>
+              <com:Class Id="46F650E5-9959-48D6-AC13-A9637C5B3787" Path="ContextMenuHost.dll" ThreadingModel="STA"/>
             </com:SurrogateServer>
           </com:ComServer>
         </com:Extension>
 
 ```
 
+## Custom Context Menu 
 
-more  
+build and run  
+ContextMenuCustom/ContextMenuCustomPackage
+
+
+
+## more  
 
 https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/desktop-to-uwp-extensions#context-menu
 
