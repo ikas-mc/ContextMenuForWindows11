@@ -46,3 +46,5 @@ https://github.com/microsoft/terminal/blob/c90de692509b074bfde191910d67154cfe389
 https://github.com/microsoft/terminal/tree/fb597ed304ec6eef245405c9652e9b8a029b821f/src/cascadia/ShellExtension
 
 https://github.com/MicrosoftDocs/windows-uwp/blob/docs/hub/apps/desktop/modernize/integrate-packaged-app-with-file-explorer.md
+
+https://github.com/zhuxb711/RX-Explorer/tree/master/OpenDirectoryExt
