@@ -1,0 +1,50 @@
+﻿<Window x:Class="_7zContextMenu2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_7zContextMenu2" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Custom Context Menu For Windows 11" Height="400" Width="600" Padding="0">
+    <Border  CornerRadius="4" Padding="0">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="16"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="4"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border Margin="0,4" Grid.Column="1" Opacity="0.2" Width="1" Background="Gray" Grid.RowSpan="3"></Border>
+            <ListView Margin="4" x:Name="CommandList" SelectionMode="Single" Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" ItemsSource="{Binding Itmes}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Title}"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackPanel Margin="4" DataContext="{Binding Path=SelectedItem, ElementName=CommandList}" Grid.Column="2" Grid.Row="1" Grid.RowSpan="1">
+                <TextBlock Text="Title"></TextBlock>
+                <TextBox VerticalContentAlignment="Bottom" Height="32" Text="{Binding Title}"></TextBox>
+                <TextBlock Text="Exe"></TextBlock>
+                <TextBox VerticalContentAlignment="Bottom" Height="32"  Text="{Binding Exe}"></TextBox>
+                <TextBlock Text="Param"></TextBlock>
+                <TextBox VerticalContentAlignment="Bottom" Height="32"  Text="{Binding Param}"></TextBox>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                <Button Margin="4,0" Grid.Row="0" Grid.Column="0" Click="Button_Click_3" Padding="8" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{materialDesign:PackIcon Delete}" Style="{StaticResource MaterialDesignFlatButton}" ></Button>
+                <Button Margin="4,0" Grid.Row="0" Grid.Column="0" Click="Button_Click_1" Padding="8" HorizontalAlignment="Right" VerticalAlignment="Center" Content="{materialDesign:PackIcon Add}" Style="{StaticResource MaterialDesignFlatButton}" ></Button>
+                <Button Margin="4,0"  Grid.Row="0" Grid.Column="0" Click="Button_Click_2" Padding="8" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{materialDesign:PackIcon Refresh}" Style="{StaticResource MaterialDesignFlatButton}" ></Button>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
+                <Button Margin="4,0" Click="Button_Click" Padding="8" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{materialDesign:PackIcon Edit}" Style="{StaticResource MaterialDesignFlatButton}"></Button>
+                <Button  Margin="4,0" Click="Open_Click" Padding="8" HorizontalAlignment="Right" VerticalAlignment="Center"  Content="{materialDesign:PackIcon Folder}" Style="{StaticResource MaterialDesignFlatButton}"></Button>
+            </StackPanel >
+            <TextBlock Grid.Row="2" Grid.ColumnSpan="3" Margin="04,0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Text="0.0.1 ikas@2021"></TextBlock>
+        </Grid>
+    </Border>
+</Window>
