@@ -16,7 +16,6 @@ IFACEMETHODIMP BaseExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _O
 }
 IFACEMETHODIMP BaseExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon)
 {
-	UNREFERENCED_PARAMETER(items);
 	*icon = nullptr;
 	std::filesystem::path modulePath{ wil::GetModuleFileNameW<std::wstring>(wil::GetModuleInstanceHandle()) };
 	const auto iconPath{ modulePath.wstring() + GetIconId() };

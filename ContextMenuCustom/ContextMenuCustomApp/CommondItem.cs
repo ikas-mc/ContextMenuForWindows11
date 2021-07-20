@@ -11,10 +11,12 @@ namespace ContextMenuCustomApp
         private string title;
         private string exe;
         private string param;
+        private string icon;
 
         public string Title { get => title; set => SetProperty(ref title,value); }
         public string Exe { get => exe; set => SetProperty(ref exe, value); }
         public string Param { get => param; set => SetProperty(ref param, value); }
+        public string Icon { get => icon; set => SetProperty(ref icon, value); }
         public StorageFile File { get; set; }
 
         public static CommondItem ReadFromJson(string content)
@@ -26,6 +28,7 @@ namespace ContextMenuCustomApp
                     Title = data.GetNamedString("title","no title"),
                     Exe = data.GetNamedString("exe", ""),
                     Param = data.GetNamedString("param", ""),
+                    Icon = data.GetNamedString("icon", ""),
                 };
             }
             return null;
@@ -38,7 +41,7 @@ namespace ContextMenuCustomApp
             json["title"] = JsonValue.CreateStringValue(content.Title);
             json["exe"] = JsonValue.CreateStringValue(content.Exe ?? string.Empty);
             json["param"] = JsonValue.CreateStringValue(content.Param??string.Empty);
-
+            json["icon"] = JsonValue.CreateStringValue(content.Icon ?? string.Empty);
             return json.Stringify();
         }
 

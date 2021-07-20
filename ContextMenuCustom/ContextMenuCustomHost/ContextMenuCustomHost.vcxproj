@@ -166,17 +166,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BaseExplorerCommand.h" />
-    <ClInclude Include="CustomeExplorerCommand.h" />
+    <ClInclude Include="CustomExplorerCommand.h" />
     <ClInclude Include="DefaultExplorerCommand.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="CustomSubExplorerCommand.h" />
     <ClInclude Include="SzExplorerCommand.h" />
     <ClInclude Include="VsCodeExplorerCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseExplorerCommand.cpp" />
-    <ClCompile Include="CustomeExplorerCommand.cpp" />
+    <ClCompile Include="CustomExplorerCommand.cpp" />
     <ClCompile Include="DefaultExplorerCommand.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
@@ -185,6 +186,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="CustomSubExplorerCommand.cpp" />
     <ClCompile Include="SzExplorerCommand.cpp" />
     <ClCompile Include="VsCodeExplorerCommand.cpp" />
   </ItemGroup>

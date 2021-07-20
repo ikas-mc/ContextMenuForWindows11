@@ -2,7 +2,7 @@
 #include <wrl/module.h>
 #include <wrl/implements.h>
 #include <wrl/client.h>
-#include "CustomeExplorerCommand.h"
+#include "CustomExplorerCommand.h"
 #include "DefaultExplorerCommand.h"
 
 #define _HAS_CXX17 1
@@ -26,11 +26,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 }
 
 
-CoCreatableClass(CustomeExplorerCommand)
+CoCreatableClass(CustomExplorerCommand)
 CoCreatableClass(DefaultExplorerCommand)
 
 
-CoCreatableClassWrlCreatorMapInclude(CustomeExplorerCommand)
+CoCreatableClassWrlCreatorMapInclude(CustomExplorerCommand)
 CoCreatableClassWrlCreatorMapInclude(DefaultExplorerCommand)
 
 

@@ -52,15 +52,15 @@ namespace ContextMenuCustomApp
 
         public string GetCustomMenuName()
         {
-            var value = ApplicationData.Current.LocalSettings.Values["Custome_Menu_Name"];
-            return (value as string) ?? "Custome Menu";
+            var value = ApplicationData.Current.LocalSettings.Values["Custom_Menu_Name"];
+            return (value as string) ?? "Custom Menu";
         }
 
         public async void SetCustomMenuName(string name)
         {
             await Task.Run(() =>
             {
-                ApplicationData.Current.LocalSettings.Values["Custome_Menu_Name"] = name ?? "Custome Menu";
+                ApplicationData.Current.LocalSettings.Values["Custom_Menu_Name"] = name ?? "Custom Menu";
             });
         }
     }
@@ -147,7 +147,7 @@ namespace ContextMenuCustomApp
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            var item = new CommondItem() { Title = "new commond", Param = @"""{path}""", Exe = @"""C:\Windows\notepad.exe""" };
+            var item = new CommondItem() { Title = "new commond", Param = @"""{path}""" };
             mainVm.Itmes.Add(item);
             CommandList.SelectedItem = item;
         }

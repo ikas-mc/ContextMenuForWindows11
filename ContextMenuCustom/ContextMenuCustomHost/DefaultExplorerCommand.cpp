@@ -2,7 +2,7 @@
 #include "DefaultExplorerCommand.h"
 #include "VsCodeExplorerCommand.h"
 #include "SzExplorerCommand.h"
-#include "CustomeExplorerCommand.h"
+#include "CustomExplorerCommand.h"
 
 const  wchar_t* DefaultExplorerCommand::Title() { return L"More Menu"; };
 const EXPCMDSTATE DefaultExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; };
@@ -22,7 +22,7 @@ DefaultCommands::DefaultCommands()
 {
 	m_commands.push_back(Make<VsCodeExplorerCommand>());
 	m_commands.push_back(Make<SzExplorerCommand>());
-	//m_commands.push_back(Make<CustomeExplorerCommand>());
+	//m_commands.push_back(Make<CustomExplorerCommand>());
 	m_current = m_commands.cbegin();
 }
 

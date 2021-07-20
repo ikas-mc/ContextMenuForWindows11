@@ -2,10 +2,10 @@
 #include "BaseExplorerCommand.h"
 #include <string>
 
-class __declspec(uuid("46F650E5-9959-48D6-AC13-A9637C5B3787"))   CustomeExplorerCommand : public BaseExplorerCommand
+class __declspec(uuid("46F650E5-9959-48D6-AC13-A9637C5B3787"))   CustomExplorerCommand : public BaseExplorerCommand
 {
 public:
-	CustomeExplorerCommand();
+	CustomExplorerCommand();
 	const  wchar_t* Title();
 	const EXPCMDSTATE State(_In_opt_ IShellItemArray* selection) override;
 	const EXPCMDFLAGS Flags() override;
@@ -26,20 +26,4 @@ public:
 private:
 	std::vector<ComPtr<IExplorerCommand>> m_commands;
 	std::vector<ComPtr<IExplorerCommand>>::const_iterator m_current;
-};
-
-
-class CustomeExplorerItemCommand final : public BaseExplorerCommand
-{
-public:
-	CustomeExplorerItemCommand();
-	const wchar_t* Title() override;
-	const EXPCMDSTATE State(_In_opt_ IShellItemArray* selection) override;
-	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept override;
-	 std::wstring _title;
-	 std::wstring _icon;
-	 std::wstring _exe;
-	 std::wstring _param;
-private:
-	
 };
