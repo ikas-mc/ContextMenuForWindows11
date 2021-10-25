@@ -24,10 +24,10 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild -t:restore ContextMenuCustom\ContextMenuCustomApp\ContextMenuCustomApp.csproj
 
-    - name: Build
+    - name: Build ContextMenuCustomHost
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild ContextMenuCustom\ContextMenuCustomHost\ContextMenuCustomHost.vcxproj /m /p:configuration="release"   /p:platform="x64"
+      run: msbuild ContextMenuCustom\ContextMenuCustomHost\ContextMenuCustomHost.vcxproj /m /p:configuration="release" /p:SolutionDir=../  /p:platform="x64"
       
-    - name: Build
+    - name: Build ContextMenuCustomPackage
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild ContextMenuCustom\ContextMenuCustomPackage\ContextMenuCustomPackage.wapproj /m /p:configuration="release"   /p:platform="x64"
