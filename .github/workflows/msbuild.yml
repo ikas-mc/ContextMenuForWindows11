@@ -1,0 +1,39 @@
+name: MSBuild
+
+on:
+  workflow_dispatch:
+
+env:
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Decode the Pfx
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
+        [IO.File]::WriteAllBytes("ContextMenuCustom\ContextMenuCustomPackage\ContextMenuCustomPackage_TemporaryKey.pfx", $pfx_cert_byte)
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget.exe restore ContextMenuCustom -SolutionDirectory ContextMenuCustom
+      
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild -t:restore ContextMenuCustom\ContextMenuCustomApp\ContextMenuCustomApp.csproj
+
+    - name: Build ContextMenuCustomHost
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild ContextMenuCustom\ContextMenuCustomHost\ContextMenuCustomHost.vcxproj /m /p:configuration="release" /p:SolutionDir=../  /p:platform="x64"
+      
+    - name: Build ContextMenuCustomPackage
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild ContextMenuCustom\ContextMenuCustomPackage\ContextMenuCustomPackage.wapproj /m /p:configuration="release"   /p:platform="x64"
