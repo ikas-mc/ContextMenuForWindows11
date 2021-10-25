@@ -26,8 +26,11 @@ ContextMenuCustom/ContextMenuCustomHost/SzExplorerCommand.cpp
 
 ## Custom Context Menu 
 
-build and run  
-ContextMenuCustom/ContextMenuCustomPackage
+1. how to build   
+https://github.com/ikas-mc/ContextMenuForWindows11/blob/main/build.md
+
+2. how to use   
+https://github.com/ikas-mc/ContextMenuForWindows11/issues/2
 
 
 
