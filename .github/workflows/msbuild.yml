@@ -15,6 +15,12 @@ jobs:
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Decode the Pfx
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
+        [IO.File]::WriteAllBytes("ContextMenuCustom\ContextMenuCustomPackage\ContextMenuCustomPackage_TemporaryKey.pfx", $pfx_cert_byte)
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
