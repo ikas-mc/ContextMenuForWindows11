@@ -38,11 +38,11 @@ IFACEMETHODIMP SzExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _I
 		ShExecInfo.nShow = SW_SHOW;
 		ShExecInfo.hInstApp = nullptr;
 		ShellExecuteEx(&ShExecInfo);
-		if (ShExecInfo.hProcess > 0) {
+		//if (ShExecInfo.hProcess > 0) {
 			//WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 			//open output folder
 			//ShellExecute(parent, L"open", output.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-		}
+		//}
 	}
 
 	return S_OK;
