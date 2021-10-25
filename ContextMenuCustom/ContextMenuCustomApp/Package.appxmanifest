@@ -12,7 +12,7 @@
 
   <Identity
     Name="2fae965d-9461-428a-b5ea-eb2714fd82d6"
-    Publisher="CN=ikas"
+    Publisher="CN=test"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="2fae965d-9461-428a-b5ea-eb2714fd82d6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
