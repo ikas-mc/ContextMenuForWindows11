@@ -25,7 +25,7 @@
                 Margin="8,0,0,8">
             <StackPanel Orientation="Horizontal">
                 <TextBlock x:Name="AppTitle"
-                           Text="Coutom Context Menu"
+                           Text="Custom Context Menu"
                            VerticalAlignment="Center"
                            Margin="4,0,0,0"
                            Style="{StaticResource CaptionTextBlockStyle}" />

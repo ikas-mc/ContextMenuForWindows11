@@ -36,10 +36,10 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="MenuCustomApp.App">
       <uap:VisualElements
-        DisplayName="Coutom Context Menu (UWP)"
+        DisplayName="Custom Context Menu (UWP)"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="Coutom Context Menu For Win11"
+        Description="Custom Context Menu For Win11"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
@@ -52,7 +52,7 @@
             </uap:SupportedFileTypes>
           </uap:ShareTarget>
         </uap:Extension>
-        <desktop4:Extension Category="windows.fileExplorerContextMenus">
+        <!--<desktop4:Extension Category="windows.fileExplorerContextMenus">
           <desktop4:FileExplorerContextMenus>
             <desktop5:ItemType Type="Directory"  >
               <desktop5:Verb Id="Command1" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
@@ -60,21 +60,15 @@
             <desktop5:ItemType Type="*"  >
               <desktop5:Verb Id="Command2" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
             </desktop5:ItemType>
-            <!--<desktop5:ItemType Type=".zip"  >
-              <desktop5:Verb Id="Command3" Clsid="B9775729-E5FD-43E2-B6B5-60EA19D6BBD5" />
-            </desktop5:ItemType>-->
           </desktop4:FileExplorerContextMenus>
-        </desktop4:Extension>
-        <com:Extension Category="windows.comServer">
+        </desktop4:Extension>-->
+        <!--<com:Extension Category="windows.comServer">
           <com:ComServer>
             <com:SurrogateServer  DisplayName="Custome Context Menu">
               <com:Class Id="46F650E5-9959-48D6-AC13-A9637C5B3787" Path="ContextMenuCustomHost.dll" ThreadingModel="STA"/>
             </com:SurrogateServer>
-            <!--<com:SurrogateServer  DisplayName="Default Context Menu">
-              <com:Class Id="B9775729-E5FD-43E2-B6B5-60EA19D6BBD5" Path="ContextMenuCustomHost.dll" ThreadingModel="STA"/>
-            </com:SurrogateServer>-->
           </com:ComServer>
-        </com:Extension>
+        </com:Extension>-->
       </Extensions>
     </Application>
   </Applications>
