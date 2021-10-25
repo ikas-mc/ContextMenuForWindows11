@@ -18,7 +18,7 @@ jobs:
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild -t:restore ContextMenuCustom\ContextMenuCustomHost\ContextMenuCustomHost.vcxproj
+      run: nuget.exe restore ContextMenuCustom -SolutionDirectory ContextMenuCustom
       
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
