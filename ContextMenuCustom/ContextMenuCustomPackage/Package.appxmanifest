@@ -11,8 +11,8 @@
 
   <Identity
     Name="3e7eedd4-4131-4d94-a85f-ac5172caa715"
-    Publisher="CN=ikas"
-    Version="1.0.7.0" />
+    Publisher="CN=test"
+    Version="1.0.8.0" />
 
   <Properties>
     <DisplayName>CustomContextMenuApp</DisplayName>
