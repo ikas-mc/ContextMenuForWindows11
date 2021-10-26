@@ -3,7 +3,6 @@
 #include <wrl/implements.h>
 #include <wrl/client.h>
 #include "CustomExplorerCommand.h"
-#include "DefaultExplorerCommand.h"
 
 #define _HAS_CXX17 1
 #define _HAS_CXX20 0
@@ -27,11 +26,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 
 CoCreatableClass(CustomExplorerCommand)
-CoCreatableClass(DefaultExplorerCommand)
-
-
 CoCreatableClassWrlCreatorMapInclude(CustomExplorerCommand)
-CoCreatableClassWrlCreatorMapInclude(DefaultExplorerCommand)
 
 
 STDAPI DllGetActivationFactory(_In_ HSTRING activatableClassId, _COM_Outptr_ IActivationFactory** factory)

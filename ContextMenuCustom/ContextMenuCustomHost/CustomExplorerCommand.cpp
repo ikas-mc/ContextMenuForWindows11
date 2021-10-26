@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "CustomExplorerCommand.h"
 #include "CustomSubExplorerCommand.h"
-#include <winrt\base.h>
-#include <winrt\Windows.Storage.h>
-#include <winrt\Windows.Data.Json.h>
+#include <winrt/base.h>
+#include <winrt/Windows.Storage.h>
+#include <winrt/Windows.Data.Json.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <fstream>
