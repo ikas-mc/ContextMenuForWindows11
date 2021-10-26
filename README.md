@@ -1,38 +1,15 @@
 # Context Menu For Windows11
 
-## Demos For Context Menu
+## Custom Context Menu
 
-```
-ContextMenuCustom/ContextMenuCustomHost/SzExplorerCommand.cpp
-```
+<img src="https://raw.githubusercontent.com/ikas-mc/ContextMenuForWindows11/main/screenshots/menu.png" width=500 >
 
-```xml
-    <desktop4:Extension Category="windows.fileExplorerContextMenus">
-          <desktop4:FileExplorerContextMenus>
-            <desktop5:ItemType Type="*"  >
-              <desktop5:Verb Id="Command1" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
-            </desktop5:ItemType>
-          </desktop4:FileExplorerContextMenus>
-        </desktop4:Extension>
-        <com:Extension Category="windows.comServer">
-          <com:ComServer>
-            <com:SurrogateServer  DisplayName="Context menu verb handler">
-              <com:Class Id="46F650E5-9959-48D6-AC13-A9637C5B3787" Path="ContextMenuHost.dll" ThreadingModel="STA"/>
-            </com:SurrogateServer>
-          </com:ComServer>
-        </com:Extension>
 
-```
-
-## Custom Context Menu 
-
-1. how to build   
+##  how to build   
 https://github.com/ikas-mc/ContextMenuForWindows11/blob/main/build.md
 
-2. how to use   
+##  how to use   
 https://github.com/ikas-mc/ContextMenuForWindows11/issues/2
-
-
 
 ## more  
 

@@ -11,11 +11,14 @@
 (you can change the output to ContextMenuCustomApp debug or release bin folder)
 
 ## build ContextMenuCustomApp
-1. just build
+1. change PackageCertificateKey
+2. build
 
 ## build ContextMenuCustomPackage
-1. set this project as startup project
-2. build and run
+
+1. change PackageCertificateKey
+2. set this project as startup project
+3. build and run
 
 # publish
 1. clean all
