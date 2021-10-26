@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq.Expressions;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace ContextMenuCustomApp
@@ -9,20 +7,10 @@ namespace ContextMenuCustomApp
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged<T>(Expression<Func<T>> propertyName)
+        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
+            if (Equals(storage, value))
             {
-                if (propertyName.Body is MemberExpression me)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(me.Member.Name));
-                }
-            }
-        }
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] String propertyName = null)
-        {
-            if (object.Equals(storage, value)) {
                 return false;
             }
 
@@ -31,12 +19,7 @@ namespace ContextMenuCustomApp
             return true;
         }
 
-        protected void OnPropertyChanged2([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -1,47 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace ContextMenuCustomApp
 {
-    sealed partial class App : Application
+    sealed partial class App
     {
-
         public App()
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-   
+            //TODO check first run
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+            ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            //TODO use shell
             Frame rootFrame = Window.Current.Content as Frame;
-
             if (rootFrame == null)
             {
                 rootFrame = new Frame();
-
                 rootFrame.NavigationFailed += OnNavigationFailed;
-
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                 }
-           
                 Window.Current.Content = rootFrame;
             }
 
@@ -49,7 +38,6 @@ namespace ContextMenuCustomApp
             {
                 if (rootFrame.Content == null)
                 {
-                    ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size { Width = 480, Height = 400 });
                     rootFrame.Navigate(typeof(Shell), e.Arguments);
                 }
                 Window.Current.Activate();

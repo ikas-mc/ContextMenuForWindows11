@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
 namespace ContextMenuCustomApp
 {
-    public sealed class Alert
+    public static class Alert
     {
-        public static async void InfoAsync(string content, string title = "Info") {
+        public static async void InfoAsync(string content, string title = "Info")
+        {
             var dialog = new ContentDialog
             {
                 Title = title,
@@ -31,7 +29,7 @@ namespace ContextMenuCustomApp
                 DefaultButton = ContentDialogButton.Primary,
                 Content = content
             };
-            var result= await dialog.ShowAsync();
+            var result = await dialog.ShowAsync();
             return result == ContentDialogResult.Primary;
         }
     }

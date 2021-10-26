@@ -1,18 +1,15 @@
-﻿<Page
-    x:Class="ContextMenuCustomApp.Shell"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ContextMenuCustomApp"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
-    >
-    <Grid  Margin="4,0,4,4">
+﻿<Page x:Class="ContextMenuCustomApp.Shell"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+      muxc:BackdropMaterial.ApplyToRootOrPageBackground="True" >
+    <Grid Margin="4,0,4,4" >
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Border x:Name="AppTitleBar"
                 Grid.Row="0"
@@ -22,17 +19,23 @@
                 Background="Transparent"
                 Height="40"
                 Canvas.ZIndex="1"
-                Margin="8,0,0,8">
-            <StackPanel Orientation="Horizontal">
+                Margin="8,0,0,8" >
+            <StackPanel Orientation="Horizontal" >
                 <TextBlock x:Name="AppTitle"
                            Text="Custom Context Menu"
                            VerticalAlignment="Center"
                            Margin="4,0,0,0"
                            Style="{StaticResource CaptionTextBlockStyle}" />
-                <muxc:ProgressRing x:Name="StatusInfo" IsActive="False" Margin="12,0,0,0" Width="16" Height="16" />
+                <muxc:ProgressRing x:Name="StatusInfo"
+                                   IsActive="False"
+                                   Margin="12,0,0,0"
+                                   Width="16"
+                                   Height="16" />
             </StackPanel>
         </Border>
-        <Frame x:Name="ShellFrame" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        </Frame>
+        <Frame x:Name="ShellFrame"
+               Grid.Row="1"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch" />
     </Grid>
 </Page>

@@ -3,14 +3,13 @@ using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using ContextMenuCustomApp.View.Menu;
 
 namespace ContextMenuCustomApp
 {
-
-    public sealed partial class Shell : Page
+    public sealed partial class Shell
     {
         public Shell()
         {
@@ -18,7 +17,7 @@ namespace ContextMenuCustomApp
             InitHeader();
         }
 
-        public void InitHeader()
+        private void InitHeader()
         {
             var titleBar = ApplicationView.GetForCurrentView().TitleBar;
 
@@ -58,44 +57,27 @@ namespace ContextMenuCustomApp
             AppTitleBar.Height = coreTitleBar.Height;
 
             // Ensure the custom title bar does not overlap window caption controls
-            Thickness currMargin = AppTitleBar.Margin;
-            AppTitleBar.Margin = new Thickness(currMargin.Left, currMargin.Top, coreTitleBar.SystemOverlayRightInset,
-                currMargin.Bottom);
+            var currMargin = AppTitleBar.Margin;
+            AppTitleBar.Margin = new Thickness(currMargin.Left, currMargin.Top, coreTitleBar.SystemOverlayRightInset, currMargin.Bottom);
         }
 
         private void CoreTitleBar_IsVisibleChanged(CoreApplicationViewTitleBar sender, object args)
         {
-            if (sender.IsVisible)
-            {
-                AppTitleBar.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                AppTitleBar.Visibility = Visibility.Collapsed;
-            }
+            AppTitleBar.Visibility = sender.IsVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void Current_Activated(object sender, WindowActivatedEventArgs e)
         {
-            SolidColorBrush defaultForegroundBrush =
-                (SolidColorBrush) Application.Current.Resources["TextFillColorPrimaryBrush"];
-            SolidColorBrush inactiveForegroundBrush =
-                (SolidColorBrush) Application.Current.Resources["TextFillColorDisabledBrush"];
+            var defaultForegroundBrush = (SolidColorBrush) Application.Current.Resources["TextFillColorPrimaryBrush"];
+            var inactiveForegroundBrush = (SolidColorBrush) Application.Current.Resources["TextFillColorDisabledBrush"];
 
-            if (e.WindowActivationState == CoreWindowActivationState.Deactivated)
-            {
-                AppTitle.Foreground = inactiveForegroundBrush;
-            }
-            else
-            {
-                AppTitle.Foreground = defaultForegroundBrush;
-            }
+            AppTitle.Foreground = e.WindowActivationState == CoreWindowActivationState.Deactivated ? inactiveForegroundBrush : defaultForegroundBrush;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            ShellFrame.Navigate(typeof(MainPage));
+            ShellFrame.Navigate(typeof(MenuPage));
         }
 
     }
