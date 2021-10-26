@@ -15,13 +15,14 @@ namespace ContextMenuCustomApp
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            //TODO check first run
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            //TODO check first run
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+            ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
+
             //TODO use shell
             Frame rootFrame = Window.Current.Content as Frame;
             if (rootFrame == null)
