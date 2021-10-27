@@ -7,6 +7,7 @@ class __declspec(uuid("46F650E5-9959-48D6-AC13-A9637C5B3787"))   CustomExplorerC
 public:
 	CustomExplorerCommand();
 	const  wchar_t* Title();
+	const  wchar_t* GetIconId();
 	const EXPCMDSTATE State(_In_opt_ IShellItemArray* selection) override;
 	const EXPCMDFLAGS Flags() override;
 	IFACEMETHODIMP EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands) override;

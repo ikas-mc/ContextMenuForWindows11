@@ -54,6 +54,8 @@ END
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "icon1.ico"
 
+IDI_ICON2               ICON                    "icon2.ico"
+
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 

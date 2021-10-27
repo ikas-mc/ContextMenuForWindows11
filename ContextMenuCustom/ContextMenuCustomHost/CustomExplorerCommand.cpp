@@ -8,21 +8,37 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <fstream>
 #include <ppltasks.h>
+#include <shlwapi.h>
 #pragma comment(lib, "windowsapp")
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
 using namespace std::filesystem;
 
-const  wchar_t* CustomExplorerCommand::Title() { 
-	winrt::hstring DisplayName = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(L"Custom_Menu_Name"), L"Custom Menu");
-	return DisplayName.data();
+const  wchar_t* CustomExplorerCommand::Title() {
+	winrt::hstring title = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(L"Custom_Menu_Name"), L"Custom Menu");
+	return title.data();
 };
+
 const EXPCMDSTATE CustomExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; };
+
 const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
+
+const  wchar_t* CustomExplorerCommand::GetIconId()
+{
+	DWORD value = 0;
+	DWORD size = sizeof(value);
+	auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"SystemUsesLightTheme", SRRF_RT_DWORD, NULL, &value, &size);
+	if (result== ERROR_SUCCESS && !!value) {
+		return L",-103";
+	}
+	else {
+		return L",-101";
+	}
+}
+
 CustomExplorerCommand::CustomExplorerCommand() {
 	auto e = Make<CustomeCommands>();
 }
-
 
 IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands)
 {
