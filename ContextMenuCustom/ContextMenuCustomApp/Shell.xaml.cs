@@ -24,6 +24,10 @@ namespace ContextMenuCustomApp
             titleBar.ButtonBackgroundColor = Colors.Transparent;
             titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
 
+            var uiSettings = new UISettings();
+            uiSettings.ColorValuesChanged += UiSettings_ColorValuesChanged;
+            UpdateTitleBarColor(uiSettings, titleBar);
+
             // Hide default title bar.
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = true;
@@ -45,10 +49,26 @@ namespace ContextMenuCustomApp
 
         }
 
+        private void UiSettings_ColorValuesChanged(UISettings sender, object args)
+        {
+            _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                UpdateTitleBarColor(sender, titleBar);
+            });
+        }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
         {
             UpdateTitleBarLayout(sender);
+        }
+
+        private void UpdateTitleBarColor(UISettings uISettings, ApplicationViewTitleBar titleBar)
+        {
+            var accentColor = uISettings.GetColorValue(UIColorType.Accent);
+            var accentColorLight = uISettings.GetColorValue(UIColorType.AccentLight2);
+            titleBar.ButtonForegroundColor = accentColor;
+            titleBar.ButtonInactiveForegroundColor = accentColorLight;
         }
 
         private void UpdateTitleBarLayout(CoreApplicationViewTitleBar coreTitleBar)

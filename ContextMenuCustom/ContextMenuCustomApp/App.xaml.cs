@@ -21,7 +21,9 @@ namespace ContextMenuCustomApp
         {
             //TODO check first run
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
+            var size = new Size(800, 600);
+            ApplicationView.PreferredLaunchViewSize = size;
+            ApplicationView.GetForCurrentView().TryResizeView(size);
 
             //TODO use shell
             Frame rootFrame = Window.Current.Content as Frame;
