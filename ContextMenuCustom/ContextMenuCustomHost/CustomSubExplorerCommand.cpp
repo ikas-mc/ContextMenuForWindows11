@@ -70,7 +70,9 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 	wil::unique_cotaskmem_string path = GetPath(selection);
 
 	if (path.is_valid()) {
-		auto param = string_replace_all(_param, L"{path}", path.get());
+		std::filesystem::path file(path.get());
+		auto param = string_replace_all(_param, L"{path}", file.wstring());
+		param = string_replace_all(param, L"{name}", file.filename().wstring());
 		ShellExecute(parent, L"open", _exe.c_str(), param.c_str(), nullptr, SW_SHOWNORMAL);
 	}
 
