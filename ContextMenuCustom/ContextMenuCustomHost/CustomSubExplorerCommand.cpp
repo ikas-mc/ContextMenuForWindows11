@@ -14,7 +14,29 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 		_exe = result.GetNamedString(L"exe", L"");
 		_param = result.GetNamedString(L"param", L"");
 		_icon = result.GetNamedString(L"icon", L"");
+		_accept_directory = result.GetNamedBoolean(L"acceptDirectory", false);
+		_accept_exts = result.GetNamedString(L"acceptExts", L"");
 	}
+}
+
+const  bool CustomSubExplorerCommand::Accept(bool isDirectory, std::wstring& ext) {
+	if (isDirectory) {
+		return _accept_directory;
+	}
+
+	if (ext.empty()) {
+		return true;
+	}
+	
+	if (_accept_exts.empty()) {
+		return true;
+	}
+
+	if (_accept_exts.find(L"*") != std::wstring::npos) {
+		return true;
+	}
+
+	return _accept_exts.find(ext) != std::wstring::npos;
 }
 
 IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon)

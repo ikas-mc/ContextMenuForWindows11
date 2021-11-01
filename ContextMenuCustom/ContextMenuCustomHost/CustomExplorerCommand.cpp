@@ -19,7 +19,11 @@ const  wchar_t* CustomExplorerCommand::Title() {
 	return title.data();
 };
 
-const EXPCMDSTATE CustomExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; };
+const EXPCMDSTATE CustomExplorerCommand::State(_In_opt_ IShellItemArray* selection) { 
+	wil::unique_cotaskmem_string path = GetPath(selection);
+	m_current_path = path.get();
+	return ECS_ENABLED;
+};
 
 const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
 
@@ -37,22 +41,21 @@ const  wchar_t* CustomExplorerCommand::GetIconId()
 }
 
 CustomExplorerCommand::CustomExplorerCommand() {
-	auto e = Make<CustomeCommands>();
 }
 
 IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands)
 {
 	*enumCommands = nullptr;
-	auto e = Make<CustomeCommands>();
-	e->ReadCommands();
-	return e->QueryInterface(IID_PPV_ARGS(enumCommands));
+	auto customeCommands = Make<CustomeCommands>();
+	customeCommands->ReadCommands(m_current_path);
+	return customeCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
 CustomeCommands::CustomeCommands() {
 
 }
 
-void CustomeCommands::ReadCommands()
+void CustomeCommands::ReadCommands(std::wstring& current_path)
 {
 	auto localFolder = ApplicationData::Current().LocalFolder().Path();
 	path localFolderPath{ localFolder.c_str() };
@@ -63,10 +66,23 @@ void CustomeCommands::ReadCommands()
 			if (exists(localFolderPath) && is_directory(localFolderPath)) {
 				auto configsFolder = StorageFolder::GetFolderFromPathAsync(localFolderPath.c_str()).get();
 				auto files = configsFolder.GetFilesAsync().get();
+
+				std::wstring ext;
+				bool isDirectory;
+				if (!current_path.empty()) {
+					path file(current_path);
+					isDirectory = is_directory(file);
+					if (!isDirectory) {
+						ext = file.extension();
+					}
+				}
+
 				for (auto configFile : files) {
 					const auto content = FileIO::ReadTextAsync(configFile).get();
 					const auto command = Make<CustomSubExplorerCommand>(content);
-					m_commands.push_back(command);
+					if (command->Accept(isDirectory,ext)) {
+						m_commands.push_back(command);
+					}
 				}
 			}
 		});

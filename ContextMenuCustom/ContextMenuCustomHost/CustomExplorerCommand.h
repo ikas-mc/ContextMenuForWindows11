@@ -11,6 +11,9 @@ public:
 	const EXPCMDSTATE State(_In_opt_ IShellItemArray* selection) override;
 	const EXPCMDFLAGS Flags() override;
 	IFACEMETHODIMP EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands) override;
+
+private:
+	std::wstring m_current_path;
 };
 
 
@@ -18,7 +21,7 @@ class CustomeCommands : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IEnum
 {
 public:
 	CustomeCommands();
-	void ReadCommands();
+	void ReadCommands(std::wstring & current_path);
 	IFACEMETHODIMP Next(ULONG celt, __out_ecount_part(celt, *pceltFetched) IExplorerCommand** apUICommand, __out_opt ULONG* pceltFetched);
 	IFACEMETHODIMP Skip(ULONG /*celt*/);
 	IFACEMETHODIMP Reset();
