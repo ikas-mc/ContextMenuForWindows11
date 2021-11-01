@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "BaseExplorerCommand.h"
 
-const  wchar_t* BaseExplorerCommand::Title() { return L""; }
 const EXPCMDFLAGS BaseExplorerCommand::Flags() { return ECF_DEFAULT; }
 const EXPCMDSTATE BaseExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; }
 const  wchar_t* BaseExplorerCommand::GetIconId() { return L",-101"; }
@@ -9,11 +8,9 @@ const  wchar_t* BaseExplorerCommand::GetIconId() { return L",-101"; }
 IFACEMETHODIMP BaseExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
 {
 	*name = nullptr;
-	auto title = wil::make_cotaskmem_string_nothrow(Title());
-	RETURN_IF_NULL_ALLOC(title);
-	*name = title.release();
-	return S_OK;
+	return SHStrDupW(L"Open With", name);
 }
+
 IFACEMETHODIMP BaseExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon)
 {
 	*icon = nullptr;
@@ -51,9 +48,6 @@ IFACEMETHODIMP BaseExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, 
 
 	if (path.is_valid()) {
 		MessageBox(parent, path.get(), L"ContextMenu", MB_OK);
-	}
-	else {
-		MessageBox(parent, Title(), L"ContextMenu", MB_OK);
 	}
 
 	return S_OK;
