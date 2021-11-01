@@ -14,14 +14,16 @@ using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
 using namespace std::filesystem;
 
-const  wchar_t* CustomExplorerCommand::Title() {
-	winrt::hstring title = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(L"Custom_Menu_Name"), L"Custom Menu");
-	return title.data();
-};
-
 const EXPCMDSTATE CustomExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; };
 
 const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
+
+IFACEMETHODIMP CustomExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
+{
+	*name = nullptr;
+	winrt::hstring title = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(L"Custom_Menu_Name"), L"Open With");
+	return SHStrDupW(title.data(), name);
+}
 
 const  wchar_t* CustomExplorerCommand::GetIconId()
 {

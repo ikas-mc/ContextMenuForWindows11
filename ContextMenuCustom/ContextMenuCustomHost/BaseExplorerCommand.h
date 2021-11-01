@@ -22,7 +22,6 @@ using namespace Microsoft::WRL;
 class BaseExplorerCommand : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IExplorerCommand, IObjectWithSite>
 {
 public:
-	const virtual wchar_t* Title() = 0;
 	const virtual EXPCMDFLAGS Flags();
 	const virtual EXPCMDSTATE State(_In_opt_ IShellItemArray* selection);
 	const virtual wchar_t* GetIconId();

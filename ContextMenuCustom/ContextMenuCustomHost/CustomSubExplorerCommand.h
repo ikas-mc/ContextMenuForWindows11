@@ -12,7 +12,7 @@ class CustomSubExplorerCommand final : public BaseExplorerCommand
 public:
 	CustomSubExplorerCommand();
 	CustomSubExplorerCommand(winrt::hstring const& configContent);
-	const wchar_t* Title() override;
+	IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) override;
 	IFACEMETHODIMP GetIcon(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* icon) override;
 	const EXPCMDSTATE State(_In_opt_ IShellItemArray* selection) override;
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept override;

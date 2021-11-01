@@ -29,14 +29,17 @@ IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items
 }
 
 
-const wchar_t* CustomSubExplorerCommand::Title() {
+IFACEMETHODIMP CustomSubExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
+{
+	*name = nullptr;
 	if (_title.empty()) {
-		return L"CustomSubExplorerCommand1";
+		return SHStrDupW(L"Menu", name);
 	}
 	else {
-		return _title.c_str();
+		return SHStrDupW(_title.c_str(), name);
 	}
 }
+
 const EXPCMDSTATE CustomSubExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; }
 
 
