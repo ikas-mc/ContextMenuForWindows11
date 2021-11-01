@@ -86,7 +86,7 @@
             </Button>
             <Button Margin="4,0"
                     Click="Open_Folder_Click"
-                    ToolTipService.ToolTip="Refresh menus folder"
+                    ToolTipService.ToolTip="Open menus folder"
                     Padding="4"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center" >
