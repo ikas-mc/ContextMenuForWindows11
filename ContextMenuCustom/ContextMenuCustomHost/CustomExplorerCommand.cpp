@@ -48,16 +48,16 @@ CustomExplorerCommand::CustomExplorerCommand() {
 IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands)
 {
 	*enumCommands = nullptr;
-	auto customeCommands = Make<CustomeCommands>();
-	customeCommands->ReadCommands(m_current_path);
-	return customeCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
+	auto customCommands = Make<CustomCommands>();
+    customCommands->ReadCommands(m_current_path);
+	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
-CustomeCommands::CustomeCommands() {
+CustomCommands::CustomCommands() {
 
 }
 
-void CustomeCommands::ReadCommands(std::wstring& current_path)
+void CustomCommands::ReadCommands(std::wstring& current_path)
 {
 	auto localFolder = ApplicationData::Current().LocalFolder().Path();
 	path localFolderPath{ localFolder.c_str() };
@@ -91,7 +91,7 @@ void CustomeCommands::ReadCommands(std::wstring& current_path)
 	task.wait();
 	m_current = m_commands.cbegin();
 }
-IFACEMETHODIMP CustomeCommands::Next(ULONG celt, __out_ecount_part(celt, *pceltFetched) IExplorerCommand** apUICommand, __out_opt ULONG* pceltFetched)
+IFACEMETHODIMP CustomCommands::Next(ULONG celt, __out_ecount_part(celt, *pceltFetched) IExplorerCommand** apUICommand, __out_opt ULONG* pceltFetched)
 {
 	ULONG fetched{ 0 };
 	wil::assign_to_opt_param(pceltFetched, 0ul);
@@ -106,11 +106,11 @@ IFACEMETHODIMP CustomeCommands::Next(ULONG celt, __out_ecount_part(celt, *pceltF
 	wil::assign_to_opt_param(pceltFetched, fetched);
 	return (fetched == celt) ? S_OK : S_FALSE;
 }
-IFACEMETHODIMP CustomeCommands::Skip(ULONG /*celt*/) { return E_NOTIMPL; }
-IFACEMETHODIMP CustomeCommands::Reset()
+IFACEMETHODIMP CustomCommands::Skip(ULONG /*celt*/) { return E_NOTIMPL; }
+IFACEMETHODIMP CustomCommands::Reset()
 {
 	m_current = m_commands.cbegin();
 	return S_OK;
 }
-IFACEMETHODIMP CustomeCommands::Clone(__deref_out IEnumExplorerCommand** ppenum) { *ppenum = nullptr; return E_NOTIMPL; }
+IFACEMETHODIMP CustomCommands::Clone(__deref_out IEnumExplorerCommand** ppenum) { *ppenum = nullptr; return E_NOTIMPL; }
 

@@ -17,10 +17,10 @@ private:
 };
 
 
-class CustomeCommands : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IEnumExplorerCommand>
+class CustomCommands : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IEnumExplorerCommand>
 {
 public:
-	CustomeCommands();
+	CustomCommands();
 	void ReadCommands(std::wstring & current_path);
 	IFACEMETHODIMP Next(ULONG celt, __out_ecount_part(celt, *pceltFetched) IExplorerCommand** apUICommand, __out_opt ULONG* pceltFetched);
 	IFACEMETHODIMP Skip(ULONG /*celt*/);

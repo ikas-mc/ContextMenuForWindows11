@@ -19,7 +19,7 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 	}
 }
 
-const  bool CustomSubExplorerCommand::Accept(bool isDirectory, std::wstring& ext) {
+ bool CustomSubExplorerCommand::Accept(bool isDirectory, std::wstring& ext) {
 	if (isDirectory) {
 		return _accept_directory;
 	}

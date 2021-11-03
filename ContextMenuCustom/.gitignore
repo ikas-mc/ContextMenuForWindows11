@@ -367,3 +367,6 @@ ContextMenuCustomHost.exp
 ContextMenuCustomHost.lib
 ContextMenuCustomHost.pdb
 /Dll1
+.idea/
+logo.svg
+logo.png
