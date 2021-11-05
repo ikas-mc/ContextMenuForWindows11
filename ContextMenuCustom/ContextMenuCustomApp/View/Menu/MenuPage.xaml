@@ -139,12 +139,21 @@
                     Margin="04,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom" >
+
             <HyperlinkButton Margin="4,0"
                              Padding="4"
                              NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11" >
                 <TextBlock>
+                    <Run>Help</Run>
+                </TextBlock>
+            </HyperlinkButton>
+
+            <HyperlinkButton Margin="4,0"
+                             Padding="4"
+                             NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/issues/2" >
+                <TextBlock>
                     <Run Text="{x:Bind _viewModel.Version()}" />
-                    <Run>ikas@2021</Run>
+                    <Run>ikas</Run>
                 </TextBlock>
             </HyperlinkButton>
             <Button Padding="4" >

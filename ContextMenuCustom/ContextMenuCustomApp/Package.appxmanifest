@@ -11,14 +11,14 @@
   IgnorableNamespaces="uap mp desktop4 desktop5 com rescap">
 
   <Identity
-    Name="2fae965d-9461-428a-b5ea-eb2714fd82d6"
+    Name="7061touchwp.CustomContextMenu"
     Publisher="CN=test"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
-  <mp:PhoneIdentity PhoneProductId="2fae965d-9461-428a-b5ea-eb2714fd82d6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="a6cb77ab-4892-4cdd-9bee-8716defefa2e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>MenuCustomApp</DisplayName>
+    <DisplayName>Custom Context Menu</DisplayName>
     <PublisherDisplayName>ikas</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -45,13 +45,6 @@
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.shareTarget">
-          <uap:ShareTarget>
-            <uap:SupportedFileTypes>
-              <uap:SupportsAnyFileType/>
-            </uap:SupportedFileTypes>
-          </uap:ShareTarget>
-        </uap:Extension>
         <!--<desktop4:Extension Category="windows.fileExplorerContextMenus">
           <desktop4:FileExplorerContextMenus>
             <desktop5:ItemType Type="Directory"  >
