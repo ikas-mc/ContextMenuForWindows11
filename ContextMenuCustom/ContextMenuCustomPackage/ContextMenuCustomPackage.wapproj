@@ -39,8 +39,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <EntryPointProjectUniqueName>..\ContextMenuCustomApp\ContextMenuCustomApp.csproj</EntryPointProjectUniqueName>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
-    <PackageCertificateThumbprint>0338B48B4DE60301D7FD59695188BB7878C0E64A</PackageCertificateThumbprint>
-    <PackageCertificateKeyFile>ContextMenuCustomPackage_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>AB5EDA81152307E542AA2E46806E766CBD8A4E04</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <AppxBundle>Always</AppxBundle>
