@@ -12,11 +12,11 @@
   <Identity
     Name="3e7eedd4-4131-4d94-a85f-ac5172caa715"
     Publisher="CN=ikas"
-    Version="1.2.10.0" />
+    Version="1.2.13.0" />
 
   <Properties>
     <DisplayName>Custom Context Menu</DisplayName>
-    <PublisherDisplayName>ikas</PublisherDisplayName>
+    <PublisherDisplayName>touchwp</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
