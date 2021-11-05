@@ -16,7 +16,9 @@ using namespace std::filesystem;
 
 const EXPCMDSTATE CustomExplorerCommand::State(_In_opt_ IShellItemArray* selection) { 
 	wil::unique_cotaskmem_string path = GetPath(selection);
-	m_current_path = path.get();
+	if (path.is_valid()) {
+		m_current_path = path.get();
+	}
 	return ECS_ENABLED;
 };
 
