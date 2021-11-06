@@ -1,8 +1,3 @@
-# project desc
-1. ContextMenuCustomHost project read the menu item (json) from "LocalState\custom_commands", and then display it as a secondary menu
-2. ContextMenuCustomApp project is used to configure the menu items and save the item to "LocalState\custom_commands" folder
-3. ContextMenuCustomPackage project is used to support "runFullTrust"
-
 # how to build
 
 ## build ContextMenuCustomHost
@@ -25,8 +20,8 @@
 2. select release,rebuild ContextMenuCustomHost project
 3. publish on ContextMenuCustomPackage project
 
-# install
-1. install vc++ runtime  (Visual Studio 2015, 2017, 2019, and 2022)   
+# install  (version < 1.2.9)
+1. install vc++ runtime  (Visual Studio 2015, 2017, 2019, and 2022)  
 https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-160
 
 2. deploy
