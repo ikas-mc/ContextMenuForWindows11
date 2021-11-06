@@ -11,7 +11,8 @@
 Windows store|Github release
 ------------ | -------------
 <a href="https://www.microsoft.com/en-us/p/custom-context-menu/9pc7bzz28g0x">Windows store </a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release </a>
-ms-windows-store://pdp/?ProductId=9PC7BZZ28G0X|
+ms-windows-store://pdp/?ProductId=9PC7BZZ28G0X|use self-signed certificate,not recommended
+
 
 
 ##  Guides
