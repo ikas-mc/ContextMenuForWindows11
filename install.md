@@ -1,4 +1,4 @@
-## Install vc++
+## Install vc++ (version < 1.2.9)
 
 winget install Microsoft.VC++2015-2019Redist-x64
 or
