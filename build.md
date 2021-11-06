@@ -20,17 +20,3 @@
 2. select release,rebuild ContextMenuCustomHost project
 3. publish on ContextMenuCustomPackage project
 
-# install  (version < 1.2.9)
-1. install vc++ runtime  (Visual Studio 2015, 2017, 2019, and 2022)  
-https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-160
-
-2. deploy
-
-run in powershell
-```
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-
-./Install.ps1
-
-Set-ExecutionPolicy -ExecutionPolicy AllSigned -Scope CurrentUser
-```
