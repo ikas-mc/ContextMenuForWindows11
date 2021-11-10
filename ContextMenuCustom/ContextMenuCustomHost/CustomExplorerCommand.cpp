@@ -72,19 +72,22 @@ void CustomCommands::ReadCommands(std::wstring& current_path)
 				auto files = configsFolder.GetFilesAsync().get();
 
 				std::wstring ext;
-				bool isDirectory;
+				bool isDirectory = false;
 				if (!current_path.empty()) {
 					path file(current_path);
 					isDirectory = is_directory(file);
 					if (!isDirectory) {
 						ext = file.extension();
+						if (!ext.empty()) {
+							std::transform(ext.begin(), ext.end(), ext.begin(), towlower);//TODO check
+						}
 					}
 				}
 
 				for (auto configFile : files) {
 					const auto content = FileIO::ReadTextAsync(configFile).get();
 					const auto command = Make<CustomSubExplorerCommand>(content);
-					if (command->Accept(isDirectory,ext)) {
+					if (command->Accept(isDirectory, ext)) {
 						m_commands.push_back(command);
 					}
 				}

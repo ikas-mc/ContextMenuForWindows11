@@ -16,7 +16,7 @@ namespace ContextMenuCustomApp.Service.Menu
         public string Exe { get => _exe; set => SetProperty(ref _exe, value); }
         public string Param { get => _param; set => SetProperty(ref _param, value); }
         public string Icon { get => _icon; set => SetProperty(ref _icon, value); }
-        public string AcceptExts { get => _acceptExts; set => SetProperty(ref _acceptExts, value); }
+        public string AcceptExts { get => _acceptExts; set => SetProperty(ref _acceptExts, string.IsNullOrEmpty(value)?value:value.ToLower());}// to lower for match
         public bool AcceptDirectory { get => _acceptDirectory; set => SetProperty(ref _acceptDirectory, value); }
 
         public StorageFile File { get; set; }
