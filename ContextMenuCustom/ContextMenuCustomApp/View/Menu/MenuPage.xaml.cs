@@ -2,6 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 using ContextMenuCustomApp.Service.Menu;
+using System.Linq;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -37,8 +38,9 @@ namespace ContextMenuCustomApp.View.Menu
             if (CommandList.SelectedItem is MenuItem item)
             {
                 await _viewModel.SaveAsync(item);
-                //TODO 
-                //CommandList.SelectedItem = item;
+                if (null != item.File) {
+                    CommandList.SelectedItem = _viewModel.MenuItems.Where((menu) => Equals(item.File.Path, menu.File.Path)).FirstOrDefault();
+                }
             }
             else
             {
