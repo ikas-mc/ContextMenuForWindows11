@@ -1,7 +1,7 @@
 # Custom Context Menu
 
  Add Custom Context Menu For Windows11
- 
+
 
 <img src="https://raw.githubusercontent.com/ikas-mc/ContextMenuForWindows11/main/screenshots/menu.png" width=500 >
 
@@ -32,10 +32,8 @@ https://github.com/microsoft/Windows-classic-samples/tree/master/Samples/Win7Sam
 
 https://github.com/microsoft/AppModelSamples/tree/0f88fe0a8bbb90051f6c126741b881288bb5cabb/Samples/SparsePackages/PhotoStoreContextMenu
 
-https://github.com/microsoft/terminal/blob/c90de692509b074bfde191910d67154cfe389911/src/cascadia/CascadiaPackage/Package.appxmanifest
-
 https://github.com/microsoft/terminal/tree/fb597ed304ec6eef245405c9652e9b8a029b821f/src/cascadia/ShellExtension
 
 https://github.com/MicrosoftDocs/windows-uwp/blob/docs/hub/apps/desktop/modernize/integrate-packaged-app-with-file-explorer.md
 
-https://github.com/zhuxb711/RX-Explorer/tree/master/OpenDirectoryExt
+https://docs.microsoft.com/en-us/cpp/cppcx/wrl/windows-runtime-cpp-template-library-wrl?view=msvc-170
