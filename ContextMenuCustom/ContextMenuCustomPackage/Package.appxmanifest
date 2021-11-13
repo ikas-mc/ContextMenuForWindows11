@@ -10,9 +10,9 @@
   IgnorableNamespaces="uap desktop4 desktop5 com rescap">
 
   <Identity
-    Name="3e7eedd4-4131-4d94-a85f-ac5172caa715"
-    Publisher="CN=ikas"
-    Version="1.2.13.0" />
+    Name="7061touchwp.CustomContextMenu"
+    Publisher="CN=test"
+    Version="1.5.0.0" />
 
   <Properties>
     <DisplayName>Custom Context Menu</DisplayName>
