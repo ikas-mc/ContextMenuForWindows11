@@ -4,9 +4,6 @@
 #include <wrl/client.h>
 #include "CustomExplorerCommand.h"
 
-#define _HAS_CXX17 1
-#define _HAS_CXX20 0
-
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
 	switch (ul_reason_for_call)
@@ -36,10 +33,10 @@ STDAPI DllGetActivationFactory(_In_ HSTRING activatableClassId, _COM_Outptr_ IAc
 
 STDAPI DllCanUnloadNow()
 {
-	return Module<InProc>::GetModule().GetObjectCount() == 0 ? S_OK : S_FALSE;
+	return Module<InProc>::GetModule().Terminate() ? S_OK : S_FALSE;
 }
 
-STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _COM_Outptr_ void** instance)
+STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
 {
-	return Module<InProc>::GetModule().GetClassObject(rclsid, riid, instance);
+	return Module<InProc>::GetModule().GetClassObject(rclsid, riid, ppv);
 }

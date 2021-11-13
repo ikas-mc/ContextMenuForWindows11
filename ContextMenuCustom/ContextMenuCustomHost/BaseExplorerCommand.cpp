@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "BaseExplorerCommand.h"
 
+
 const EXPCMDFLAGS BaseExplorerCommand::Flags() { return ECF_DEFAULT; }
-const EXPCMDSTATE BaseExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; }
 const  wchar_t* BaseExplorerCommand::GetIconId() { return L",-101"; }
 
 IFACEMETHODIMP BaseExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
@@ -33,9 +33,10 @@ IFACEMETHODIMP BaseExplorerCommand::GetCanonicalName(_Out_ GUID* guidCommandName
 
 IFACEMETHODIMP BaseExplorerCommand::GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState)
 {
-	*cmdState = State(selection);
+	*cmdState = ECS_ENABLED;
 	return S_OK;
 }
+
 IFACEMETHODIMP BaseExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept try
 {
 	HWND parent = nullptr;

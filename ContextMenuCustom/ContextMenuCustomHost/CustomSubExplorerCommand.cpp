@@ -3,14 +3,10 @@
 
 using namespace winrt::Windows::Data::Json;
 
-CustomSubExplorerCommand::CustomSubExplorerCommand() {
-
-}
-
 CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) {
 	JsonObject result;
 	if (JsonObject::TryParse(configContent, result)) {
-		_title = result.GetNamedString(L"title",L"Custom Menu");
+		_title = result.GetNamedString(L"title", L"Custom Menu");
 		_exe = result.GetNamedString(L"exe", L"");
 		_param = result.GetNamedString(L"param", L"");
 		_icon = result.GetNamedString(L"icon", L"");
@@ -19,7 +15,7 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 	}
 }
 
- bool CustomSubExplorerCommand::Accept(bool isDirectory, std::wstring& ext) {
+bool CustomSubExplorerCommand::Accept(bool isDirectory, std::wstring& ext) {
 	if (isDirectory) {
 		return _accept_directory;
 	}
@@ -27,7 +23,7 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 	if (ext.empty()) {
 		return true;
 	}
-	
+
 	if (_accept_exts.empty()) {
 		return true;
 	}
@@ -62,7 +58,10 @@ IFACEMETHODIMP CustomSubExplorerCommand::GetTitle(_In_opt_ IShellItemArray* item
 	}
 }
 
-const EXPCMDSTATE CustomSubExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; }
+IFACEMETHODIMP CustomSubExplorerCommand::GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) {
+	*cmdState = ECS_ENABLED;
+	return S_OK;
+}
 
 
 static std::wstring string_replace_all(std::wstring src, std::wstring const& target, std::wstring const& repl) {

@@ -12,7 +12,6 @@
 #include <wil/Result.h>
 #include <wil/nt_result_macros.h>
 #include <wil/resource.h>
-#include <wil/wistd_memory.h>
 #include <wil/stl.h>
 #include <wil/filesystem.h>
 #include <wil/win32_helpers.h>
@@ -23,22 +22,15 @@ class BaseExplorerCommand : public RuntimeClass<RuntimeClassFlags<ClassicCom>, I
 {
 public:
 	const virtual EXPCMDFLAGS Flags();
-	const virtual EXPCMDSTATE State(_In_opt_ IShellItemArray* selection);
 	const virtual wchar_t* GetIconId();
-
 	IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name);
-
 	IFACEMETHODIMP GetIcon(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* icon);
 	IFACEMETHODIMP GetToolTip(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* infoTip);
 	IFACEMETHODIMP GetCanonicalName(_Out_ GUID* guidCommandName);
 	IFACEMETHODIMP GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState);
-
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept;
-
 	IFACEMETHODIMP GetFlags(_Out_ EXPCMDFLAGS* flags);
-	IFACEMETHODIMP EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands);
-
-
+	IFACEMETHODIMP EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand** enumCommands);
 	IFACEMETHODIMP SetSite(_In_ IUnknown* site) noexcept;
 	IFACEMETHODIMP GetSite(_In_ REFIID riid, _COM_Outptr_ void** site) noexcept;
 
@@ -60,5 +52,4 @@ public:
 	}
 protected:
 	ComPtr<IUnknown> m_site;
-	
 };
