@@ -39,30 +39,35 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <StackPanel Margin="4"
-                    Grid.Column="2"
-                    Grid.Row="1"
-                    DataContext="{Binding SelectedItem, ElementName=CommandList}" >
-            <TextBox Header="Title"
-                     PlaceholderText="open in notepad"
-                     VerticalContentAlignment="Bottom"
-                     Text="{Binding Title,Mode=TwoWay}" />
-            <TextBox Header="Exe"
-                     PlaceholderText='"C:\Windows\notepad.exe"'
-                     VerticalContentAlignment="Bottom"
-                     Margin="0,8,0,0"
-                     Text="{Binding Exe,Mode=TwoWay}" />
-            <TextBox Header="Param"
-                     PlaceholderText='"{path}"'
-                     VerticalContentAlignment="Bottom"
-                     Margin="0,8,0,0"
-                     Text="{Binding Param,Mode=TwoWay}" />
-            <TextBox Header="Icon"
-                     PlaceholderText='"c:\some\icon.icon"'
-                     VerticalContentAlignment="Bottom"
-                     Margin="0,8,0,0"
-                     Text="{Binding Icon,Mode=TwoWay}" />
-        </StackPanel>
+        <ScrollViewer Margin="4"
+                      Grid.Column="2"
+                      Grid.Row="1"
+                      DataContext="{Binding SelectedItem, ElementName=CommandList}" >
+            <StackPanel>
+                <TextBox Header="Title"
+                         PlaceholderText="open in notepad"
+                         Text="{Binding Title,Mode=TwoWay}" />
+                <TextBox Header="Exe"
+                         PlaceholderText='"C:\Windows\notepad.exe"'
+                         Margin="0,8,0,0"
+                         Text="{Binding Exe,Mode=TwoWay}" />
+                <TextBox Header="Param"
+                         PlaceholderText='"{path}"'
+                         Margin="0,8,0,0"
+                         Text="{Binding Param,Mode=TwoWay}" />
+                <TextBox Header="Icon"
+                         PlaceholderText='"c:\some\icon.icon"'
+                         Margin="0,8,0,0"
+                         Text="{Binding Icon,Mode=TwoWay}" />
+                <TextBox Header="Match Extensions"
+                         PlaceholderText='".txt .zip" or *'
+                         Margin="0,8,0,0"
+                         Text="{Binding AcceptExts,Mode=TwoWay}" />
+                <ToggleSwitch Header="Match Folder"
+                              Margin="0,8,0,0"
+                              IsOn="{Binding AcceptDirectory,Mode=TwoWay}" />
+            </StackPanel>
+        </ScrollViewer>
         <StackPanel HorizontalAlignment="Right"
                     Grid.Row="0"
                     Grid.Column="0"
@@ -134,12 +139,21 @@
                     Margin="04,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom" >
+
+            <HyperlinkButton Margin="4,0"
+                             Padding="4"
+                             NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/issues/2" >
+                <TextBlock>
+                    <Run>Help</Run>
+                </TextBlock>
+            </HyperlinkButton>
+
             <HyperlinkButton Margin="4,0"
                              Padding="4"
                              NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11" >
                 <TextBlock>
                     <Run Text="{x:Bind _viewModel.Version()}" />
-                    <Run>ikas@2021</Run>
+                    <Run>ikas</Run>
                 </TextBlock>
             </HyperlinkButton>
             <Button Padding="4" >

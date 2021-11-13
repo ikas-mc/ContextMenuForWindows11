@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CustomExplorerCommand.h"
 #include "CustomSubExplorerCommand.h"
+#include "CustomExplorerCommandEnum.h"
 #include <winrt/base.h>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Data.Json.h>
@@ -9,12 +10,13 @@
 #include <fstream>
 #include <ppltasks.h>
 #include <shlwapi.h>
-#pragma comment(lib, "windowsapp")
+
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
 using namespace std::filesystem;
 
-const EXPCMDSTATE CustomExplorerCommand::State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; };
+CustomExplorerCommand::CustomExplorerCommand() {
+}
 
 const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
 
@@ -25,12 +27,18 @@ IFACEMETHODIMP CustomExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, 
 	return SHStrDupW(title.data(), name);
 }
 
+IFACEMETHODIMP CustomExplorerCommand::GetCanonicalName(_Out_ GUID* guidCommandName)
+{
+	*guidCommandName = __uuidof(this);
+	return S_OK;
+}
+
 const  wchar_t* CustomExplorerCommand::GetIconId()
 {
 	DWORD value = 0;
 	DWORD size = sizeof(value);
 	auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"SystemUsesLightTheme", SRRF_RT_DWORD, NULL, &value, &size);
-	if (result== ERROR_SUCCESS && !!value) {
+	if (result == ERROR_SUCCESS && !!value) {
 		return L",-103";
 	}
 	else {
@@ -38,63 +46,82 @@ const  wchar_t* CustomExplorerCommand::GetIconId()
 	}
 }
 
-CustomExplorerCommand::CustomExplorerCommand() {
-	auto e = Make<CustomeCommands>();
+IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) {
+	HRESULT hr;
+
+	if (m_site)
+	{
+		Microsoft::WRL::ComPtr<IOleWindow> oleWindow;
+		m_site.As(&oleWindow);
+		if (oleWindow)
+		{
+			*cmdState = ECS_HIDDEN;
+			return S_OK;
+		}
+	}
+
+	if (okToBeSlow)
+	{
+		*cmdState = ECS_ENABLED;
+		if (selection) {
+			wil::unique_cotaskmem_string path = GetPath(selection);
+			if (path.is_valid()) {
+				m_current_path = path.get();
+			}
+		}
+		ReadCommands(m_current_path);
+		hr = S_OK;
+	}
+	else
+	{
+		*cmdState = ECS_DISABLED;
+		hr = E_PENDING;
+	}
+
+	return S_OK;
 }
 
-IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands)
+IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand** enumCommands)
 {
 	*enumCommands = nullptr;
-	auto e = Make<CustomeCommands>();
-	e->ReadCommands();
-	return e->QueryInterface(IID_PPV_ARGS(enumCommands));
+	auto customCommands = Make<CustomExplorerCommandEnum>(m_commands);
+	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
-CustomeCommands::CustomeCommands() {
-
-}
-
-void CustomeCommands::ReadCommands()
+void CustomExplorerCommand::ReadCommands(std::wstring& current_path)
 {
 	auto localFolder = ApplicationData::Current().LocalFolder().Path();
-	path localFolderPath{ localFolder.c_str() };
-	localFolderPath /= "custom_commands";
-
 	auto task = concurrency::create_task([&]
 		{
-			if (exists(localFolderPath) && is_directory(localFolderPath)) {
-				auto configsFolder = StorageFolder::GetFolderFromPathAsync(localFolderPath.c_str()).get();
-				auto files = configsFolder.GetFilesAsync().get();
-				for (auto configFile : files) {
-					const auto content = FileIO::ReadTextAsync(configFile).get();
+			path folder{ localFolder.c_str() };
+			folder /= "custom_commands";
+			if (exists(folder) && is_directory(folder)) {
+
+				std::wstring ext;
+				bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
+				if (!current_path.empty()) {
+					path file(current_path);
+					isDirectory = is_directory(file);
+					if (!isDirectory) {
+						ext = file.extension();
+						if (!ext.empty()) {
+							std::transform(ext.begin(), ext.end(), ext.begin(), towlower);//TODO check
+						}
+					}
+				}
+
+				for (auto& file : directory_iterator{ folder })
+				{
+					std::wifstream fs{ file.path() };
+					std::wstringstream buffer;
+					buffer << fs.rdbuf();//TODO 
+					winrt::hstring content{ buffer.str() };
 					const auto command = Make<CustomSubExplorerCommand>(content);
-					m_commands.push_back(command);
+					if (command->Accept(isDirectory, ext)) {
+						m_commands.push_back(command);
+					}
 				}
 			}
 		});
 	task.wait();
-	m_current = m_commands.cbegin();
 }
-IFACEMETHODIMP CustomeCommands::Next(ULONG celt, __out_ecount_part(celt, *pceltFetched) IExplorerCommand** apUICommand, __out_opt ULONG* pceltFetched)
-{
-	ULONG fetched{ 0 };
-	wil::assign_to_opt_param(pceltFetched, 0ul);
-
-	for (ULONG i = 0; (i < celt) && (m_current != m_commands.cend()); i++)
-	{
-		m_current->CopyTo(&apUICommand[0]);
-		m_current++;
-		fetched++;
-	}
-
-	wil::assign_to_opt_param(pceltFetched, fetched);
-	return (fetched == celt) ? S_OK : S_FALSE;
-}
-IFACEMETHODIMP CustomeCommands::Skip(ULONG /*celt*/) { return E_NOTIMPL; }
-IFACEMETHODIMP CustomeCommands::Reset()
-{
-	m_current = m_commands.cbegin();
-	return S_OK;
-}
-IFACEMETHODIMP CustomeCommands::Clone(__deref_out IEnumExplorerCommand** ppenum) { *ppenum = nullptr; return E_NOTIMPL; }
-

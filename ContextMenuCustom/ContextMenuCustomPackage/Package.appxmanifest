@@ -10,19 +10,19 @@
   IgnorableNamespaces="uap desktop4 desktop5 com rescap">
 
   <Identity
-    Name="3e7eedd4-4131-4d94-a85f-ac5172caa715"
+    Name="7061touchwp.CustomContextMenu"
     Publisher="CN=test"
-    Version="1.0.8.0" />
+    Version="1.5.0.0" />
 
   <Properties>
-    <DisplayName>CustomContextMenuApp</DisplayName>
-    <PublisherDisplayName>ikas</PublisherDisplayName>
+    <DisplayName>Custom Context Menu</DisplayName>
+    <PublisherDisplayName>touchwp</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.17763.0" />
   </Dependencies>
 
   <Resources>
@@ -46,10 +46,13 @@
         <desktop4:Extension Category="windows.fileExplorerContextMenus">
           <desktop4:FileExplorerContextMenus>
             <desktop5:ItemType Type="Directory"  >
-              <desktop5:Verb Id="Command1" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
+              <desktop5:Verb Id="CustomMenu" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
             </desktop5:ItemType>
             <desktop5:ItemType Type="*"  >
-              <desktop5:Verb Id="Command2" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
+              <desktop5:Verb Id="CustomMenu" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
+            </desktop5:ItemType>
+            <desktop5:ItemType Type="Directory\Background">
+              <desktop5:Verb Id="CustomMenu" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
             </desktop5:ItemType>
           </desktop4:FileExplorerContextMenus>
         </desktop4:Extension>
@@ -65,7 +68,6 @@
   </Applications>
 
   <Capabilities>
-    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>
