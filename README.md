@@ -1,17 +1,28 @@
-# Context Menu For Windows11
+# Custom Context Menu
 
-## Custom Context Menu
+ Add Custom Context Menu For Windows11
+ 
 
 <img src="https://raw.githubusercontent.com/ikas-mc/ContextMenuForWindows11/main/screenshots/menu.png" width=500 >
 
 
-##  how to build   
-https://github.com/ikas-mc/ContextMenuForWindows11/blob/main/build.md
+##  Download
 
-##  how to use   
+Windows store|Github release
+------------ | -------------
+<a href="https://www.microsoft.com/en-us/p/custom-context-menu/9pc7bzz28g0x">Windows store </a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release </a>
+ms-windows-store://pdp/?ProductId=9PC7BZZ28G0X|use self-signed certificate,not recommended
+
+
+
+##  Guides
 https://github.com/ikas-mc/ContextMenuForWindows11/issues/2
 
-## more  
+##  Build   
+https://github.com/ikas-mc/ContextMenuForWindows11/blob/main/build.md
+
+
+## More 
 
 https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/desktop-to-uwp-extensions#context-menu
 
