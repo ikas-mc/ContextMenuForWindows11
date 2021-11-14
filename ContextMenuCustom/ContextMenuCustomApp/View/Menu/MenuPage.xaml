@@ -5,7 +5,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
       mc:Ignorable="d"
-      muxc:BackdropMaterial.ApplyToRootOrPageBackground="True" >
+      d:Width="600"
+      d:Height="400"
+      d:Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
+      DataContext="{x:Bind _viewModel}" >
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch" >
         <Grid.RowDefinitions>
@@ -30,7 +34,6 @@
                   SelectionMode="Single"
                   Grid.Column="0"
                   Grid.Row="1"
-                  DataContext="{x:Bind _viewModel}"
                   ItemsSource="{Binding MenuItems}" >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -43,30 +46,70 @@
                       Grid.Column="2"
                       Grid.Row="1"
                       DataContext="{Binding SelectedItem, ElementName=CommandList}" >
-            <StackPanel>
-                <TextBox Header="Title"
-                         PlaceholderText="open in notepad"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="64" />
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Row="0"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         Header="Title"
+                         PlaceholderText="open with notepad"
                          Text="{Binding Title,Mode=TwoWay}" />
-                <TextBox Header="Exe"
+                <TextBox Grid.Row="1"
+                         Grid.Column="0"
+                         Header="Exe"
                          PlaceholderText='"C:\Windows\notepad.exe"'
                          Margin="0,8,0,0"
                          Text="{Binding Exe,Mode=TwoWay}" />
-                <TextBox Header="Param"
+                <Button Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="4,0,0,-1"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Stretch"
+                        ToolTipService.ToolTip="Open"
+                        x:Name="OpenExeButton"
+                        Click="OpenExeButton_OnClick" >
+                    <SymbolIcon Symbol="OpenFile" />
+                    <!--TODO Margin-->
+                </Button>
+                <TextBox Grid.Row="2"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         Header="Param"
                          PlaceholderText='"{path}"'
                          Margin="0,8,0,0"
                          Text="{Binding Param,Mode=TwoWay}" />
-                <TextBox Header="Icon"
+                <TextBox Grid.Row="3"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         Header="Icon"
                          PlaceholderText='"c:\some\icon.icon"'
                          Margin="0,8,0,0"
                          Text="{Binding Icon,Mode=TwoWay}" />
-                <TextBox Header="Match Extensions"
+                <TextBox Grid.Row="4"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         Header="Match Extensions"
                          PlaceholderText='".txt .zip" or *'
                          Margin="0,8,0,0"
                          Text="{Binding AcceptExts,Mode=TwoWay}" />
-                <ToggleSwitch Header="Match Folder"
+                <ToggleSwitch Grid.Row="5"
+                              Grid.Column="0"
+                              Grid.ColumnSpan="2"
+                              Header="Match Folder"
                               Margin="0,8,0,0"
                               IsOn="{Binding AcceptDirectory,Mode=TwoWay}" />
-            </StackPanel>
+            </Grid>
         </ScrollViewer>
         <StackPanel HorizontalAlignment="Right"
                     Grid.Row="0"
@@ -131,10 +174,62 @@
                 <SymbolIcon Symbol="OpenFile" />
             </Button>
         </StackPanel>
+        <StackPanel Grid.Row="2"
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal" >
+            <muxc:TeachingTip x:Name="CacheTip"
+                              Title="About Cache:"
+                              Target="{x:Bind BuildCacheButton}"
+                              PreferredPlacement="Auto"
+                              PlacementMargin="4"
+                              IsLightDismissEnabled="True"
+                              CloseButtonContent="Got it!" >
+                <muxc:TeachingTip.Content>
+                    <TextBlock>
+                        <Run />
+                        <Run>Preprocess the menu files to cache</Run>
+                        <LineBreak />
+                        <Run>This can optimize the menu display speed</Run>
+                        <LineBreak />
+                        <Run Foreground="Red" >Rebuild manually when you modify the menu!</Run>
+                        <LineBreak />
+                        <LineBreak />
+                        <Run>Cache Time:</Run>
+                        <LineBreak />
+                        <Run Text="{Binding CacheTime}" />
+                    </TextBlock>
+                </muxc:TeachingTip.Content>
 
-        <StackPanel Grid.Column="0"
+            </muxc:TeachingTip>
+            <Button Margin="4,0"
+                    Padding="4"
+                    VerticalAlignment="Center"
+                    Background="{x:Null}"
+                    Click="BuildCacheTipButton_Click"
+                    x:Name="BuildCacheTipButton"
+                    BorderThickness="0" >
+                <SymbolIcon Symbol="Help" />
+            </Button>
+            <Button Margin="4,0"
+                    Click="{x:Bind _viewModel.Build}"
+                    ToolTipService.ToolTip="Preprocess menus to cache"
+                    Padding="4"
+                    x:Name="BuildCacheButton"
+                    VerticalAlignment="Center" >
+                <SymbolIcon Symbol="Sync" />
+            </Button>
+            <Button Margin="4,0"
+                    Click="{x:Bind _viewModel.ClearCache}"
+                    ToolTipService.ToolTip="Clear menus cache"
+                    Padding="4"
+                    VerticalAlignment="Center" >
+                <SymbolIcon Symbol="Clear" />
+            </Button>
+        </StackPanel>
+        <StackPanel Grid.Column="1"
                     Grid.Row="2"
-                    Grid.ColumnSpan="3"
+                    Grid.ColumnSpan="2"
                     Orientation="Horizontal"
                     Margin="04,0"
                     HorizontalAlignment="Right"

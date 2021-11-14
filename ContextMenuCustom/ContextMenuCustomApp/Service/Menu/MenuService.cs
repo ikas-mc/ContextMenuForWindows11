@@ -101,5 +101,27 @@ namespace ContextMenuCustomApp.Service.Menu
                 await item.File.DeleteAsync();
             }
         }
+
+        public async Task BuildToCache()
+        {
+            var configFolder = await GetMenusFolderAsync();
+            var files = await configFolder.GetFilesAsync();
+
+            var menus = ApplicationData.Current.LocalSettings.CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
+            menus.Clear();
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var content = await FileIO.ReadTextAsync(files[i]);
+                menus[i.ToString()] = content;
+            }
+        }
+
+        public void ClearCache()
+        {
+            var menus = ApplicationData.Current.LocalSettings.CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
+            menus.Clear();
+        }
+
     }
 }

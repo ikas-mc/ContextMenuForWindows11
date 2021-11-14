@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -101,6 +102,46 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 _exceptionHandler(e, e.Message);
             }
+        }
+
+        public async Task Build()
+        {
+            try
+            {
+                await _menuService.BuildToCache();
+                ApplicationData.Current.LocalSettings.Values["Cache_Time"] = DateTime.Now.ToString(CultureInfo.CurrentCulture);
+            }
+            catch (Exception e)
+            {
+                _exceptionHandler(e, e.Message);
+            }
+        }
+
+        public void ClearCache()
+        {
+            try
+            {
+                _menuService.ClearCache();
+                ApplicationData.Current.LocalSettings.Values.Remove("Cache_Time");
+            }
+            catch (Exception e)
+            {
+                _exceptionHandler(e, e.Message);
+            }
+        }
+
+        public string CacheTime
+        {
+            get
+            {
+                var value = ApplicationData.Current.LocalSettings.Values["Cache_Time"];
+                return (value as string) ?? "No Cache";
+            }
+        }
+
+        public void UpdateCacheTime()
+        {
+           OnPropertyChanged(nameof(CacheTime));
         }
 
         public string Version()
