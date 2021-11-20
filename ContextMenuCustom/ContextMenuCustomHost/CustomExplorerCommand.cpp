@@ -61,15 +61,21 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 
 	if (okToBeSlow)
 	{
-		*cmdState = ECS_ENABLED;
 		if (selection) {
 			wil::unique_cotaskmem_string path = GetPath(selection);
 			if (path.is_valid()) {
 				m_current_path = path.get();
 			}
 		}
+
 		ReadCommands(m_current_path);
-		hr = S_OK;
+
+		if (m_commands.size() == 0) {
+			*cmdState = ECS_HIDDEN;
+		}
+		else {
+			*cmdState = ECS_ENABLED;
+		}
 	}
 	else
 	{
