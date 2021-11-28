@@ -16,7 +16,7 @@ ms-windows-store://pdp/?ProductId=9PC7BZZ28G0X|use self-signed certificate,not r
 
 
 ##  Guides
-https://github.com/ikas-mc/ContextMenuForWindows11/issues/2
+https://github.com/ikas-mc/ContextMenuForWindows11/wiki
 
 ##  Build   
 https://github.com/ikas-mc/ContextMenuForWindows11/blob/main/build.md
