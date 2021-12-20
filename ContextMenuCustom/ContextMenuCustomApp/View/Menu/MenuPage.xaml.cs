@@ -3,6 +3,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 using ContextMenuCustomApp.Service.Menu;
 using System.Linq;
+using Windows.Storage.Pickers;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -39,7 +40,7 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 await _viewModel.SaveAsync(item);
                 if (null != item.File) {
-                    CommandList.SelectedItem = _viewModel.MenuItems.Where((menu) => Equals(item.File.Path, menu.File.Path)).FirstOrDefault();
+                    CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(menu => Equals(item.File.Path, menu.File.Path));
                 }
             }
             else
@@ -82,5 +83,40 @@ namespace ContextMenuCustomApp.View.Menu
             Alert.InfoAsync(message ?? e.Message, "Error");
         }
 
+        private async void OpenExeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (CommandList.SelectedItem is MenuItem item)
+            {
+                var fileOpenPicker = new FileOpenPicker
+                {
+                    SuggestedStartLocation = PickerLocationId.ComputerFolder
+                };
+                fileOpenPicker.FileTypeFilter.Add(".com");
+                fileOpenPicker.FileTypeFilter.Add(".exe");
+                fileOpenPicker.FileTypeFilter.Add(".bat");
+                fileOpenPicker.FileTypeFilter.Add(".cmd");
+                fileOpenPicker.FileTypeFilter.Add(".vbs");
+                fileOpenPicker.FileTypeFilter.Add(".vbe");
+                fileOpenPicker.FileTypeFilter.Add(".js");
+                fileOpenPicker.FileTypeFilter.Add(".jse");
+                var file = await fileOpenPicker.PickSingleFileAsync();
+                if (null != file)
+                {
+                    item.Exe = $"\"{file.Path}\"";
+                    if (string.IsNullOrEmpty(item.Icon))
+                    {
+                        item.Icon=$"\"{file.Path}\",0";
+                    }
+                }
+            }
+            
+        }
+ 
+
+        private void BuildCacheTipButton_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.UpdateCacheTime();
+            CacheTip.IsOpen = true;
+        }
     }
 }

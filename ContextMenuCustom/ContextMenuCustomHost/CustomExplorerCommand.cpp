@@ -10,7 +10,6 @@
 #include <fstream>
 #include <ppltasks.h>
 #include <shlwapi.h>
-
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
 using namespace std::filesystem;
@@ -62,15 +61,21 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 
 	if (okToBeSlow)
 	{
-		*cmdState = ECS_ENABLED;
 		if (selection) {
 			wil::unique_cotaskmem_string path = GetPath(selection);
 			if (path.is_valid()) {
 				m_current_path = path.get();
 			}
 		}
+
 		ReadCommands(m_current_path);
-		hr = S_OK;
+
+		if (m_commands.size() == 0) {
+			*cmdState = ECS_HIDDEN;
+		}
+		else {
+			*cmdState = ECS_ENABLED;
+		}
 	}
 	else
 	{
@@ -90,38 +95,70 @@ IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnum
 
 void CustomExplorerCommand::ReadCommands(std::wstring& current_path)
 {
-	auto localFolder = ApplicationData::Current().LocalFolder().Path();
-	auto task = concurrency::create_task([&]
-		{
-			path folder{ localFolder.c_str() };
-			folder /= "custom_commands";
-			if (exists(folder) && is_directory(folder)) {
-
-				std::wstring ext;
-				bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
-				if (!current_path.empty()) {
-					path file(current_path);
-					isDirectory = is_directory(file);
-					if (!isDirectory) {
-						ext = file.extension();
-						if (!ext.empty()) {
-							std::transform(ext.begin(), ext.end(), ext.begin(), towlower);//TODO check
-						}
-					}
+	auto menus = winrt::Windows::Storage::ApplicationData::Current().LocalSettings().CreateContainer(L"menus", ApplicationDataCreateDisposition::Always).Values();
+	if (menus.Size() > 0) {
+		std::wstring ext;
+		bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
+		if (!current_path.empty()) {
+			path file(current_path);
+			isDirectory = is_directory(file);
+			if (!isDirectory) {
+				ext = file.extension();
+				if (!ext.empty()) {
+					std::transform(ext.begin(), ext.end(), ext.begin(), towlower);//TODO check
 				}
-
-				for (auto& file : directory_iterator{ folder })
-				{
-					std::wifstream fs{ file.path() };
-					std::wstringstream buffer;
-					buffer << fs.rdbuf();//TODO 
-					winrt::hstring content{ buffer.str() };
-					const auto command = Make<CustomSubExplorerCommand>(content);
+			}
+		}
+		auto current = menus.begin();
+		do {
+			if (current.HasCurrent()) {
+				auto conent=winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L"");
+				if (conent.size() > 0) {
+					const auto command = Make<CustomSubExplorerCommand>(conent);
 					if (command->Accept(isDirectory, ext)) {
 						m_commands.push_back(command);
 					}
 				}
 			}
-		});
-	task.wait();
+		} while (current.MoveNext());
+	}
+	else {
+		auto localFolder = ApplicationData::Current().LocalFolder().Path();
+		concurrency::create_task([&]
+			{
+				path folder{ localFolder.c_str() };
+				folder /= "custom_commands";
+				if (exists(folder) && is_directory(folder)) {
+
+					std::wstring ext;
+					bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
+					if (!current_path.empty()) {
+						path file(current_path);
+						isDirectory = is_directory(file);
+						if (!isDirectory) {
+							ext = file.extension();
+							if (!ext.empty()) {
+								std::transform(ext.begin(), ext.end(), ext.begin(), towlower);//TODO check
+							}
+						}
+					}
+
+					for (auto& file : directory_iterator{ folder })
+					{
+						std::ifstream fs{ file.path() };
+						std::stringstream buffer;
+						buffer << fs.rdbuf();//TODO 
+						auto content = winrt::to_hstring(buffer.str());
+
+						//std::string buffer((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
+						//auto content = winrt::to_hstring(buffer);
+
+						const auto command = Make<CustomSubExplorerCommand>(content);
+						if (command->Accept(isDirectory, ext)) {
+							m_commands.push_back(command);
+						}
+					}
+				}
+			}).wait();
+	}
 }
