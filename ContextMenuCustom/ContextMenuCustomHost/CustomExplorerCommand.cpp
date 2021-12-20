@@ -145,10 +145,14 @@ void CustomExplorerCommand::ReadCommands(std::wstring& current_path)
 
 					for (auto& file : directory_iterator{ folder })
 					{
-						std::wifstream fs{ file.path() };
-						std::wstringstream buffer;
+						std::ifstream fs{ file.path() };
+						std::stringstream buffer;
 						buffer << fs.rdbuf();//TODO 
-						winrt::hstring content{ buffer.str() };
+						auto content = winrt::to_hstring(buffer.str());
+
+						//std::string buffer((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
+						//auto content = winrt::to_hstring(buffer);
+
 						const auto command = Make<CustomSubExplorerCommand>(content);
 						if (command->Accept(isDirectory, ext)) {
 							m_commands.push_back(command);
