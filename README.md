@@ -4,14 +4,15 @@
 
 <img src="https://raw.githubusercontent.com/ikas-mc/ContextMenuForWindows11/main/screenshots/menu.png" width=500 >
 
+## how to build
 
-##  how to build   
 https://github.com/ikas-mc/ContextMenuForWindows11/blob/main/build.md
 
-##  how to use   
+## how to use
+
 https://github.com/ikas-mc/ContextMenuForWindows11/issues/2
 
-## more  
+## more
 
 https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/desktop-to-uwp-extensions#context-menu
 

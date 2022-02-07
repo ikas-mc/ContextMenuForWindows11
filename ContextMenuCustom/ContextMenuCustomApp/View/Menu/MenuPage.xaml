@@ -243,7 +243,7 @@
 
             <HyperlinkButton Margin="4,0"
                              Padding="4"
-                             NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/issues/2">
+                             NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki">
                 <TextBlock>
                     <Run>Help</Run>
                 </TextBlock>
