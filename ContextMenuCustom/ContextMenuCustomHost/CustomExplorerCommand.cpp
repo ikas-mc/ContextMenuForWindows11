@@ -10,11 +10,13 @@
 #include <fstream>
 #include <ppltasks.h>
 #include <shlwapi.h>
+#include "PathHelper.hpp"
+
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
 using namespace std::filesystem;
 
-CustomExplorerCommand::CustomExplorerCommand() {
+CustomExplorerCommand::CustomExplorerCommand(){
 }
 
 const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
@@ -62,13 +64,23 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	if (okToBeSlow)
 	{
 		if (selection) {
-			wil::unique_cotaskmem_string path = GetPath(selection);
-			if (path.is_valid()) {
-				m_current_path = path.get();
+			DWORD count;
+			selection->GetCount(&count);
+			if (count > 1) {
+				std::wstring currentPath;
+				ReadCommands(true, currentPath);
+			}
+			else {
+				auto currentPath = PathHelper::getPath(selection);
+				ReadCommands(false, currentPath);
 			}
 		}
-
-		ReadCommands(m_current_path);
+		else {
+			//right click on desktop. 
+			//TODO 
+			std::wstring currentPath;
+			ReadCommands(false, currentPath);
+		}
 
 		if (m_commands.size() == 0) {
 			*cmdState = ECS_HIDDEN;
@@ -93,29 +105,23 @@ IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnum
 	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
-void CustomExplorerCommand::ReadCommands(std::wstring& current_path)
+void CustomExplorerCommand::ReadCommands(bool multipeFiles,const std::wstring& currentPath)
 {
 	auto menus = winrt::Windows::Storage::ApplicationData::Current().LocalSettings().CreateContainer(L"menus", ApplicationDataCreateDisposition::Always).Values();
 	if (menus.Size() > 0) {
 		std::wstring ext;
 		bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
-		if (!current_path.empty()) {
-			path file(current_path);
-			isDirectory = is_directory(file);
-			if (!isDirectory) {
-				ext = file.extension();
-				if (!ext.empty()) {
-					std::transform(ext.begin(), ext.end(), ext.begin(), towlower);//TODO check
-				}
-			}
+		if (!multipeFiles) {
+			PathHelper::getExt(currentPath, isDirectory, ext);
 		}
+
 		auto current = menus.begin();
 		do {
 			if (current.HasCurrent()) {
 				auto conent=winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L"");
 				if (conent.size() > 0) {
 					const auto command = Make<CustomSubExplorerCommand>(conent);
-					if (command->Accept(isDirectory, ext)) {
+					if (command->Accept(multipeFiles,isDirectory, ext)) {
 						m_commands.push_back(command);
 					}
 				}
@@ -129,18 +135,10 @@ void CustomExplorerCommand::ReadCommands(std::wstring& current_path)
 				path folder{ localFolder.c_str() };
 				folder /= "custom_commands";
 				if (exists(folder) && is_directory(folder)) {
-
 					std::wstring ext;
 					bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
-					if (!current_path.empty()) {
-						path file(current_path);
-						isDirectory = is_directory(file);
-						if (!isDirectory) {
-							ext = file.extension();
-							if (!ext.empty()) {
-								std::transform(ext.begin(), ext.end(), ext.begin(), towlower);//TODO check
-							}
-						}
+					if (!multipeFiles) {
+						PathHelper::getExt(currentPath, isDirectory, ext);
 					}
 
 					for (auto& file : directory_iterator{ folder })
@@ -149,12 +147,8 @@ void CustomExplorerCommand::ReadCommands(std::wstring& current_path)
 						std::stringstream buffer;
 						buffer << fs.rdbuf();//TODO 
 						auto content = winrt::to_hstring(buffer.str());
-
-						//std::string buffer((std::istreambuf_iterator<char>(fs)), std::istreambuf_iterator<char>());
-						//auto content = winrt::to_hstring(buffer);
-
-						const auto command = Make<CustomSubExplorerCommand>(content);
-						if (command->Accept(isDirectory, ext)) {
+						auto command = Make<CustomSubExplorerCommand>(content);
+						if (command->Accept(multipeFiles,isDirectory, ext)) {
 							m_commands.push_back(command);
 						}
 					}

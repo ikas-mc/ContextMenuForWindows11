@@ -44,10 +44,14 @@
 
         <ScrollViewer Grid.Row="1"
                       Grid.Column="2"
-                      Margin="4"
+                      Margin="0"
+                      Padding="8,4,16,4"
                       DataContext="{Binding SelectedItem, ElementName=CommandList}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -109,6 +113,46 @@
                               Margin="0,8,0,0"
                               Header="Match Folder"
                               IsOn="{Binding AcceptDirectory, Mode=TwoWay}" />
+
+
+                <ToggleSwitch Grid.Row="6"
+                              Grid.Column="0"
+                              Grid.ColumnSpan="2"
+                              Margin="0,8,0,0"
+                              HorizontalAlignment="Stretch"
+                              IsOn="{Binding AcceptMultipleFiles, Mode=TwoWay}" >
+                    <ToggleSwitch.HeaderTemplate>
+                        <DataTemplate>
+                            <RelativePanel >
+                                <TextBlock RelativePanel.AlignLeftWithPanel="True" Text="[Multiple Files] Match Multiple Files"></TextBlock>
+                                <HyperlinkButton  Visibility="{Binding AcceptMultipleFiles}" Padding="0" RelativePanel.AlignRightWithPanel="True"
+                             NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files">
+                                    <TextBlock Text="Read wiki before use!!!"></TextBlock>
+                                </HyperlinkButton>
+                            </RelativePanel>
+                        </DataTemplate>
+                    </ToggleSwitch.HeaderTemplate>
+                    
+                </ToggleSwitch>
+
+                <TextBox Grid.Row="7"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         Margin="0,8,0,0"
+                         Header="[Multiple Files] Path Delimiter"
+                         Visibility="{Binding AcceptMultipleFiles}"
+                         PlaceholderText="|"
+                         Text="{Binding PathDelimiter, Mode=TwoWay}" />
+
+                <TextBox Grid.Row="8"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="2"
+                         Margin="0,8,0,0"
+                         Header="[Multiple Files] Param"
+                         Visibility="{Binding AcceptMultipleFiles}"
+                         PlaceholderText="{}{path}"
+                         Text="{Binding ParamForMultipleFiles, Mode=TwoWay}" />
+
             </Grid>
         </ScrollViewer>
         <StackPanel Grid.Row="0"

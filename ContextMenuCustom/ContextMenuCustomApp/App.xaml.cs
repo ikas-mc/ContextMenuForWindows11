@@ -1,7 +1,10 @@
 ﻿using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -56,6 +59,23 @@ namespace ContextMenuCustomApp
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             deferral.Complete();
+        }
+
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            base.OnActivated(args);
+            if (args.Kind == ActivationKind.CommandLineLaunch)
+            {
+                if (args is CommandLineActivatedEventArgs commandLineActivatedEventArgs)
+                {
+                    var arguments = commandLineActivatedEventArgs.Operation.Arguments;
+                    //var dataPackage = new DataPackage();
+                    //dataPackage.SetText(arguments);
+                    //Clipboard.SetContent(dataPackage);
+                    MessageDialog dialog = new MessageDialog(arguments);
+                    _=dialog.ShowAsync();
+                }
+            }
         }
     }
 }
