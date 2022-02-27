@@ -24,7 +24,6 @@ public:
 	}
 
 	static std::wstring getPath(IShellItemArray* selection) {
-		wil::unique_cotaskmem_string path;
 		if (selection)
 		{
 			DWORD count;
@@ -32,11 +31,13 @@ public:
 			if (count > 0) {
 				winrt::com_ptr<IShellItem> item;
 				if (SUCCEEDED(selection->GetItemAt(0, item.put()))) {
+					wil::unique_cotaskmem_string path;
 					item->GetDisplayName(SIGDN_FILESYSPATH, path.put());
+					return std::wstring{ path.get() };
 				}
 			}
 		}
-		return std::wstring{ path.get() };
+		return std::wstring{};
 	}
 
 	static std::wstring getPaths(IShellItemArray* selection, const std::wstring& delimiter) {
@@ -45,7 +46,7 @@ public:
 			DWORD count;
 			selection->GetCount(&count);
 			if (count > 0) {
-				unsigned int i = 0;
+				DWORD i = 0;
 				std::wstringstream pathStream;
 				while (i < count) {
 					winrt::com_ptr<IShellItem> item;
@@ -67,23 +68,42 @@ public:
 		return std::wstring{};
 	}
 
-	static void replaceAll(std::wstring& src, const std::wstring& target, const std::wstring& repl) {
-		if (src.length() == 0 || target.length() == 0) {
-			return ;
+	static std::vector<std::wstring> getPathList(IShellItemArray* selection) {
+		if (selection)
+		{
+			DWORD count;
+			selection->GetCount(&count);
+			if (count > 0) {
+				std::vector<std::wstring> paths;
+				DWORD i = 0;
+				while (i < count) {
+					winrt::com_ptr<IShellItem> item;
+					if (SUCCEEDED(selection->GetItemAt(i++, item.put()))) {
+						wil::unique_cotaskmem_string  path;
+						if (SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, path.put()))) {
+							paths.push_back(path.get());
+						}
+					}
+				}
+				return paths;
+			}
 		}
-
-		size_t idx = 0;
-
-		for (;;) {
-			idx = src.find(target, idx);
-			if (idx == std::wstring::npos) {
-				break;
-			}  
-
-			src.replace(idx, target.length(), repl);
-			idx += repl.length();
-		}
+		return std::vector<std::wstring>(0);
 	}
 
+	static void replaceAll(std::wstring& src, const std::wstring& from, const std::wstring& to) {
+		if (src.length() == 0) {
+			return;
+		}
 
+		auto fromLength = from.length();
+		if (fromLength == 0) {
+			return;
+		}
+
+		auto toLength = to.length();
+		for (auto pos = src.find(from); pos != std::string::npos; pos = src.find(from, pos + toLength)) {
+			src.replace(pos, fromLength, to);
+		}
+	}
 };

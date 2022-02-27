@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ContextMenuCustomApp
+namespace ContextMenuCustomApp.View.Common
 {
     public class BaseModel : INotifyPropertyChanged
     {

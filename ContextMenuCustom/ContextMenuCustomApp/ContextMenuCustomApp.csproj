@@ -79,11 +79,11 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Alert.cs" />
+    <Compile Include="View\Common\Alert.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BaseModel.cs" />
+    <Compile Include="View\Common\BaseModel.cs" />
     <Compile Include="Common\BaseLang.cs" />
     <Compile Include="Common\Langs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,6 +92,13 @@
     <Compile Include="Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Common\BaseViewModel.cs" />
+    <Compile Include="View\Common\EqualsVisibilityConverter.cs" />
+    <Compile Include="View\Common\IMessageSupport.cs" />
+    <Compile Include="View\Common\IStatusSupport.cs" />
+    <Compile Include="View\Common\MessageHelper.cs" />
+    <Compile Include="View\Common\PageMessageExt.cs" />
+    <Compile Include="View\Common\VisibilityConverter.cs" />
     <Compile Include="View\Menu\MenuPage.xaml.cs">
       <DependentUpon>MenuPage.xaml</DependentUpon>
     </Compile>

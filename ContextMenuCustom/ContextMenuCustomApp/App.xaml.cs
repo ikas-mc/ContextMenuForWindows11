@@ -24,7 +24,7 @@ namespace ContextMenuCustomApp
         {
             //TODO check first run
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            var size = new Size(800, 600);
+            var size = new Size(800, 768);
             ApplicationView.PreferredLaunchViewSize = size;
             ApplicationView.GetForCurrentView().TryResizeView(size);
 
@@ -69,9 +69,6 @@ namespace ContextMenuCustomApp
                 if (args is CommandLineActivatedEventArgs commandLineActivatedEventArgs)
                 {
                     var arguments = commandLineActivatedEventArgs.Operation.Arguments;
-                    //var dataPackage = new DataPackage();
-                    //dataPackage.SetText(arguments);
-                    //Clipboard.SetContent(dataPackage);
                     MessageDialog dialog = new MessageDialog(arguments);
                     _=dialog.ShowAsync();
                 }

@@ -6,10 +6,14 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ContextMenuCustomApp.View.Menu;
+using ContextMenuCustomApp.View.Common;
+using Microsoft.UI.Xaml.Controls;
+using Windows.System.Threading;
+using System;
 
 namespace ContextMenuCustomApp
 {
-    public sealed partial class Shell
+    public sealed partial class Shell : IStatusSupport, IMessageSupport
     {
         public Shell()
         {
@@ -88,8 +92,8 @@ namespace ContextMenuCustomApp
 
         private void Current_Activated(object sender, WindowActivatedEventArgs e)
         {
-            var defaultForegroundBrush = (SolidColorBrush) Application.Current.Resources["TextFillColorPrimaryBrush"];
-            var inactiveForegroundBrush = (SolidColorBrush) Application.Current.Resources["TextFillColorDisabledBrush"];
+            var defaultForegroundBrush = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+            var inactiveForegroundBrush = (SolidColorBrush)Application.Current.Resources["TextFillColorDisabledBrush"];
 
             AppTitle.Foreground = e.WindowActivationState == CoreWindowActivationState.Deactivated ? inactiveForegroundBrush : defaultForegroundBrush;
         }
@@ -100,5 +104,53 @@ namespace ContextMenuCustomApp
             ShellFrame.Navigate(typeof(MenuPage));
         }
 
+
+        public void UpdateMessage(bool show, MessageType messageType, string message = "")
+        {
+            switch (messageType)
+            {
+                case MessageType.Info:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Informational;
+                    break;
+                case MessageType.Success:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Success;
+                    break;
+                case MessageType.Warnning:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Warning;
+                    break;
+                case MessageType.Error:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Error;
+                    break;
+            }
+            this.AppInfoBar.Message = show ? message : string.Empty;
+            this.AppInfoBar.IsOpen = show;
+
+            if (show)
+            {
+                ThreadPoolTimer.CreateTimer((timer) =>
+                {
+                    _ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        this.AppInfoBar.IsOpen = false;
+                    });
+                }, TimeSpan.FromSeconds(MessageType.Error != messageType ? 1 : 5));
+            }
+        }
+
+        void IStatusSupport.UpdateStatus(bool busy, string message)
+        {
+            if (busy)
+            {
+                StatusInfo.IsActive = true;
+                //StatusInfo.IsIndeterminate = true;
+                StatusInfo.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                StatusInfo.IsActive = false;
+                //StatusInfo.IsIndeterminate = false;
+                StatusInfo.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }

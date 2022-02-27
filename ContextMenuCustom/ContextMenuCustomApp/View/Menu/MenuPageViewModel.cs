@@ -6,16 +6,18 @@ using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.System;
 using ContextMenuCustomApp.Service.Menu;
+using ContextMenuCustomApp.View.Common;
 
 namespace ContextMenuCustomApp.View.Menu
 {
-
-    public class MenuPageViewModel : BaseModel
+    public class MenuPageViewModel : BaseViewModel
     {
         public ObservableCollection<MenuItem> MenuItems { get; }
 
         private readonly MenuService _menuService;
         private readonly Action<Exception, string> _exceptionHandler;
+
+        public readonly int MultipleFilesFlagJOIN = (int) MultipleFilesFlag.JOIN;
 
         public MenuPageViewModel(Action<Exception, string> exceptionHandler)
         {
@@ -31,15 +33,10 @@ namespace ContextMenuCustomApp.View.Menu
         public async Task LoadAsync()
         {
             MenuItems.Clear();
-            try
-            {
+            await RunWith(async () => {
                 var menus = await _menuService.QueryAllAsync();
                 menus.ForEach(MenuItems.Add);
-            }
-            catch (Exception e)
-            {
-                _exceptionHandler(e, e.Message);
-            }
+            });
         }
 
         public MenuItem New()
@@ -51,28 +48,20 @@ namespace ContextMenuCustomApp.View.Menu
 
         public async Task SaveAsync(MenuItem item)
         {
-            try
-            {
+            await RunWith(async () => {
                 await _menuService.SaveAsync(item);
                 await LoadAsync();
-            }
-            catch (Exception e)
-            {
-                _exceptionHandler(e, e.Message);
-            }
+                OnMessage("Save Successfully");
+            });
         }
 
         public async Task DeleteAsync(MenuItem item)
         {
-            try
-            {
+            await RunWith(async  () => {
                 await _menuService.DeleteAsync(item);
                 await LoadAsync();
-            }
-            catch (Exception e)
-            {
-                _exceptionHandler(e, e.Message);
-            }
+                OnMessage("Delete Successfully");
+            });
         }
 
         public async Task OpenMenusFolderAsync()
@@ -106,28 +95,23 @@ namespace ContextMenuCustomApp.View.Menu
 
         public async Task Build()
         {
-            try
-            {
-                await _menuService.BuildToCache();
+            await RunWith(async() => {
+                await _menuService.BuildToCacheAsync();
                 ApplicationData.Current.LocalSettings.Values["Cache_Time"] = DateTime.Now.ToString(CultureInfo.CurrentCulture);
-            }
-            catch (Exception e)
-            {
-                _exceptionHandler(e, e.Message);
-            }
+                OnMessage("Build Successfully");
+            });
         }
 
-        public void ClearCache()
+        public async void ClearCache()
         {
-            try
-            {
-                _menuService.ClearCache();
-                ApplicationData.Current.LocalSettings.Values.Remove("Cache_Time");
-            }
-            catch (Exception e)
-            {
-                _exceptionHandler(e, e.Message);
-            }
+            await RunWith(() => {
+                return Task.Run(() =>
+                {
+                    _menuService.ClearCache();
+                    ApplicationData.Current.LocalSettings.Values.Remove("Cache_Time");
+                    OnMessage("Clear Successfully");
+                });
+            });
         }
 
         public string CacheTime

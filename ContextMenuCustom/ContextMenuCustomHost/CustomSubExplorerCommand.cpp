@@ -4,7 +4,7 @@
 
 using namespace winrt::Windows::Data::Json;
 
-CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) {
+CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) : _accept_directory(false), _accept_multiple_files(false), _accept_multiple_files_flag(0) {
 	JsonObject result;
 	if (JsonObject::TryParse(configContent, result)) {
 		_title = result.GetNamedString(L"title", L"Custom Menu");
@@ -16,12 +16,18 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 		_accept_multiple_files = result.GetNamedBoolean(L"acceptMultipleFiles", false);
 		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
 		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
+		_accept_multiple_files_flag = (int)result.GetNamedNumber(L"acceptMultipleFilesFlag", 0);
+
+		//TODO remove ,fix for 1.9 
+		if (_accept_multiple_files && _accept_multiple_files_flag != MultipleFilesFlagJOIN && _accept_multiple_files_flag != MultipleFilesFlagEACH) {
+			_accept_multiple_files_flag = MultipleFilesFlagJOIN;
+		}
 	}
 }
 
 bool CustomSubExplorerCommand::Accept(bool multipeFiles, bool isDirectory, const std::wstring& ext) {
 	if (multipeFiles) {
-		return _accept_multiple_files;
+		return _accept_multiple_files_flag == MultipleFilesFlagJOIN || _accept_multiple_files_flag == MultipleFilesFlagEACH;
 	}
 
 	if (isDirectory) {
@@ -85,45 +91,63 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 		DWORD count;
 		selection->GetCount(&count);
 
-		if (count > 1 && _accept_multiple_files) {
-			auto paths = PathHelper::getPaths(selection,_path_delimiter);
+		if (count > 1 && _accept_multiple_files_flag == MultipleFilesFlagJOIN) {
+			auto paths = PathHelper::getPaths(selection, _path_delimiter);
 			if (!paths.empty()) {
-				auto param = _param_for_multiple_files.empty()? std::wstring{ _param } : std::wstring{ _param_for_multiple_files };
+				auto param = _param_for_multiple_files.empty() ? std::wstring{ _param } : std::wstring{ _param_for_multiple_files };
 				//get parent from first path
 				if (param.find(L"{parent}") != std::wstring::npos) {
-					auto path = PathHelper::getPath(selection);
-					if (!path.empty()) {
-						std::filesystem::path file(path);
+					auto firstPath = PathHelper::getPath(selection);
+					if (!firstPath.empty()) {
+						std::filesystem::path file(firstPath);
 						PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
 					}
 				}
 
 				PathHelper::replaceAll(param, L"{path}", paths);
-				//MessageBox(parent, param.c_str(), L"", 0);
 				ShellExecute(parent, L"open", _exe.c_str(), param.c_str(), nullptr, SW_SHOWNORMAL);
+			}
+		}
+		else if (count > 1 && _accept_multiple_files_flag == MultipleFilesFlagEACH) {
+			auto paths = PathHelper::getPathList(selection);
+			if (!paths.empty()) {
+				for (auto& path : paths)
+				{
+					if (path.empty()) {
+						continue;
+					}
+					Execute(parent, path);
+				}
 			}
 		}
 		else if (count > 0) {
 			auto path = PathHelper::getPath(selection);
-			if (!path.empty()) {
-				std::filesystem::path file(path);
-
-				std::wstring param{ _param };
-				PathHelper::replaceAll(param, L"{path}", file.wstring());
-
-				if (param.find(L"{name}") != std::wstring::npos) {
-					PathHelper::replaceAll(param, L"{name}", file.filename().wstring());
-				}
-
-				if (param.find(L"{parent}") != std::wstring::npos) {
-					PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
-				}
-				//MessageBox(parent, param.c_str(), L"", 0);
-				ShellExecute(parent, L"open", _exe.c_str(), param.c_str(), nullptr, SW_SHOWNORMAL);
-			}
+			Execute(parent, path);
 		}
 
 	}
 	return S_OK;
 }
 CATCH_RETURN();
+
+void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
+	if (!path.empty()) {
+		auto param = std::wstring{ _param };
+
+		auto needReplaceParent = param.find(L"{parent}") != std::wstring::npos;
+		auto needReplaceName = param.find(L"{name}") != std::wstring::npos;
+
+		if (needReplaceParent || needReplaceName) {
+			std::filesystem::path file(path);
+			if (needReplaceParent) {
+				PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
+			}
+			if (needReplaceName) {
+				PathHelper::replaceAll(param, L"{name}", file.filename().wstring());
+			}
+		}
+		PathHelper::replaceAll(param, L"{path}", path);
+
+		ShellExecute(parent, L"open", _exe.c_str(), param.c_str(), nullptr, SW_SHOWNORMAL);
+	}
+}
