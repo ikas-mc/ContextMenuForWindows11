@@ -7,6 +7,23 @@
     <Application.Resources>
         <controls:XamlControlsResources>
             <controls:XamlControlsResources.MergedDictionaries>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <Color x:Key="ContentBackGroundColor">#08000000</Color>
+                            <Color x:Key="NavContentBackGroundColor">#40FFFFFF</Color>
+                            <Color x:Key="NavContentBorderColor">#08000000</Color>
+                            <SolidColorBrush x:Key="ContentBackGroundBrush" Color="{StaticResource ContentBackGroundColor}" />
+                        </ResourceDictionary>
+
+                        <ResourceDictionary x:Key="Dark">
+                            <Color x:Key="ContentBackGroundColor">#15000000</Color>
+                            <Color x:Key="NavContentBackGroundColor">#2C3A3A3A</Color>
+                            <Color x:Key="NavContentBorderColor">#19000000</Color>
+                            <SolidColorBrush x:Key="ContentBackGroundBrush" Color="{StaticResource ContentBackGroundColor}" />
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
             </controls:XamlControlsResources.MergedDictionaries>
         </controls:XamlControlsResources>
     </Application.Resources>

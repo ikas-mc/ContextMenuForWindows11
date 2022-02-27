@@ -57,7 +57,6 @@ namespace ContextMenuCustomApp.Service.Menu
             return await ApplicationData.Current.LocalFolder.CreateFolderAsync(MenusFolderName, CreationCollisionOption.OpenIfExists);
         }
 
-
         public async Task SaveAsync(MenuItem item)
         {
             if (null == item)
@@ -91,18 +90,12 @@ namespace ContextMenuCustomApp.Service.Menu
 
             if (item.File == null)
             {
-                //TODO 
                 return;
             }
-
-            var result = await Alert.ChooseAsync("confirm to delete", "Warn");
-            if (result)
-            {
-                await item.File.DeleteAsync();
-            }
+            await item.File.DeleteAsync();
         }
 
-        public async Task BuildToCache()
+        public async Task BuildToCacheAsync()
         {
             var configFolder = await GetMenusFolderAsync();
             var files = await configFolder.GetFilesAsync();

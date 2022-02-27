@@ -1,41 +1,61 @@
-﻿<Page x:Class="ContextMenuCustomApp.Shell"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d"
-      xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-      muxc:BackdropMaterial.ApplyToRootOrPageBackground="True" >
-    <Grid Margin="4,0,4,4" >
+﻿<Page
+    x:Class="ContextMenuCustomApp.Shell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
+    mc:Ignorable="d">
+    <Grid Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border x:Name="AppTitleBar"
-                Grid.Row="0"
-                IsHitTestVisible="True"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Stretch"
-                Background="Transparent"
-                Height="40"
-                Canvas.ZIndex="1"
-                Margin="8,0,0,8" >
-            <StackPanel Orientation="Horizontal" >
-                <TextBlock x:Name="AppTitle"
-                           Text="Custom Context Menu"
-                           VerticalAlignment="Center"
-                           Margin="4,0,0,0"
-                           Style="{StaticResource CaptionTextBlockStyle}" />
-                <muxc:ProgressRing x:Name="StatusInfo"
-                                   IsActive="False"
-                                   Margin="12,0,0,0"
-                                   Width="16"
-                                   Height="16" />
+        <Border
+            x:Name="AppTitleBar"
+            Grid.Row="0"
+            Height="40"
+            Margin="8,0,0,8"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Canvas.ZIndex="1"
+            IsHitTestVisible="True">
+            <StackPanel Orientation="Horizontal">
+                <Image
+                    x:Name="AppFontIcon"
+                    Width="24"
+                    Height="24"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Source="Images/Square44x44Logo.png" />
+
+                <TextBlock
+                    x:Name="AppTitle"
+                    Margin="4,0,0,0"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="Custom Context Menu" />
+                <muxc:ProgressRing
+                    x:Name="StatusInfo"
+                    Width="16"
+                    Height="16"
+                    Margin="12,0,0,0"
+                    IsActive="False" />
             </StackPanel>
         </Border>
-        <Frame x:Name="ShellFrame"
-               Grid.Row="1"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch" />
+        <Frame
+            x:Name="ShellFrame"
+            Grid.Row="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+
+        <muxc:InfoBar
+            x:Name="AppInfoBar"
+            Margin="0,80,0,0"
+            HorizontalAlignment="Center"
+            IsOpen="False"
+            Message=""
+            Severity="Warning" />
     </Grid>
 </Page>

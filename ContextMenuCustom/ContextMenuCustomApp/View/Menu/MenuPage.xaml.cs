@@ -4,6 +4,7 @@ using Windows.UI.Xaml.Navigation;
 using ContextMenuCustomApp.Service.Menu;
 using System.Linq;
 using Windows.Storage.Pickers;
+using ContextMenuCustomApp.View.Common;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -16,6 +17,7 @@ namespace ContextMenuCustomApp.View.Menu
             NavigationCacheMode = NavigationCacheMode.Required;
             InitializeComponent();
             _viewModel = new MenuPageViewModel(OnException);
+            this.RegisterMessageHandler(_viewModel);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -39,13 +41,14 @@ namespace ContextMenuCustomApp.View.Menu
             if (CommandList.SelectedItem is MenuItem item)
             {
                 await _viewModel.SaveAsync(item);
-                if (null != item.File) {
+                if (null != item.File)
+                {
                     CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(menu => Equals(item.File.Path, menu.File.Path));
                 }
             }
             else
             {
-                Alert.InfoAsync("no selected item");
+                this.ShowMessage("no selected item", MessageType.Warnning);
             }
         }
 
@@ -53,11 +56,15 @@ namespace ContextMenuCustomApp.View.Menu
         {
             if (CommandList.SelectedItem is MenuItem item)
             {
-                await _viewModel.DeleteAsync(item);
+                var result = await Alert.ChooseAsync("confirm to delete", "Warn");
+                if (result)
+                {
+                    await _viewModel.DeleteAsync(item);
+                }
             }
             else
             {
-                Alert.InfoAsync("no selected item");
+                this.ShowMessage("no selected item", MessageType.Warnning);
             }
         }
 
@@ -74,13 +81,13 @@ namespace ContextMenuCustomApp.View.Menu
             }
             else
             {
-                Alert.InfoAsync("no selected item");
+                this.ShowMessage("no selected item", MessageType.Warnning);
             }
         }
 
         private void OnException(Exception e, string message)
         {
-            Alert.InfoAsync(message ?? e.Message, "Error");
+            this.ShowMessage(message ?? e.Message, MessageType.Error);
         }
 
         private async void OpenExeButton_OnClick(object sender, RoutedEventArgs e)
@@ -105,13 +112,11 @@ namespace ContextMenuCustomApp.View.Menu
                     item.Exe = $"\"{file.Path}\"";
                     if (string.IsNullOrEmpty(item.Icon))
                     {
-                        item.Icon=$"\"{file.Path}\",0";
+                        item.Icon = $"\"{file.Path}\",0";
                     }
                 }
             }
-            
         }
- 
 
         private void BuildCacheTipButton_Click(object sender, RoutedEventArgs e)
         {

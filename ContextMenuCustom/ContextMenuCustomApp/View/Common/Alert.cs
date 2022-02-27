@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
-namespace ContextMenuCustomApp
+namespace ContextMenuCustomApp.View.Common
 {
     public static class Alert
     {

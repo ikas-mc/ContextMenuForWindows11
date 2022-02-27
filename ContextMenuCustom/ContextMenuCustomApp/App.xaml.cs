@@ -1,7 +1,10 @@
 ﻿using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -21,7 +24,7 @@ namespace ContextMenuCustomApp
         {
             //TODO check first run
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            var size = new Size(800, 600);
+            var size = new Size(800, 768);
             ApplicationView.PreferredLaunchViewSize = size;
             ApplicationView.GetForCurrentView().TryResizeView(size);
 
@@ -56,6 +59,20 @@ namespace ContextMenuCustomApp
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             deferral.Complete();
+        }
+
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            base.OnActivated(args);
+            if (args.Kind == ActivationKind.CommandLineLaunch)
+            {
+                if (args is CommandLineActivatedEventArgs commandLineActivatedEventArgs)
+                {
+                    var arguments = commandLineActivatedEventArgs.Operation.Arguments;
+                    MessageDialog dialog = new MessageDialog(arguments);
+                    _=dialog.ShowAsync();
+                }
+            }
         }
     }
 }

@@ -12,9 +12,8 @@ public:
 	IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) override;
 	IFACEMETHODIMP GetCanonicalName(_Out_ GUID* guidCommandName) override;
 	IFACEMETHODIMP EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand** enumCommands) override;
-	void ReadCommands(std::wstring& current_path);
+	void ReadCommands(bool multipeFiles, const std::wstring& current_path);
 
 private:
-	std::wstring m_current_path;
 	std::vector<ComPtr<IExplorerCommand>> m_commands;
 };

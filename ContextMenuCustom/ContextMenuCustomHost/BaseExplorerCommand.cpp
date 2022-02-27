@@ -39,18 +39,6 @@ IFACEMETHODIMP BaseExplorerCommand::GetState(_In_opt_ IShellItemArray* selection
 
 IFACEMETHODIMP BaseExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept try
 {
-	HWND parent = nullptr;
-	if (m_site)
-	{
-		RETURN_IF_FAILED(IUnknown_GetWindow(m_site.Get(), &parent));
-	}
-
-	wil::unique_cotaskmem_string path = GetPath(selection);
-
-	if (path.is_valid()) {
-		MessageBox(parent, path.get(), L"ContextMenu", MB_OK);
-	}
-
 	return S_OK;
 }
 CATCH_RETURN();

@@ -176,6 +176,7 @@
     <ClInclude Include="CustomExplorerCommand.h" />
     <ClInclude Include="CustomExplorerCommandEnum.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="PathHelper.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="CustomSubExplorerCommand.h" />

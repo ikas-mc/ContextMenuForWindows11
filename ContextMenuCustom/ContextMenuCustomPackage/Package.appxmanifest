@@ -7,7 +7,9 @@
   xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap desktop4 desktop5 com rescap">
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  IgnorableNamespaces="uap uap3 desktop desktop4 desktop5 com rescap">
 
   <Identity
     Name="7061touchwp.CustomContextMenu"
@@ -63,6 +65,11 @@
             </com:SurrogateServer>
           </com:ComServer>
         </com:Extension>
+		  <uap3:Extension Category="windows.appExecutionAlias">
+			  <uap3:AppExecutionAlias>
+				  <desktop:ExecutionAlias Alias="customeContextMenuDebug.exe"/>
+			  </uap3:AppExecutionAlias>
+		  </uap3:Extension>
       </Extensions>
     </Application>
   </Applications>

@@ -34,22 +34,6 @@ public:
 	IFACEMETHODIMP SetSite(_In_ IUnknown* site) noexcept;
 	IFACEMETHODIMP GetSite(_In_ REFIID riid, _COM_Outptr_ void** site) noexcept;
 
-	static wil::unique_cotaskmem_string GetPath(IShellItemArray* selection) {
-		wil::unique_cotaskmem_string path;
-		if (selection)
-		{
-			DWORD count;
-			selection->GetCount(&count);
-			if (count > 0) {
-				IShellItem* item;
-				if (SUCCEEDED(selection->GetItemAt(0, &item))) {
-					item->GetDisplayName(SIGDN_FILESYSPATH, path.put());
-					item->Release();
-				}
-			}
-		}
-		return path;
-	}
 protected:
 	ComPtr<IUnknown> m_site;
 };

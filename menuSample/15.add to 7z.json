@@ -1,0 +1,1 @@
+{"title":"add to 7z","exe":"\"C:\\Program Files\\7-Zip\\7zG.exe\"","param":"a -ad  \"{parent}\\{name}.7z\"   \"{path}\"","icon":"","acceptExts":"","acceptDirectory":true,"acceptMultipleFiles":true,"pathDelimiter":" ","paramForMultipleFiles":"a -ad \"{parent}\\files.7z\" {path}"}
