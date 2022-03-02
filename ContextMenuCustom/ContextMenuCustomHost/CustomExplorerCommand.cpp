@@ -11,6 +11,7 @@
 #include <ppltasks.h>
 #include <shlwapi.h>
 #include "PathHelper.hpp"
+#include <ShlObj.h>
 
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
@@ -52,12 +53,23 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 
 	if (m_site)
 	{
+		//hidden menu on the classic context menu.
 		Microsoft::WRL::ComPtr<IOleWindow> oleWindow;
 		m_site.As(&oleWindow);
 		if (oleWindow)
 		{
-			*cmdState = ECS_HIDDEN;
-			return S_OK;
+			// fix right click on explorer left tree view 
+			//https://github.com/TortoiseGit/TortoiseGit/blob/master/src/TortoiseShell/ContextMenu.cpp
+			HWND hWnd = nullptr;
+			oleWindow->GetWindow(&hWnd);
+			TCHAR szWndClassName[MAX_PATH] = { 0 };
+			GetClassName(hWnd, szWndClassName, MAX_PATH);
+			// window class name: "NamespaceTreeControl"
+			if (StrCmp(szWndClassName, L"NamespaceTreeControl"))
+			{
+				*cmdState = ECS_HIDDEN;
+			    return S_OK;
+			}
 		}
 	}
 
@@ -76,9 +88,26 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 			}
 		}
 		else {
-			//right click on desktop. 
-			//TODO 
 			std::wstring currentPath;
+			//fix right click on desktop 
+			//https://github.com/microsoft/terminal/blob/main/src/cascadia/ShellExtension/OpenTerminalHere.cpp
+			auto hwnd = ::GetForegroundWindow();
+			if (hwnd)
+			{
+				TCHAR szName[MAX_PATH] = { 0 };
+				::GetClassName(hwnd, szName, MAX_PATH);
+				if (0 == StrCmp(szName, L"WorkerW") ||
+					0 == StrCmp(szName, L"Progman"))
+				{
+					//special folder: desktop
+					hr = ::SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT, szName);
+					if (SUCCEEDED(hr))
+					{
+						currentPath= szName;
+					}
+				}
+			}
+		
 			ReadCommands(false, currentPath);
 		}
 
