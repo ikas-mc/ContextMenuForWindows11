@@ -19,6 +19,7 @@ namespace ContextMenuCustomApp.Service.Menu
         private string _icon;
         private string _acceptExts;
         private bool _acceptDirectory;
+        private bool _acceptFile;
         private bool _acceptMultipleFiles;
         private string _pathDelimiter;
         private string _paramForMultipleFiles;
@@ -30,6 +31,7 @@ namespace ContextMenuCustomApp.Service.Menu
         public string Icon { get => _icon; set => SetProperty(ref _icon, value); }
         public string AcceptExts { get => _acceptExts; set => SetProperty(ref _acceptExts, string.IsNullOrEmpty(value) ? value : value.ToLower()); }// to lower for match
         public bool AcceptDirectory { get => _acceptDirectory; set => SetProperty(ref _acceptDirectory, value); }
+        public bool AcceptFile { get => _acceptFile; set => SetProperty(ref _acceptFile, value); }
         public bool AcceptMultipleFiles { get => _acceptMultipleFiles; set => SetProperty(ref _acceptMultipleFiles, value); }
         public int AcceptMultipleFilesFlag { get => _acceptMultipleFilesFlag; set => SetProperty(ref _acceptMultipleFilesFlag, value); }
         public string PathDelimiter { get => _pathDelimiter; set => SetProperty(ref _pathDelimiter, value); }
@@ -51,6 +53,7 @@ namespace ContextMenuCustomApp.Service.Menu
                 Icon = json.GetNamedString(NameToJsonKey(nameof(Icon)), string.Empty),
                 AcceptExts = json.GetNamedString(NameToJsonKey(nameof(AcceptExts)), string.Empty),
                 AcceptDirectory = json.GetNamedBoolean(NameToJsonKey(nameof(AcceptDirectory)), false),
+                AcceptFile = json.GetNamedBoolean(NameToJsonKey(nameof(AcceptFile)), true),
                 AcceptMultipleFiles = json.GetNamedBoolean(NameToJsonKey(nameof(AcceptMultipleFiles)), false),
                 AcceptMultipleFilesFlag = (int)json.GetNamedNumber(NameToJsonKey(nameof(AcceptMultipleFilesFlag)), (int)MultipleFilesFlag.OFF),
                 PathDelimiter = json.GetNamedString(NameToJsonKey(nameof(PathDelimiter)), string.Empty),
@@ -70,6 +73,7 @@ namespace ContextMenuCustomApp.Service.Menu
                 [NameToJsonKey(nameof(Icon))] = JsonValue.CreateStringValue(content.Icon ?? string.Empty),
                 [NameToJsonKey(nameof(AcceptExts))] = JsonValue.CreateStringValue(content.AcceptExts ?? string.Empty),
                 [NameToJsonKey(nameof(AcceptDirectory))] = JsonValue.CreateBooleanValue(content.AcceptDirectory),
+                [NameToJsonKey(nameof(AcceptFile))] = JsonValue.CreateBooleanValue(content.AcceptFile),
                 [NameToJsonKey(nameof(AcceptMultipleFiles))] = JsonValue.CreateBooleanValue(content.AcceptMultipleFiles),
                 [NameToJsonKey(nameof(AcceptMultipleFilesFlag))] = JsonValue.CreateNumberValue(content.AcceptMultipleFilesFlag),
                 [NameToJsonKey(nameof(PathDelimiter))] = JsonValue.CreateStringValue(content.PathDelimiter ?? string.Empty),

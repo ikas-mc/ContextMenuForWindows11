@@ -183,6 +183,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TextBox
                         Grid.Row="0"
@@ -224,44 +225,31 @@
                         Header="Icon"
                         PlaceholderText="&quot;c:\some\icon.icon&quot;"
                         Text="{Binding Icon, Mode=TwoWay}" />
-                    <TextBox
-                        Grid.Row="4"
-                        Margin="0,8,0,0"
-                        Header="Match Extensions"
-                        PlaceholderText="&quot;.txt .zip&quot; or *"
-                        Text="{Binding AcceptExts, Mode=TwoWay}" />
+
+
                     <ToggleSwitch
-                        Grid.Row="5"
+                        Grid.Row="4"
                         Margin="0,8,0,0"
                         Header="Match Folder"
                         IsOn="{Binding AcceptDirectory, Mode=TwoWay}" />
 
-
                     <ToggleSwitch
-                        Grid.Row="6"
-                        Margin="0,8,0,0"
-                        HorizontalAlignment="Stretch"
-                        IsOn="{Binding AcceptMultipleFiles, Mode=TwoWay}"
-                        Visibility="Collapsed">
-                        <ToggleSwitch.HeaderTemplate>
-                            <DataTemplate>
-                                <RelativePanel>
-                                    <TextBlock RelativePanel.AlignLeftWithPanel="True" Text="[Multiple Files] Match Multiple Files" />
-                                    <HyperlinkButton
-                                        Padding="0"
-                                        NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files"
-                                        RelativePanel.AlignRightWithPanel="True"
-                                        Visibility="{Binding AcceptMultipleFiles}">
-                                        <TextBlock Text="Read wiki before use!!!" />
-                                    </HyperlinkButton>
-                                </RelativePanel>
-                            </DataTemplate>
-                        </ToggleSwitch.HeaderTemplate>
+                        Grid.Row="5"
+                        Margin="0,0,0,0"
+                        Header="Match File"
+                        IsOn="{Binding AcceptFile, Mode=TwoWay}" />
 
-                    </ToggleSwitch>
+                    <TextBox
+                        Grid.Row="6"
+                        Margin="8,0,0,0"
+                        Header="File Extensions"
+                        PlaceholderText=".txt .zip  or *"
+                        Text="{Binding AcceptExts, Mode=TwoWay}"
+                        Visibility="{Binding AcceptFile}" />
+
 
                     <ComboBox
-                        Grid.Row="6"
+                        Grid.Row="7"
                         Margin="0,8,0,0"
                         HorizontalAlignment="Stretch"
                         SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
@@ -272,7 +260,7 @@
                         <ComboBox.HeaderTemplate>
                             <DataTemplate>
                                 <RelativePanel>
-                                    <TextBlock RelativePanel.AlignLeftWithPanel="True" Text="[Multiple Files] Match Multiple Files" />
+                                    <TextBlock RelativePanel.AlignLeftWithPanel="True" Text="Match Multiple Files" />
                                     <HyperlinkButton
                                         Padding="0"
                                         NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files"
@@ -285,16 +273,16 @@
                     </ComboBox>
 
                     <TextBox
-                        Grid.Row="7"
-                        Margin="0,8,0,0"
+                        Grid.Row="8"
+                        Margin="8,8,0,0"
                         Header="[Multiple Files] Path Delimiter"
                         PlaceholderText="|"
                         Text="{Binding PathDelimiter, Mode=TwoWay}"
                         Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
                     <TextBox
-                        Grid.Row="8"
-                        Margin="0,8,0,0"
+                        Grid.Row="9"
+                        Margin="8,8,0,0"
                         Header="[Multiple Files] Param"
                         PlaceholderText="{}{path}"
                         Text="{Binding ParamForMultipleFiles, Mode=TwoWay}"

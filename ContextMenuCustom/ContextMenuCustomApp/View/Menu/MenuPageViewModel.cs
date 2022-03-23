@@ -41,7 +41,7 @@ namespace ContextMenuCustomApp.View.Menu
 
         public MenuItem New()
         {
-            var item = new MenuItem() { Title = "new menu", Param = @"""{path}""" };
+            var item = new MenuItem() { Title = "new menu", Param = @"""{path}""", AcceptFile=true, AcceptDirectory=true};
             MenuItems.Add(item);
             return item;
         }

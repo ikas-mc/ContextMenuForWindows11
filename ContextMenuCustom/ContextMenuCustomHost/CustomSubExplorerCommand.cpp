@@ -12,16 +12,12 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 		_param = result.GetNamedString(L"param", L"");
 		_icon = result.GetNamedString(L"icon", L"");
 		_accept_directory = result.GetNamedBoolean(L"acceptDirectory", false);
+		_accept_file = result.GetNamedBoolean(L"acceptFile", true);
 		_accept_exts = result.GetNamedString(L"acceptExts", L"");
 		_accept_multiple_files = result.GetNamedBoolean(L"acceptMultipleFiles", false);
 		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
 		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
 		_accept_multiple_files_flag = (int)result.GetNamedNumber(L"acceptMultipleFilesFlag", 0);
-
-		//TODO remove ,fix for 1.9 
-		if (_accept_multiple_files && _accept_multiple_files_flag != MultipleFilesFlagJOIN && _accept_multiple_files_flag != MultipleFilesFlagEACH) {
-			_accept_multiple_files_flag = MultipleFilesFlagJOIN;
-		}
 	}
 }
 
@@ -34,11 +30,11 @@ bool CustomSubExplorerCommand::Accept(bool multipeFiles, bool isDirectory, const
 		return _accept_directory;
 	}
 
-	if (ext.empty()) {
-		return true;
+	if (!_accept_file) {
+		return false;
 	}
 
-	if (_accept_exts.empty()) {
+	if (ext.empty() || _accept_exts.empty()) {
 		return true;
 	}
 
