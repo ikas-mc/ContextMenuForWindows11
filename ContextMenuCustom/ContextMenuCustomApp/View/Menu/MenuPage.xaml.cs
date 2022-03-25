@@ -16,7 +16,7 @@ namespace ContextMenuCustomApp.View.Menu
         {
             NavigationCacheMode = NavigationCacheMode.Required;
             InitializeComponent();
-            _viewModel = new MenuPageViewModel(OnException);
+            _viewModel = new MenuPageViewModel();
             this.RegisterMessageHandler(_viewModel);
         }
 
@@ -84,12 +84,6 @@ namespace ContextMenuCustomApp.View.Menu
                 this.ShowMessage("no selected item", MessageType.Warnning);
             }
         }
-
-        private void OnException(Exception e, string message)
-        {
-            this.ShowMessage(message ?? e.Message, MessageType.Error);
-        }
-
         private async void OpenExeButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (CommandList.SelectedItem is MenuItem item)

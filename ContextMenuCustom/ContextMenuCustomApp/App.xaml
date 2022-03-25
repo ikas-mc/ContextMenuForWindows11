@@ -7,6 +7,7 @@
     <Application.Resources>
         <controls:XamlControlsResources>
             <controls:XamlControlsResources.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/Button.xaml" />
                 <ResourceDictionary>
                     <ResourceDictionary.ThemeDictionaries>
                         <ResourceDictionary x:Key="Light">
@@ -14,6 +15,14 @@
                             <Color x:Key="NavContentBackGroundColor">#40FFFFFF</Color>
                             <Color x:Key="NavContentBorderColor">#08000000</Color>
                             <SolidColorBrush x:Key="ContentBackGroundBrush" Color="{StaticResource ContentBackGroundColor}" />
+
+                            <StaticResource x:Key="SettingItemBackgroundBrush" ResourceKey="CardBackgroundFillColorDefaultBrush" />
+                            <StaticResource x:Key="SettingItemBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
+                            <StaticResource x:Key="SettingItemPrimaryForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+                            <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#FFd3e7f7" />
+                            <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF0063b1</Color>
+                            <SolidColorBrush x:Key="SolidBackgroundBrush" Color="White" />
+                            <Thickness x:Key="SettingItemBorderThickness">1</Thickness>
                         </ResourceDictionary>
 
                         <ResourceDictionary x:Key="Dark">
@@ -21,7 +30,18 @@
                             <Color x:Key="NavContentBackGroundColor">#2C3A3A3A</Color>
                             <Color x:Key="NavContentBorderColor">#19000000</Color>
                             <SolidColorBrush x:Key="ContentBackGroundBrush" Color="{StaticResource ContentBackGroundColor}" />
+
+                            <StaticResource x:Key="SettingItemBackgroundBrush" ResourceKey="CardBackgroundFillColorDefaultBrush" />
+                            <StaticResource x:Key="SettingItemBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
+                            <StaticResource x:Key="SettingItemPrimaryForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+                            <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="#FF34424d" />
+                            <Color x:Key="InfoBarInformationalSeverityIconBackground">#FF5fb2f2</Color>
+                            <SolidColorBrush x:Key="SolidBackgroundBrush" Color="Black" />
+                            <Thickness x:Key="SettingItemBorderThickness">1</Thickness>
                         </ResourceDictionary>
+
+
+
                     </ResourceDictionary.ThemeDictionaries>
                 </ResourceDictionary>
             </controls:XamlControlsResources.MergedDictionaries>
