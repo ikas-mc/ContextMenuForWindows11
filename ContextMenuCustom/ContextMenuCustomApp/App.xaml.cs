@@ -18,6 +18,7 @@ namespace ContextMenuCustomApp
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            Patchs.Patch1.Run();
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)

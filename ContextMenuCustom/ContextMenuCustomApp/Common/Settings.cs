@@ -8,28 +8,47 @@ using Windows.Storage;
 
 namespace ContextMenuCustomApp.Common
 {
-  
+
     public class Settings
     {
         private readonly static IPropertySet settings;
 
         public readonly static Settings INS;
-        static Settings() {
+        static Settings()
+        {
             settings = ApplicationData.Current.LocalSettings.CreateContainer("app-settings", ApplicationDataCreateDisposition.Always).Values;
             INS = new Settings();
         }
 
-        public bool CacheEnabled {
-            get {
-                return GetValue(nameof(CacheEnabled),false);
+        public bool CacheEnabled
+        {
+            get
+            {
+                return GetValue(nameof(CacheEnabled), false);
             }
-            set {
+            set
+            {
                 SetValue(nameof(CacheEnabled), value);
             }
         }
 
-        private T GetValue<T>(string key,T defaultValue= default) {
-            if (settings[key] is T value) {
+
+        public int PatchVersion
+        {
+            get
+            {
+                return GetValue(nameof(PatchVersion), 0);
+            }
+            set
+            {
+                SetValue(nameof(PatchVersion), value);
+            }
+        }
+
+        private T GetValue<T>(string key, T defaultValue = default)
+        {
+            if (settings[key] is T value)
+            {
                 return value;
             }
 
