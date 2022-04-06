@@ -39,7 +39,7 @@ const  wchar_t* CustomExplorerCommand::GetIconId()
 {
 	DWORD value = 0;
 	DWORD size = sizeof(value);
-	auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"SystemUsesLightTheme", SRRF_RT_DWORD, NULL, &value, &size);
+	auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme", SRRF_RT_DWORD, NULL, &value, &size);
 	if (result == ERROR_SUCCESS && !!value) {
 		return L",-103";
 	}
