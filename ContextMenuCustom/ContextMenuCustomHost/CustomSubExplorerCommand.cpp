@@ -4,7 +4,7 @@
 
 using namespace winrt::Windows::Data::Json;
 
-CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) : _accept_directory(false), _accept_multiple_files(false), _accept_multiple_files_flag(0) {
+CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) : _accept_directory(false),  _accept_multiple_files_flag(0), m_index(0) {
 	JsonObject result;
 	if (JsonObject::TryParse(configContent, result)) {
 		_title = result.GetNamedString(L"title", L"Custom Menu");
@@ -14,15 +14,15 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 		_accept_directory = result.GetNamedBoolean(L"acceptDirectory", false);
 		_accept_file = result.GetNamedBoolean(L"acceptFile", true);
 		_accept_exts = result.GetNamedString(L"acceptExts", L"");
-		_accept_multiple_files = result.GetNamedBoolean(L"acceptMultipleFiles", false);
 		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
 		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
 		_accept_multiple_files_flag = (int)result.GetNamedNumber(L"acceptMultipleFilesFlag", 0);
+		m_index = (int)result.GetNamedNumber(L"index", 0);
 	}
 }
 
-bool CustomSubExplorerCommand::Accept(bool multipeFiles, bool isDirectory, const std::wstring& ext) {
-	if (multipeFiles) {
+bool CustomSubExplorerCommand::Accept(bool multipleFiles, bool isDirectory, const std::wstring& ext) {
+	if (multipleFiles) {
 		return _accept_multiple_files_flag == MultipleFilesFlagJOIN || _accept_multiple_files_flag == MultipleFilesFlagEACH;
 	}
 
@@ -38,7 +38,7 @@ bool CustomSubExplorerCommand::Accept(bool multipeFiles, bool isDirectory, const
 		return true;
 	}
 
-	if (_accept_exts.find(L"*") != std::wstring::npos) {
+	if (_accept_exts.find(L'*') != std::wstring::npos) {
 		return true;
 	}
 
@@ -101,7 +101,8 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 				}
 
 				PathHelper::replaceAll(param, L"{path}", paths);
-				ShellExecute(parent, L"open", _exe.c_str(), param.c_str(), nullptr, SW_SHOWNORMAL);
+				auto exePath=wil::ExpandEnvironmentStringsW(_exe.c_str());
+				ShellExecute(parent, L"open", exePath.get(), param.c_str(), nullptr, SW_SHOWNORMAL);
 			}
 		}
 		else if (count > 1 && _accept_multiple_files_flag == MultipleFilesFlagEACH) {
@@ -144,6 +145,7 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 		}
 		PathHelper::replaceAll(param, L"{path}", path);
 
-		ShellExecute(parent, L"open", _exe.c_str(), param.c_str(), nullptr, SW_SHOWNORMAL);
+		auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
+		ShellExecute(parent, L"open", exePath.get(), param.c_str(), nullptr, SW_SHOWNORMAL);
 	}
 }

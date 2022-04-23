@@ -50,6 +50,10 @@
                 x:Name="CommandList"
                 Grid.Row="1"
                 Grid.Column="0"
+                CanDragItems="False"
+                DragItemsCompleted="CommandList_DragItemsCompleted"
+                AllowDrop="False"
+                CanReorderItems="False"
                 ItemsSource="{Binding MenuItems}"
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
@@ -79,7 +83,11 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Click="Refresh_Click"
-                    ToolTipService.ToolTip="Refresh menus">
+                    ToolTipService.ToolTip="Refresh menus"
+                    >
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </Button.KeyboardAccelerators>
                     <SymbolIcon Symbol="Refresh" />
                 </Button>
                 <Button
@@ -163,13 +171,27 @@
 
                     <controls:SettingItem Header="Title">
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="open with notepad" Text="{Binding Title, Mode=TwoWay}" />
+                            <TextBox PlaceholderText="open with notepad" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
+
+                    <controls:SettingItem Header="Order">
+                        <controls:SettingItem.ActionContent>
+                            <muxc:NumberBox
+                                Maximum="999999"
+                                Minimum="-999999"
+                                PlaceholderText="0"
+                                SmallChange="1"
+                                LargeChange="10"
+                                SpinButtonPlacementMode="Inline"
+                                Value="{Binding Index, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
                     <controls:SettingItem Header="Exe">
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;" Text="{Binding Exe, Mode=TwoWay}" />
+                            <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;"
+                                     Text="{Binding Exe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
 
                         <controls:SettingItem.RightContent>
@@ -187,14 +209,16 @@
 
                     <controls:SettingItem Header="Param">
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;{path}&quot;" Text="{Binding Param, Mode=TwoWay}" />
+                            <TextBox PlaceholderText="&quot;{path}&quot;"
+                                     Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
 
                     <controls:SettingItem Header="Icon">
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;" Text="{Binding Icon, Mode=TwoWay}" />
+                            <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;"
+                                     Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
@@ -212,7 +236,7 @@
                             <TextBox
                                 Header="File Extensions"
                                 PlaceholderText=".txt .zip  or *"
-                                Text="{Binding AcceptExts, Mode=TwoWay}"
+                                Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Visibility="{Binding AcceptFile}" />
 
                         </controls:SettingItem.BottomContent>
@@ -246,7 +270,7 @@
                                     Grid.Row="8"
                                     Header="Path Delimiter"
                                     PlaceholderText="|"
-                                    Text="{Binding PathDelimiter, Mode=TwoWay}"
+                                    Text="{Binding PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
                                 <TextBox
@@ -254,7 +278,7 @@
                                     Margin="0,8,0,0"
                                     Header="Param"
                                     PlaceholderText="{}{path}"
-                                    Text="{Binding ParamForMultipleFiles, Mode=TwoWay}"
+                                    Text="{Binding ParamForMultipleFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
                             </StackPanel>
@@ -292,7 +316,6 @@
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
 
-
                 <Button
                     Margin="4,0"
                     Padding="4"
@@ -301,6 +324,10 @@
                     Click="Save_Click"
                     ToolTipService.ToolTip="Save menu">
                     <SymbolIcon Symbol="Save" />
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control"
+                                             Key="S" />
+                    </Button.KeyboardAccelerators>
                 </Button>
 
                 <Button
@@ -310,6 +337,9 @@
                     VerticalAlignment="Center"
                     Click="Delete_Click"
                     ToolTipService.ToolTip="Delete menu">
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Delete" />
+                    </Button.KeyboardAccelerators>
                     <SymbolIcon Symbol="Delete" />
                 </Button>
 

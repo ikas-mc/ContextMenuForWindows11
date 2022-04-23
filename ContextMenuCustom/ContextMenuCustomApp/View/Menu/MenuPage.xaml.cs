@@ -27,7 +27,12 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async void Refresh_Click(object sender, RoutedEventArgs e)
         {
+            var selectedItem = CommandList.SelectedItem as MenuItem;
             await _viewModel.LoadAsync();
+            if (null != selectedItem?.File)
+            {
+                CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(item => Equals(selectedItem.File.Path, item.File.Path));
+            }
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
@@ -116,6 +121,11 @@ namespace ContextMenuCustomApp.View.Menu
         {
             _viewModel.UpdateCacheTime();
             CacheTip.IsOpen = true;
+        }
+
+        private void CommandList_DragItemsCompleted(Windows.UI.Xaml.Controls.ListViewBase sender, Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs args)
+        {
+
         }
     }
 }

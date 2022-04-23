@@ -37,7 +37,7 @@ namespace ContextMenuCustomApp.Service.Menu
                     Debug.WriteLine(e.StackTrace);
                 }
             }
-
+            result.Sort((l,r)=>l.Index-r.Index);
             return result;
         }
 

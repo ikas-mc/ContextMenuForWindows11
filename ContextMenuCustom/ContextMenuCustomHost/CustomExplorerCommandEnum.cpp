@@ -3,7 +3,7 @@
 #include <wil/common.h>
 
 
-CustomExplorerCommandEnum::CustomExplorerCommandEnum(std::vector<ComPtr<IExplorerCommand>>& commands):m_current(0) {
+CustomExplorerCommandEnum::CustomExplorerCommandEnum(std::vector<ComPtr<CustomSubExplorerCommand>>& commands):m_current(0) {
 	m_commands = commands;
 }
 

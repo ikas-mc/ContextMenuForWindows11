@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CustomExplorerCommand.h"
-#include "CustomSubExplorerCommand.h"
 #include "CustomExplorerCommandEnum.h"
+#include "CustomSubExplorerCommand.h"
 #include <winrt/base.h>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Data.Json.h>
@@ -17,7 +17,7 @@ using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
 using namespace std::filesystem;
 
-CustomExplorerCommand::CustomExplorerCommand(){
+CustomExplorerCommand::CustomExplorerCommand() {
 }
 
 const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
@@ -49,7 +49,6 @@ const  wchar_t* CustomExplorerCommand::GetIconId()
 }
 
 IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) {
-	HRESULT hr;
 
 	if (m_site)
 	{
@@ -68,60 +67,57 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 			if (StrCmp(szWndClassName, L"NamespaceTreeControl"))
 			{
 				*cmdState = ECS_HIDDEN;
-			    return S_OK;
+				return S_OK;
 			}
 		}
 	}
 
-	if (okToBeSlow)
-	{
-		if (selection) {
-			DWORD count;
-			selection->GetCount(&count);
-			if (count > 1) {
-				std::wstring currentPath;
-				ReadCommands(true, currentPath);
-			}
-			else {
-				auto currentPath = PathHelper::getPath(selection);
-				ReadCommands(false, currentPath);
-			}
-		}
-		else {
-			std::wstring currentPath;
-			//fix right click on desktop 
-			//https://github.com/microsoft/terminal/blob/main/src/cascadia/ShellExtension/OpenTerminalHere.cpp
-			auto hwnd = ::GetForegroundWindow();
-			if (hwnd)
-			{
-				TCHAR szName[MAX_PATH] = { 0 };
-				::GetClassName(hwnd, szName, MAX_PATH);
-				if (0 == StrCmp(szName, L"WorkerW") ||
-					0 == StrCmp(szName, L"Progman"))
-				{
-					//special folder: desktop
-					hr = ::SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT, szName);
-					if (SUCCEEDED(hr))
-					{
-						currentPath= szName;
-					}
-				}
-			}
-		
-			ReadCommands(false, currentPath);
-		}
-
-		if (m_commands.size() == 0) {
-			*cmdState = ECS_HIDDEN;
-		}
-		else {
-			*cmdState = ECS_ENABLED;
-		}
-	}
-	else
+	if (!okToBeSlow)
 	{
 		*cmdState = ECS_DISABLED;
-		hr = E_PENDING;
+		return E_PENDING;
+	}
+
+	if (selection) {
+		DWORD count;
+		selection->GetCount(&count);
+		if (count > 1) {
+			std::wstring currentPath;
+			ReadCommands(true, currentPath);
+		}
+		else {
+			auto currentPath = PathHelper::getPath(selection);
+			ReadCommands(false, currentPath);
+		}
+	}
+	else {
+		std::wstring currentPath;
+		//fix right click on desktop 
+		//https://github.com/microsoft/terminal/blob/main/src/cascadia/ShellExtension/OpenTerminalHere.cpp
+		auto hwnd = ::GetForegroundWindow();
+		if (hwnd)
+		{
+			TCHAR szName[MAX_PATH] = { 0 };
+			::GetClassName(hwnd, szName, MAX_PATH);
+			if (0 == StrCmp(szName, L"WorkerW") ||
+				0 == StrCmp(szName, L"Progman"))
+			{
+				//special folder: desktop
+				auto hr = ::SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT, szName);
+				if (SUCCEEDED(hr))
+				{
+					currentPath = szName;
+				}
+			}
+		}
+		ReadCommands(false, currentPath);
+	}
+
+	if (m_commands.size() == 0) {
+		*cmdState = ECS_HIDDEN;
+	}
+	else {
+		*cmdState = ECS_ENABLED;
 	}
 
 	return S_OK;
@@ -134,23 +130,23 @@ IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnum
 	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
-void CustomExplorerCommand::ReadCommands(bool multipeFiles,const std::wstring& currentPath)
+void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring& currentPath)
 {
 	auto menus = winrt::Windows::Storage::ApplicationData::Current().LocalSettings().CreateContainer(L"menus", ApplicationDataCreateDisposition::Always).Values();
 	if (menus.Size() > 0) {
 		std::wstring ext;
 		bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
-		if (!multipeFiles) {
+		if (!multipleFiles) {
 			PathHelper::getExt(currentPath, isDirectory, ext);
 		}
 
 		auto current = menus.begin();
 		do {
 			if (current.HasCurrent()) {
-				auto conent=winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L"");
+				auto conent = winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L"");
 				if (conent.size() > 0) {
 					const auto command = Make<CustomSubExplorerCommand>(conent);
-					if (command->Accept(multipeFiles,isDirectory, ext)) {
+					if (command->Accept(multipleFiles, isDirectory, ext)) {
 						m_commands.push_back(command);
 					}
 				}
@@ -166,7 +162,7 @@ void CustomExplorerCommand::ReadCommands(bool multipeFiles,const std::wstring& c
 				if (exists(folder) && is_directory(folder)) {
 					std::wstring ext;
 					bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
-					if (!multipeFiles) {
+					if (!multipleFiles) {
 						PathHelper::getExt(currentPath, isDirectory, ext);
 					}
 
@@ -177,11 +173,16 @@ void CustomExplorerCommand::ReadCommands(bool multipeFiles,const std::wstring& c
 						buffer << fs.rdbuf();//TODO 
 						auto content = winrt::to_hstring(buffer.str());
 						auto command = Make<CustomSubExplorerCommand>(content);
-						if (command->Accept(multipeFiles,isDirectory, ext)) {
+						if (command->Accept(multipleFiles, isDirectory, ext)) {
 							m_commands.push_back(command);
 						}
 					}
 				}
 			}).wait();
 	}
+
+	if (m_commands.size() > 1) {
+		std::sort(m_commands.begin(), m_commands.end(), [](auto&& l, auto&& r) { return	l->m_index < r->m_index; });
+	}
+
 }

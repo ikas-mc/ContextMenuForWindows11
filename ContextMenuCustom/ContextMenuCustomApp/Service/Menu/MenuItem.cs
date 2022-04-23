@@ -20,10 +20,10 @@ namespace ContextMenuCustomApp.Service.Menu
         private string _acceptExts;
         private bool _acceptDirectory;
         private bool _acceptFile;
-        private bool _acceptMultipleFiles;
         private string _pathDelimiter;
         private string _paramForMultipleFiles;
         private int _acceptMultipleFilesFlag;
+        private int _index;
 
         public string Title { get => _title; set => SetProperty(ref _title, value); }
         public string Exe { get => _exe; set => SetProperty(ref _exe, value); }
@@ -32,11 +32,10 @@ namespace ContextMenuCustomApp.Service.Menu
         public string AcceptExts { get => _acceptExts; set => SetProperty(ref _acceptExts, string.IsNullOrEmpty(value) ? value : value.ToLower()); }// to lower for match
         public bool AcceptDirectory { get => _acceptDirectory; set => SetProperty(ref _acceptDirectory, value); }
         public bool AcceptFile { get => _acceptFile; set => SetProperty(ref _acceptFile, value); }
-        public bool AcceptMultipleFiles { get => _acceptMultipleFiles; set => SetProperty(ref _acceptMultipleFiles, value); }
         public int AcceptMultipleFilesFlag { get => _acceptMultipleFilesFlag; set => SetProperty(ref _acceptMultipleFilesFlag, value); }
         public string PathDelimiter { get => _pathDelimiter; set => SetProperty(ref _pathDelimiter, value); }
         public string ParamForMultipleFiles { get => _paramForMultipleFiles; set => SetProperty(ref _paramForMultipleFiles, value); }
-
+        public int Index { get => _index; set => SetProperty(ref _index, value); }
         private static string NameToJsonKey(string name)
         {
             return name[0].ToString().ToLower() + name.Substring(1);
@@ -54,10 +53,10 @@ namespace ContextMenuCustomApp.Service.Menu
                 AcceptExts = json.GetNamedString(NameToJsonKey(nameof(AcceptExts)), string.Empty),
                 AcceptDirectory = json.GetNamedBoolean(NameToJsonKey(nameof(AcceptDirectory)), false),
                 AcceptFile = json.GetNamedBoolean(NameToJsonKey(nameof(AcceptFile)), true),
-                AcceptMultipleFiles = json.GetNamedBoolean(NameToJsonKey(nameof(AcceptMultipleFiles)), false),
                 AcceptMultipleFilesFlag = (int)json.GetNamedNumber(NameToJsonKey(nameof(AcceptMultipleFilesFlag)), (int)MultipleFilesFlag.OFF),
                 PathDelimiter = json.GetNamedString(NameToJsonKey(nameof(PathDelimiter)), string.Empty),
                 ParamForMultipleFiles = json.GetNamedString(NameToJsonKey(nameof(ParamForMultipleFiles)), string.Empty),
+                Index = (int)json.GetNamedNumber(NameToJsonKey(nameof(Index)), 0),
             };
             return menu;
         }
@@ -74,10 +73,10 @@ namespace ContextMenuCustomApp.Service.Menu
                 [NameToJsonKey(nameof(AcceptExts))] = JsonValue.CreateStringValue(content.AcceptExts ?? string.Empty),
                 [NameToJsonKey(nameof(AcceptDirectory))] = JsonValue.CreateBooleanValue(content.AcceptDirectory),
                 [NameToJsonKey(nameof(AcceptFile))] = JsonValue.CreateBooleanValue(content.AcceptFile),
-                [NameToJsonKey(nameof(AcceptMultipleFiles))] = JsonValue.CreateBooleanValue(content.AcceptMultipleFiles),
                 [NameToJsonKey(nameof(AcceptMultipleFilesFlag))] = JsonValue.CreateNumberValue(content.AcceptMultipleFilesFlag),
                 [NameToJsonKey(nameof(PathDelimiter))] = JsonValue.CreateStringValue(content.PathDelimiter ?? string.Empty),
                 [NameToJsonKey(nameof(ParamForMultipleFiles))] = JsonValue.CreateStringValue(content.ParamForMultipleFiles ?? string.Empty),
+                [NameToJsonKey(nameof(Index))] = JsonValue.CreateNumberValue(content.Index),
             };
             return json.Stringify();
         }
