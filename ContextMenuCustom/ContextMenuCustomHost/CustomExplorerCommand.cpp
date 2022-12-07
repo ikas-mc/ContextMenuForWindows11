@@ -25,6 +25,13 @@ const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
 IFACEMETHODIMP CustomExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
 {
 	*name = nullptr;
+
+
+	if (m_commands.size() == 1) {
+		return SHStrDupW(m_commands.at(0)->_title.c_str(), name);
+	}
+
+
 	winrt::hstring title = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(L"Custom_Menu_Name"), L"Open With");
 	return SHStrDupW(title.data(), name);
 }
@@ -126,8 +133,13 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand** enumCommands)
 {
 	*enumCommands = nullptr;
-	auto customCommands = Make<CustomExplorerCommandEnum>(m_commands);
-	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
+	if (m_commands.size() ==1) {
+		return E_NOTIMPL;
+	}
+	else {
+		auto customCommands = Make<CustomExplorerCommandEnum>(m_commands);
+		return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
+	}
 }
 
 void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring& currentPath)
@@ -186,3 +198,23 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring&
 	}
 
 }
+
+IFACEMETHODIMP CustomExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx* ctx) noexcept try
+{
+
+	/*HWND parent = nullptr;
+	if (m_site)
+	{
+		RETURN_IF_FAILED(IUnknown_GetWindow(m_site.Get(), &parent));
+	}
+	
+
+	MessageBox(parent, L"teset", L"ContextMenu", MB_OK);*/
+
+	if (m_commands.size() ==1) {
+		m_commands.at(0)->Invoke(selection, ctx);
+	}
+
+	return S_OK;
+}
+CATCH_RETURN();

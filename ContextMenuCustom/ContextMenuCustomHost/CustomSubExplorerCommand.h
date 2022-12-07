@@ -20,7 +20,7 @@ public:
 	virtual bool Accept(bool multipleFiles, bool isDirectory, const std::wstring& ext);
 private:
 	void Execute(HWND parent, const std::wstring& path);
-	std::wstring _title;
+	
 	std::wstring _icon;
 	std::wstring _exe;
 	std::wstring _param;
@@ -32,5 +32,6 @@ private:
 	std::wstring _param_for_multiple_files;
 
 public:
+	std::wstring _title;
 	int m_index;
 };

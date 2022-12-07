@@ -92,17 +92,21 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 			if (!paths.empty()) {
 				auto param = _param_for_multiple_files.empty() ? std::wstring{ _param } : std::wstring{ _param_for_multiple_files };
 				//get parent from first path
+
+				std::wstring parentPath;
+				auto firstPath = PathHelper::getPath(selection);
+				if (!firstPath.empty()) {
+					std::filesystem::path file(firstPath);
+					parentPath = file.parent_path().wstring();
+				}
+
 				if (param.find(L"{parent}") != std::wstring::npos) {
-					auto firstPath = PathHelper::getPath(selection);
-					if (!firstPath.empty()) {
-						std::filesystem::path file(firstPath);
-						PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
-					}
+					PathHelper::replaceAll(param, L"{parent}", parentPath);
 				}
 
 				PathHelper::replaceAll(param, L"{path}", paths);
 				auto exePath=wil::ExpandEnvironmentStringsW(_exe.c_str());
-				ShellExecute(parent, L"open", exePath.get(), param.c_str(), nullptr, SW_SHOWNORMAL);
+				ShellExecute(parent, L"open", exePath.get(), param.c_str(), parentPath.data(), SW_SHOWNORMAL);
 			}
 		}
 		else if (count > 1 && _accept_multiple_files_flag == MultipleFilesFlagEACH) {
@@ -131,21 +135,19 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 	if (!path.empty()) {
 		auto param = std::wstring{ _param };
 
-		auto needReplaceParent = param.find(L"{parent}") != std::wstring::npos;
-		auto needReplaceName = param.find(L"{name}") != std::wstring::npos;
-
-		if (needReplaceParent || needReplaceName) {
-			std::filesystem::path file(path);
-			if (needReplaceParent) {
+		std::filesystem::path file(path);
+	
+			
+			if (param.find(L"{parent}") != std::wstring::npos) {
 				PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
 			}
-			if (needReplaceName) {
+			if (param.find(L"{name}") != std::wstring::npos) {
 				PathHelper::replaceAll(param, L"{name}", file.filename().wstring());
 			}
-		}
+		
 		PathHelper::replaceAll(param, L"{path}", path);
 
 		auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
-		ShellExecute(parent, L"open", exePath.get(), param.c_str(), nullptr, SW_SHOWNORMAL);
+		ShellExecute(parent, L"open", exePath.get(), param.c_str(), file.parent_path().c_str(), SW_SHOWNORMAL);
 	}
 }
