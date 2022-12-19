@@ -91,7 +91,7 @@ try
 	HWND parent = nullptr;
 	if (m_site)
 	{
-		RETURN_IF_FAILED(IUnknown_GetWindow(m_site.Get(), &parent));
+		RETURN_IF_FAILED(IUnknown_GetWindow(m_site.get(), &parent));
 	}
 
 	if (selection)

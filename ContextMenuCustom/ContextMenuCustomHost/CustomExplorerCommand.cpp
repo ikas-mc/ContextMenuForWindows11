@@ -12,6 +12,7 @@
 #include <shlwapi.h>
 #include "PathHelper.hpp"
 #include <ShlObj.h>
+#include <wil/com.h>
 
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
@@ -68,18 +69,19 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray *selecti
 	if (m_site)
 	{
 		// hidden menu on the classic context menu.
-		Microsoft::WRL::ComPtr<IOleWindow> oleWindow;
-		m_site.As(&oleWindow);
+		// classic menu provides an IOleWindow
+		wil::com_ptr_nothrow<IOleWindow> oleWindow;
+		m_site.query_to(IID_PPV_ARGS(oleWindow.put()));
 		if (oleWindow)
 		{
 			// fix right click on explorer left tree view
 			// https://github.com/TortoiseGit/TortoiseGit/blob/master/src/TortoiseShell/ContextMenu.cpp
 			HWND hWnd = nullptr;
 			oleWindow->GetWindow(&hWnd);
-			TCHAR szWndClassName[MAX_PATH] = {0};
-			GetClassName(hWnd, szWndClassName, MAX_PATH);
+			wchar_t szWndClassName[MAX_PATH] = { 0 };
+			GetClassName(hWnd, szWndClassName, _countof(szWndClassName));
 			// window class name: "NamespaceTreeControl"
-			if (StrCmp(szWndClassName, L"NamespaceTreeControl"))
+			if (wcscmp(szWndClassName, L"NamespaceTreeControl"))
 			{
 				*cmdState = ECS_HIDDEN;
 				return S_OK;
@@ -93,43 +95,32 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray *selecti
 		return E_PENDING;
 	}
 
+	DWORD count =0;
+
 	if (selection)
 	{
-		DWORD count;
 		selection->GetCount(&count);
-		if (count > 1)
-		{
-			std::wstring currentPath;
-			ReadCommands(true, currentPath);
-		}
-		else
-		{
-			auto currentPath = PathHelper::getPath(selection);
-			ReadCommands(false, currentPath);
-		}
+	}
+
+	if (count > 1)
+	{
+		std::wstring currentPath;
+		ReadCommands(true, currentPath);
+	}
+	else if (count == 1)
+	{
+		auto currentPath = PathHelper::getPath(selection);
+		ReadCommands(false, currentPath);
 	}
 	else
 	{
-		std::wstring currentPath;
-		// fix right click on desktop
-		// https://github.com/microsoft/terminal/blob/main/src/cascadia/ShellExtension/OpenTerminalHere.cpp
-		auto hwnd = ::GetForegroundWindow();
-		if (hwnd)
+		wil::com_ptr_nothrow<IShellItem> psi;
+		FindLocationFromSite(psi.put());
+		if (psi)
 		{
-			TCHAR szName[MAX_PATH] = {0};
-			::GetClassName(hwnd, szName, MAX_PATH);
-			if (0 == StrCmp(szName, L"WorkerW") ||
-				0 == StrCmp(szName, L"Progman"))
-			{
-				// special folder: desktop
-				auto hr = ::SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT, szName);
-				if (SUCCEEDED(hr))
-				{
-					currentPath = szName;
-				}
-			}
+			auto currentPath = PathHelper::getPath(psi.get());
+			ReadCommands(false, currentPath);
 		}
-		ReadCommands(false, currentPath);
 	}
 
 	if (m_commands.size() == 0)
@@ -146,7 +137,8 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray *selecti
 
 IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand **enumCommands)
 {
-	*enumCommands = nullptr;
+	wil::assign_null_to_opt_param(enumCommands);
+
 	if (m_commands.size() == 1)
 	{
 		return E_NOTIMPL;
@@ -234,3 +226,23 @@ try
 	return S_OK;
 }
 CATCH_RETURN();
+
+
+HRESULT CustomExplorerCommand::FindLocationFromSite(IShellItem** location) const noexcept
+{
+	wil::assign_null_to_opt_param(location);
+
+	if (!m_site)
+	{
+		return S_FALSE;
+	}
+
+	//https://github.com/microsoft/terminal/blame/main/src/cascadia/ShellExtension/OpenTerminalHere.cpp#L157
+	wil::com_ptr_nothrow<IServiceProvider> serviceProvider;
+	RETURN_IF_FAILED(m_site.query_to(serviceProvider.put()));
+	wil::com_ptr_nothrow<IFolderView> folderView;
+	RETURN_IF_FAILED(serviceProvider->QueryService(SID_SFolderView, IID_PPV_ARGS(folderView.put())));
+	RETURN_IF_FAILED(folderView->GetFolder(IID_PPV_ARGS(location)));
+	return S_OK;
+}
+

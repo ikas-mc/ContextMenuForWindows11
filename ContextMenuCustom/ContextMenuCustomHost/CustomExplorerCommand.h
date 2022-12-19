@@ -15,7 +15,9 @@ public:
 	IFACEMETHODIMP EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand **enumCommands) override;
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray *selection, _In_opt_ IBindCtx *) noexcept override;
 	void ReadCommands(bool multipleFiles, const std::wstring &current_path);
+	HRESULT FindLocationFromSite(IShellItem** location) const noexcept;
 
 private:
 	std::vector<ComPtr<CustomSubExplorerCommand>> m_commands;
+
 };

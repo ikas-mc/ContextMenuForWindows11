@@ -15,6 +15,7 @@
 #include <wil/stl.h>
 #include <wil/filesystem.h>
 #include <wil/win32_helpers.h>
+#include <wil/com.h>
 #include <shlwapi.h>
 
 using namespace Microsoft::WRL;
@@ -33,5 +34,5 @@ public:
 	IFACEMETHODIMP GetSite(_In_ REFIID riid, _COM_Outptr_ void** site) noexcept;
 
 protected:
-	ComPtr<IUnknown> m_site;
+	wil::com_ptr_nothrow<IUnknown> m_site;
 };

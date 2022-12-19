@@ -68,5 +68,6 @@ IFACEMETHODIMP BaseExplorerCommand::SetSite(_In_ IUnknown* site) noexcept
 }
 IFACEMETHODIMP BaseExplorerCommand::GetSite(_In_ REFIID riid, _COM_Outptr_ void** site) noexcept
 {
-	return m_site.CopyTo(riid, site);
+	RETURN_IF_FAILED(m_site.query_to(riid, site));
+	return S_OK;
 }

@@ -48,6 +48,17 @@ public:
 		return std::wstring{};
 	}
 
+	static std::wstring getPath(IShellItem* item)
+	{
+		if (item)
+		{
+			wil::unique_cotaskmem_string path;
+			item->GetDisplayName(SIGDN_FILESYSPATH, path.put());
+			return std::wstring{ path.get() };
+		}
+		return std::wstring{};
+	}
+
 	static std::wstring getPaths(IShellItemArray *selection, const std::wstring &delimiter)
 	{
 		if (selection)
@@ -129,4 +140,5 @@ public:
 			src.replace(pos, fromLength, to);
 		}
 	}
+
 };
