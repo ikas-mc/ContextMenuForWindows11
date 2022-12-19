@@ -20,17 +20,33 @@ using namespace std::filesystem;
 CustomExplorerCommand::CustomExplorerCommand() {
 }
 
-const EXPCMDFLAGS CustomExplorerCommand::Flags() { return ECF_HASSUBCOMMANDS; }
+IFACEMETHODIMP CustomExplorerCommand::GetFlags(_Out_ EXPCMDFLAGS* flags)
+{
+	*flags = ECF_HASSUBCOMMANDS;
+
+	return S_OK;
+}
+
+
+IFACEMETHODIMP CustomExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon)
+{
+	*icon = nullptr;
+
+	if (m_commands.size() == 1) {
+		return m_commands.at(0)->GetIcon(items, icon);
+	}
+	else {
+		return BaseExplorerCommand::GetIcon(items, icon);
+	}
+}
 
 IFACEMETHODIMP CustomExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
 {
 	*name = nullptr;
 
-
 	if (m_commands.size() == 1) {
-		return SHStrDupW(m_commands.at(0)->_title.c_str(), name);
+		return m_commands.at(0)->GetTitle(items, name);
 	}
-
 
 	winrt::hstring title = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(L"Custom_Menu_Name"), L"Open With");
 	return SHStrDupW(title.data(), name);
@@ -39,21 +55,10 @@ IFACEMETHODIMP CustomExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, 
 IFACEMETHODIMP CustomExplorerCommand::GetCanonicalName(_Out_ GUID* guidCommandName)
 {
 	*guidCommandName = __uuidof(this);
+
 	return S_OK;
 }
 
-const  wchar_t* CustomExplorerCommand::GetIconId()
-{
-	DWORD value = 0;
-	DWORD size = sizeof(value);
-	auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme", SRRF_RT_DWORD, NULL, &value, &size);
-	if (result == ERROR_SUCCESS && !!value) {
-		return L",-103";
-	}
-	else {
-		return L",-101";
-	}
-}
 
 IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) {
 
@@ -133,7 +138,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand** enumCommands)
 {
 	*enumCommands = nullptr;
-	if (m_commands.size() ==1) {
+	if (m_commands.size() == 1) {
 		return E_NOTIMPL;
 	}
 	else {
@@ -170,26 +175,26 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring&
 		concurrency::create_task([&]
 			{
 				path folder{ localFolder.c_str() };
-				folder /= "custom_commands";
-				if (exists(folder) && is_directory(folder)) {
-					std::wstring ext;
-					bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
-					if (!multipleFiles) {
-						PathHelper::getExt(currentPath, isDirectory, ext);
-					}
+		folder /= "custom_commands";
+		if (exists(folder) && is_directory(folder)) {
+			std::wstring ext;
+			bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
+			if (!multipleFiles) {
+				PathHelper::getExt(currentPath, isDirectory, ext);
+			}
 
-					for (auto& file : directory_iterator{ folder })
-					{
-						std::ifstream fs{ file.path() };
-						std::stringstream buffer;
-						buffer << fs.rdbuf();//TODO 
-						auto content = winrt::to_hstring(buffer.str());
-						auto command = Make<CustomSubExplorerCommand>(content);
-						if (command->Accept(multipleFiles, isDirectory, ext)) {
-							m_commands.push_back(command);
-						}
-					}
+			for (auto& file : directory_iterator{ folder })
+			{
+				std::ifstream fs{ file.path() };
+				std::stringstream buffer;
+				buffer << fs.rdbuf();//TODO 
+				auto content = winrt::to_hstring(buffer.str());
+				auto command = Make<CustomSubExplorerCommand>(content);
+				if (command->Accept(multipleFiles, isDirectory, ext)) {
+					m_commands.push_back(command);
 				}
+			}
+		}
 			}).wait();
 	}
 
@@ -202,17 +207,8 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring&
 IFACEMETHODIMP CustomExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx* ctx) noexcept try
 {
 
-	/*HWND parent = nullptr;
-	if (m_site)
-	{
-		RETURN_IF_FAILED(IUnknown_GetWindow(m_site.Get(), &parent));
-	}
-	
-
-	MessageBox(parent, L"teset", L"ContextMenu", MB_OK);*/
-
-	if (m_commands.size() ==1) {
-		m_commands.at(0)->Invoke(selection, ctx);
+	if (m_commands.size() == 1) {
+		return m_commands.at(0)->Invoke(selection, ctx);
 	}
 
 	return S_OK;

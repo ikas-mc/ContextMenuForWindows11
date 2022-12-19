@@ -4,7 +4,7 @@
 
 using namespace winrt::Windows::Data::Json;
 
-CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) : _accept_directory(false),  _accept_multiple_files_flag(0), m_index(0) {
+CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) : _accept_directory(false), _accept_file(false), _accept_multiple_files_flag(0), m_index(0) {
 	JsonObject result;
 	if (JsonObject::TryParse(configContent, result)) {
 		_title = result.GetNamedString(L"title", L"Custom Menu");
@@ -105,7 +105,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 				}
 
 				PathHelper::replaceAll(param, L"{path}", paths);
-				auto exePath=wil::ExpandEnvironmentStringsW(_exe.c_str());
+				auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 				ShellExecute(parent, L"open", exePath.get(), param.c_str(), parentPath.data(), SW_SHOWNORMAL);
 			}
 		}
@@ -136,15 +136,15 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 		auto param = std::wstring{ _param };
 
 		std::filesystem::path file(path);
-	
-			
-			if (param.find(L"{parent}") != std::wstring::npos) {
-				PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
-			}
-			if (param.find(L"{name}") != std::wstring::npos) {
-				PathHelper::replaceAll(param, L"{name}", file.filename().wstring());
-			}
-		
+
+
+		if (param.find(L"{parent}") != std::wstring::npos) {
+			PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
+		}
+		if (param.find(L"{name}") != std::wstring::npos) {
+			PathHelper::replaceAll(param, L"{name}", file.filename().wstring());
+		}
+
 		PathHelper::replaceAll(param, L"{path}", path);
 
 		auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
