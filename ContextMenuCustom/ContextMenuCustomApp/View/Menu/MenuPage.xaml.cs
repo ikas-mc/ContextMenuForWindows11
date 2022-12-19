@@ -16,7 +16,7 @@ namespace ContextMenuCustomApp.View.Menu
         {
             NavigationCacheMode = NavigationCacheMode.Required;
             InitializeComponent();
-            _viewModel = new MenuPageViewModel(OnException);
+            _viewModel = new MenuPageViewModel();
             this.RegisterMessageHandler(_viewModel);
         }
 
@@ -27,7 +27,12 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async void Refresh_Click(object sender, RoutedEventArgs e)
         {
+            var selectedItem = CommandList.SelectedItem as MenuItem;
             await _viewModel.LoadAsync();
+            if (null != selectedItem?.File)
+            {
+                CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(item => Equals(selectedItem.File.Path, item.File.Path));
+            }
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
@@ -84,12 +89,6 @@ namespace ContextMenuCustomApp.View.Menu
                 this.ShowMessage("no selected item", MessageType.Warnning);
             }
         }
-
-        private void OnException(Exception e, string message)
-        {
-            this.ShowMessage(message ?? e.Message, MessageType.Error);
-        }
-
         private async void OpenExeButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (CommandList.SelectedItem is MenuItem item)
@@ -122,6 +121,11 @@ namespace ContextMenuCustomApp.View.Menu
         {
             _viewModel.UpdateCacheTime();
             CacheTip.IsOpen = true;
+        }
+
+        private void CommandList_DragItemsCompleted(Windows.UI.Xaml.Controls.ListViewBase sender, Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs args)
+        {
+
         }
     }
 }

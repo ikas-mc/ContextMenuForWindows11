@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="using:ContextMenuCustomApp.View.Common"
+    xmlns:controls="using:ContextMenuCustomApp.View.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -20,6 +21,7 @@
     </Page.Resources>
 
     <Grid>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="*" />
@@ -48,6 +50,10 @@
                 x:Name="CommandList"
                 Grid.Row="1"
                 Grid.Column="0"
+                CanDragItems="False"
+                DragItemsCompleted="CommandList_DragItemsCompleted"
+                AllowDrop="False"
+                CanReorderItems="False"
                 ItemsSource="{Binding MenuItems}"
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
@@ -77,7 +83,11 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Click="Refresh_Click"
-                    ToolTipService.ToolTip="Refresh menus">
+                    ToolTipService.ToolTip="Refresh menus"
+                    >
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </Button.KeyboardAccelerators>
                     <SymbolIcon Symbol="Refresh" />
                 </Button>
                 <Button
@@ -94,6 +104,7 @@
                 Grid.Row="2"
                 Grid.Column="0"
                 HorizontalAlignment="Right"
+                VerticalAlignment="Center"
                 Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" TextLineBounds="Full">
                     Cache:
@@ -105,17 +116,12 @@
                     IsLightDismissEnabled="True"
                     PlacementMargin="4"
                     PreferredPlacement="Auto"
-                    Target="{x:Bind BuildCacheButton}">
+                    Target="{x:Bind BuildCacheTipButton}">
                     <muxc:TeachingTip.Content>
                         <TextBlock>
-                            <Run>Preprocess the menu files to cache</Run>
+                            <Run>Cache menu content</Run>
                             <LineBreak />
-                            <Run>This can optimize the menu display speed</Run>
-                            <LineBreak />
-                            <Run Foreground="Red">Rebuild after modifying the menu !</Run>
-                            <LineBreak />
-                            <LineBreak />
-                            <Run Text="Click clear button right to disable cache" />
+                            <Run>This can optimize the menu loading speed</Run>
                             <LineBreak />
                             <LineBreak />
                             <Run>Cache Time:</Run>
@@ -135,23 +141,12 @@
                     Click="BuildCacheTipButton_Click">
                     <SymbolIcon Symbol="Help" />
                 </Button>
-                <Button
-                    x:Name="BuildCacheButton"
-                    Margin="4,0"
-                    Padding="4"
+                <ToggleSwitch
+                    MinWidth="0"
+                    MinHeight="40"
                     VerticalAlignment="Center"
-                    Click="{x:Bind _viewModel.Build}"
-                    ToolTipService.ToolTip="Preprocess menus to cache">
-                    <SymbolIcon Symbol="Sync" />
-                </Button>
-                <Button
-                    Margin="4,0"
-                    Padding="4"
-                    VerticalAlignment="Center"
-                    Click="{x:Bind _viewModel.ClearCache}"
-                    ToolTipService.ToolTip="Clear menus cache">
-                    <SymbolIcon Symbol="Clear" />
-                </Button>
+                    IsOn="{x:Bind _viewModel.CacheEnabled, Mode=TwoWay}"
+                    Style="{ThemeResource ToggleSwitchContentLelft}" />
             </StackPanel>
         </Grid>
         <Grid
@@ -172,135 +167,128 @@
                 Padding="4,4,16,4"
                 DataContext="{Binding SelectedItem, ElementName=CommandList}"
                 Visibility="{Binding SelectedItem, ElementName=CommandList, Converter={StaticResource VisibilityConverter}}">
-                <Grid Padding="0,0,0,64">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBox
-                        Grid.Row="0"
-                        Header="Title"
-                        PlaceholderText="open with notepad"
-                        Text="{Binding Title, Mode=TwoWay}" />
-                    <RelativePanel
-                        Grid.Row="1"
-                        Margin="0,8,0,0"
-                        HorizontalAlignment="Stretch">
-                        <TextBox
-                            Margin="0,0,64,0"
-                            Header="Exe"
-                            PlaceholderText="&quot;C:\Windows\notepad.exe&quot;"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignLeftWithPanel="True"
-                            RelativePanel.AlignRightWith="OpenExeButton"
-                            Text="{Binding Exe, Mode=TwoWay}" />
-                        <Button
-                            x:Name="OpenExeButton"
-                            Width="56"
-                            Margin="0,0,0,-1"
-                            Click="OpenExeButton_OnClick"
-                            RelativePanel.AlignBottomWithPanel="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            ToolTipService.ToolTip="Open">
-                            <SymbolIcon Symbol="OpenFile" />
-                        </Button>
-                    </RelativePanel>
-                    <TextBox
-                        Grid.Row="2"
-                        Margin="0,8,0,0"
-                        Header="Param"
-                        PlaceholderText="&quot;{path}&quot;"
-                        Text="{Binding Param, Mode=TwoWay}" />
-                    <TextBox
-                        Grid.Row="3"
-                        Margin="0,8,0,0"
-                        Header="Icon"
-                        PlaceholderText="&quot;c:\some\icon.icon&quot;"
-                        Text="{Binding Icon, Mode=TwoWay}" />
-                    <TextBox
-                        Grid.Row="4"
-                        Margin="0,8,0,0"
-                        Header="Match Extensions"
-                        PlaceholderText="&quot;.txt .zip&quot; or *"
-                        Text="{Binding AcceptExts, Mode=TwoWay}" />
-                    <ToggleSwitch
-                        Grid.Row="5"
-                        Margin="0,8,0,0"
-                        Header="Match Folder"
-                        IsOn="{Binding AcceptDirectory, Mode=TwoWay}" />
+                <StackPanel Padding="0,0,0,64" Orientation="Vertical">
+
+                    <controls:SettingItem Header="Title">
+                        <controls:SettingItem.ActionContent>
+                            <TextBox PlaceholderText="open with notepad" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
+
+                    <controls:SettingItem Header="Order">
+                        <controls:SettingItem.ActionContent>
+                            <muxc:NumberBox
+                                Maximum="999999"
+                                Minimum="-999999"
+                                PlaceholderText="0"
+                                SmallChange="1"
+                                LargeChange="10"
+                                SpinButtonPlacementMode="Inline"
+                                Value="{Binding Index, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
+
+                    <controls:SettingItem Header="Exe">
+                        <controls:SettingItem.ActionContent>
+                            <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;"
+                                     Text="{Binding Exe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </controls:SettingItem.ActionContent>
+
+                        <controls:SettingItem.RightContent>
+                            <Button
+                                x:Name="OpenExeButton"
+                                Width="56"
+                                Margin="8,0,0,-1"
+                                Click="OpenExeButton_OnClick"
+                                ToolTipService.ToolTip="Open">
+                                <SymbolIcon Symbol="OpenFile" />
+                            </Button>
+                        </controls:SettingItem.RightContent>
+                    </controls:SettingItem>
 
 
-                    <ToggleSwitch
-                        Grid.Row="6"
-                        Margin="0,8,0,0"
-                        HorizontalAlignment="Stretch"
-                        IsOn="{Binding AcceptMultipleFiles, Mode=TwoWay}"
-                        Visibility="Collapsed">
-                        <ToggleSwitch.HeaderTemplate>
-                            <DataTemplate>
-                                <RelativePanel>
-                                    <TextBlock RelativePanel.AlignLeftWithPanel="True" Text="[Multiple Files] Match Multiple Files" />
-                                    <HyperlinkButton
-                                        Padding="0"
-                                        NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files"
-                                        RelativePanel.AlignRightWithPanel="True"
-                                        Visibility="{Binding AcceptMultipleFiles}">
-                                        <TextBlock Text="Read wiki before use!!!" />
-                                    </HyperlinkButton>
-                                </RelativePanel>
-                            </DataTemplate>
-                        </ToggleSwitch.HeaderTemplate>
+                    <controls:SettingItem Header="Param">
+                        <controls:SettingItem.ActionContent>
+                            <TextBox PlaceholderText="&quot;{path}&quot;"
+                                     Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
 
-                    </ToggleSwitch>
 
-                    <ComboBox
-                        Grid.Row="6"
-                        Margin="0,8,0,0"
-                        HorizontalAlignment="Stretch"
-                        SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
-                        <ComboBoxItem Content="Off" />
-                        <ComboBoxItem Content="Each (execute [exe] on each path)" />
-                        <ComboBoxItem Content="Join (execute [exe] only once)" />
+                    <controls:SettingItem Header="Icon">
+                        <controls:SettingItem.ActionContent>
+                            <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;"
+                                     Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
 
-                        <ComboBox.HeaderTemplate>
-                            <DataTemplate>
-                                <RelativePanel>
-                                    <TextBlock RelativePanel.AlignLeftWithPanel="True" Text="[Multiple Files] Match Multiple Files" />
-                                    <HyperlinkButton
-                                        Padding="0"
-                                        NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files"
-                                        RelativePanel.AlignRightWithPanel="True">
-                                        <TextBlock Text="Read wiki before use!!!" />
-                                    </HyperlinkButton>
-                                </RelativePanel>
-                            </DataTemplate>
-                        </ComboBox.HeaderTemplate>
-                    </ComboBox>
+                    <controls:SettingItem Header="Match Folder">
+                        <controls:SettingItem.RightContent>
+                            <ToggleSwitch IsOn="{Binding AcceptDirectory, Mode=TwoWay}" Style="{ThemeResource ToggleSwitchContentLelft}" />
+                        </controls:SettingItem.RightContent>
+                    </controls:SettingItem>
 
-                    <TextBox
-                        Grid.Row="7"
-                        Margin="0,8,0,0"
-                        Header="[Multiple Files] Path Delimiter"
-                        PlaceholderText="|"
-                        Text="{Binding PathDelimiter, Mode=TwoWay}"
-                        Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+                    <controls:SettingItem Header="Match File">
+                        <controls:SettingItem.RightContent>
+                            <ToggleSwitch IsOn="{Binding AcceptFile, Mode=TwoWay}" Style="{ThemeResource ToggleSwitchContentLelft}" />
+                        </controls:SettingItem.RightContent>
+                        <controls:SettingItem.BottomContent>
+                            <TextBox
+                                Header="File Extensions"
+                                PlaceholderText=".txt .zip  or *"
+                                Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Visibility="{Binding AcceptFile}" />
 
-                    <TextBox
-                        Grid.Row="8"
-                        Margin="0,8,0,0"
-                        Header="[Multiple Files] Param"
-                        PlaceholderText="{}{path}"
-                        Text="{Binding ParamForMultipleFiles, Mode=TwoWay}"
-                        Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+                        </controls:SettingItem.BottomContent>
 
-                </Grid>
+                    </controls:SettingItem>
+
+
+                    <controls:SettingItem Header="Match Multi-File">
+                        <controls:SettingItem.Description>
+                            <HyperlinkButton
+                                Padding="0"
+                                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files"
+                                RelativePanel.AlignRightWithPanel="True">
+                                <TextBlock Text="Read wiki!!!" />
+                            </HyperlinkButton>
+                        </controls:SettingItem.Description>
+                        <controls:SettingItem.RightContent>
+                            <ComboBox
+                                Grid.Row="7"
+                                HorizontalAlignment="Stretch"
+                                SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
+                                <ComboBoxItem Content="Off" />
+                                <ComboBoxItem Content="Each (execute [exe] on each path)" />
+                                <ComboBoxItem Content="Join (execute [exe] only once)" />
+                            </ComboBox>
+                        </controls:SettingItem.RightContent>
+
+                        <controls:SettingItem.BottomContent>
+                            <StackPanel Orientation="Vertical">
+                                <TextBox
+                                    Grid.Row="8"
+                                    Header="Path Delimiter"
+                                    PlaceholderText="|"
+                                    Text="{Binding PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+
+                                <TextBox
+                                    Grid.Row="9"
+                                    Margin="0,8,0,0"
+                                    Header="Param"
+                                    PlaceholderText="{}{path}"
+                                    Text="{Binding ParamForMultipleFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+
+                            </StackPanel>
+                        </controls:SettingItem.BottomContent>
+
+
+
+                    </controls:SettingItem>
+                    <!--    -->
+                </StackPanel>
 
             </ScrollViewer>
             <Grid
@@ -328,7 +316,6 @@
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
 
-
                 <Button
                     Margin="4,0"
                     Padding="4"
@@ -337,6 +324,10 @@
                     Click="Save_Click"
                     ToolTipService.ToolTip="Save menu">
                     <SymbolIcon Symbol="Save" />
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control"
+                                             Key="S" />
+                    </Button.KeyboardAccelerators>
                 </Button>
 
                 <Button
@@ -346,6 +337,9 @@
                     VerticalAlignment="Center"
                     Click="Delete_Click"
                     ToolTipService.ToolTip="Delete menu">
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Delete" />
+                    </Button.KeyboardAccelerators>
                     <SymbolIcon Symbol="Delete" />
                 </Button>
 

@@ -15,14 +15,13 @@
 #include <wil/stl.h>
 #include <wil/filesystem.h>
 #include <wil/win32_helpers.h>
+#include <wil/com.h>
 #include <shlwapi.h>
 
 using namespace Microsoft::WRL;
 class BaseExplorerCommand : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IExplorerCommand, IObjectWithSite>
 {
 public:
-	const virtual EXPCMDFLAGS Flags();
-	const virtual wchar_t* GetIconId();
 	IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name);
 	IFACEMETHODIMP GetIcon(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* icon);
 	IFACEMETHODIMP GetToolTip(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* infoTip);
@@ -35,5 +34,5 @@ public:
 	IFACEMETHODIMP GetSite(_In_ REFIID riid, _COM_Outptr_ void** site) noexcept;
 
 protected:
-	ComPtr<IUnknown> m_site;
+	wil::com_ptr_nothrow<IUnknown> m_site;
 };

@@ -1,0 +1,98 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ContextMenuCustomApp.View.Controls">
+    <Style TargetType="local:SettingItem">
+        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <Setter Property="Background" Value="{ThemeResource SettingItemBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource SettingItemBorderThickness}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource SettingItemBorderBrush}" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Margin" Value="0,0,0,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:SettingItem">
+                    <Grid
+                        x:Name="RootGrid"
+                        MinHeight="48"
+                        Padding="{TemplateBinding Padding}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" MinWidth="120" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <ContentPresenter
+                            x:Name="IconPresenter"
+                            Grid.RowSpan="2"
+                            MaxWidth="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            AutomationProperties.AccessibilityView="Raw"
+                            Content="{TemplateBinding Icon}"
+                            Foreground="{ThemeResource SettingItemPrimaryForegroundBrush}" />
+
+                        <StackPanel
+                            Grid.RowSpan="2"
+                            Grid.Column="1"
+                            Margin="0,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                x:Name="HeaderPresenter"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource SettingItemPrimaryForegroundBrush}"
+                                Text="{TemplateBinding Header}" />
+
+                            <ContentPresenter
+                                x:Name="DescriptionPresenter"
+                                Content="{TemplateBinding Description}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                TextWrapping="WrapWholeWords" />
+                        </StackPanel>
+
+                        <ContentPresenter
+                            x:Name="ActionContentPresenter"
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding ActionContent}" />
+
+                        <ContentPresenter
+                            x:Name="RightContentPresenter"
+                            Grid.Column="3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding RightContent}" />
+
+                        <ContentPresenter
+                            x:Name="BottomContentPresenter"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding BottomContent}" />
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

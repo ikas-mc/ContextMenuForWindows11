@@ -2,9 +2,6 @@
 #include "BaseExplorerCommand.h"
 
 
-const EXPCMDFLAGS BaseExplorerCommand::Flags() { return ECF_DEFAULT; }
-const  wchar_t* BaseExplorerCommand::GetIconId() { return L",-101"; }
-
 IFACEMETHODIMP BaseExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
 {
 	*name = nullptr;
@@ -15,8 +12,18 @@ IFACEMETHODIMP BaseExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Ou
 {
 	*icon = nullptr;
 	std::filesystem::path modulePath{ wil::GetModuleFileNameW<std::wstring>(wil::GetModuleInstanceHandle()) };
-	const auto iconPath{ modulePath.wstring() + GetIconId() };
-	return SHStrDupW(iconPath.c_str(), icon);
+
+	DWORD value = 0;
+	DWORD size = sizeof(value);
+	auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme", SRRF_RT_DWORD, NULL, &value, &size);
+	if (result == ERROR_SUCCESS && !!value) {
+		const auto iconPath{ modulePath.wstring() + L",-103" };
+		return SHStrDupW(iconPath.c_str(), icon);
+	}
+	else {
+		const auto iconPath{ modulePath.wstring() + L",-101" };
+		return SHStrDupW(iconPath.c_str(), icon);
+	}
 }
 
 IFACEMETHODIMP BaseExplorerCommand::GetToolTip(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* infoTip)
@@ -45,7 +52,7 @@ CATCH_RETURN();
 
 IFACEMETHODIMP BaseExplorerCommand::GetFlags(_Out_ EXPCMDFLAGS* flags)
 {
-	*flags = Flags();
+	*flags = ECF_DEFAULT;
 	return S_OK;
 }
 IFACEMETHODIMP BaseExplorerCommand::EnumSubCommands(_COM_Outptr_ IEnumExplorerCommand** enumCommands)
@@ -61,5 +68,6 @@ IFACEMETHODIMP BaseExplorerCommand::SetSite(_In_ IUnknown* site) noexcept
 }
 IFACEMETHODIMP BaseExplorerCommand::GetSite(_In_ REFIID riid, _COM_Outptr_ void** site) noexcept
 {
-	return m_site.CopyTo(riid, site);
+	RETURN_IF_FAILED(m_site.query_to(riid, site));
+	return S_OK;
 }

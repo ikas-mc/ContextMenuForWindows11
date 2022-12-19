@@ -18,15 +18,16 @@ namespace ContextMenuCustomApp
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            Patchs.Patch1.Run();
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             //TODO check first run
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            var size = new Size(800, 768);
-            ApplicationView.PreferredLaunchViewSize = size;
-            ApplicationView.GetForCurrentView().TryResizeView(size);
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
+            //var size = new Size(800, 768);
+            //ApplicationView.PreferredLaunchViewSize = size;
+            //ApplicationView.GetForCurrentView().TryResizeView(size);
 
             //TODO use shell
             Frame rootFrame = Window.Current.Content as Frame;
@@ -70,7 +71,7 @@ namespace ContextMenuCustomApp
                 {
                     var arguments = commandLineActivatedEventArgs.Operation.Arguments;
                     MessageDialog dialog = new MessageDialog(arguments);
-                    _=dialog.ShowAsync();
+                    _ = dialog.ShowAsync();
                 }
             }
         }
