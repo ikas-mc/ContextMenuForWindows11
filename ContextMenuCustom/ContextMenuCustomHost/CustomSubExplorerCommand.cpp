@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "CustomSubExplorerCommand.h"
 #include "PathHelper.hpp"
+#include <regex>
 
 using namespace winrt::Windows::Data::Json;
 
-CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const &configContent) : _accept_directory(false), _accept_file(false), _accept_multiple_files_flag(0), m_index(0)
+CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configContent) : _accept_directory(false), _accept_file(false), _accept_multiple_files_flag(0), m_index(0)
 {
 	JsonObject result;
 	if (JsonObject::TryParse(configContent, result))
@@ -19,11 +20,18 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const &configC
 		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
 		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
 		_accept_multiple_files_flag = (int)result.GetNamedNumber(L"acceptMultipleFilesFlag", 0);
+		_accept_file_flag = (int)result.GetNamedNumber(L"acceptFileFlag", 0);
+		_accept_file_regex = result.GetNamedString(L"acceptFileRegex", L"");
 		m_index = (int)result.GetNamedNumber(L"index", 0);
+
+		//
+		if (_accept_file_flag == 0 && _accept_file) {
+			_accept_file_flag = MATCH_FILE_EXT;
+		}
 	}
 }
 
-bool CustomSubExplorerCommand::Accept(bool multipleFiles, bool isDirectory, const std::wstring &ext)
+bool CustomSubExplorerCommand::Accept(bool multipleFiles, bool isDirectory, const std::wstring& name, const std::wstring& ext)
 {
 	if (multipleFiles)
 	{
@@ -35,25 +43,36 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, bool isDirectory, cons
 		return _accept_directory;
 	}
 
-	if (!_accept_file)
+	if (_accept_file_flag == MATCH_FILE_EXT)
 	{
-		return false;
+		if (ext.empty() || _accept_exts.empty())
+		{
+			return true;
+		}
+
+		if (_accept_exts.find(L'*') != std::wstring::npos)
+		{
+			return true;
+		}
+
+		return _accept_exts.find(ext) != std::wstring::npos;
+	}
+	else if (_accept_file_flag == MATCH_FILE_REGEX)
+	{
+		if (_accept_file_regex.empty())
+		{
+			return true;
+		}
+
+		std::wregex fileRegex(_accept_file_regex);
+
+		return  std::regex_match(name, fileRegex);
 	}
 
-	if (ext.empty() || _accept_exts.empty())
-	{
-		return true;
-	}
-
-	if (_accept_exts.find(L'*') != std::wstring::npos)
-	{
-		return true;
-	}
-
-	return _accept_exts.find(ext) != std::wstring::npos;
+	return false;
 }
 
-IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray *items, _Outptr_result_nullonfailure_ PWSTR *icon)
+IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon)
 {
 	*icon = nullptr;
 	if (!_icon.empty())
@@ -66,7 +85,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray *items
 	}
 }
 
-IFACEMETHODIMP CustomSubExplorerCommand::GetTitle(_In_opt_ IShellItemArray *items, _Outptr_result_nullonfailure_ PWSTR *name)
+IFACEMETHODIMP CustomSubExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name)
 {
 	*name = nullptr;
 	if (_title.empty())
@@ -79,13 +98,13 @@ IFACEMETHODIMP CustomSubExplorerCommand::GetTitle(_In_opt_ IShellItemArray *item
 	}
 }
 
-IFACEMETHODIMP CustomSubExplorerCommand::GetState(_In_opt_ IShellItemArray *selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE *cmdState)
+IFACEMETHODIMP CustomSubExplorerCommand::GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState)
 {
 	*cmdState = ECS_ENABLED;
 	return S_OK;
 }
 
-IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray *selection, _In_opt_ IBindCtx *) noexcept
+IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept
 try
 {
 	HWND parent = nullptr;
@@ -104,7 +123,7 @@ try
 			auto paths = PathHelper::getPaths(selection, _path_delimiter);
 			if (!paths.empty())
 			{
-				auto param = _param_for_multiple_files.empty() ? std::wstring{_param} : std::wstring{_param_for_multiple_files};
+				auto param = _param_for_multiple_files.empty() ? std::wstring{ _param } : std::wstring{ _param_for_multiple_files };
 				// get parent from first path
 
 				std::wstring parentPath;
@@ -130,7 +149,7 @@ try
 			auto paths = PathHelper::getPathList(selection);
 			if (!paths.empty())
 			{
-				for (auto &path : paths)
+				for (auto& path : paths)
 				{
 					if (path.empty())
 					{
@@ -150,11 +169,11 @@ try
 }
 CATCH_RETURN();
 
-void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring &path)
+void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path)
 {
 	if (!path.empty())
 	{
-		auto param = std::wstring{_param};
+		auto param = std::wstring{ _param };
 
 		std::filesystem::path file(path);
 

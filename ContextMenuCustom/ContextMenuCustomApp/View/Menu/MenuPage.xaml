@@ -230,15 +230,30 @@
 
                     <controls:SettingItem Header="Match File">
                         <controls:SettingItem.RightContent>
-                            <ToggleSwitch IsOn="{Binding AcceptFile, Mode=TwoWay}" Style="{ThemeResource ToggleSwitchContentLelft}" />
+                            <ComboBox
+                                HorizontalAlignment="Stretch"
+                                SelectedIndex="{Binding AcceptFileFlag, Mode=TwoWay}">
+                                <ComboBoxItem Content="Off" />
+                                <ComboBoxItem Content="Ext" />
+                                <ComboBoxItem Content="Regex" />
+                            </ComboBox>
                         </controls:SettingItem.RightContent>
                         <controls:SettingItem.BottomContent>
-                            <TextBox
+                            <StackPanel Orientation="Vertical">
+                                <TextBox
                                 Header="File Extensions"
                                 PlaceholderText=".txt .zip  or *"
                                 Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Visibility="{Binding AcceptFile}" />
+                                Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
 
+                                <TextBox
+                                Header="Regex"
+                                PlaceholderText="\\.txt"
+                                Text="{Binding AcceptFileRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+
+                            </StackPanel>
+                          
                         </controls:SettingItem.BottomContent>
 
                     </controls:SettingItem>
@@ -255,7 +270,6 @@
                         </controls:SettingItem.Description>
                         <controls:SettingItem.RightContent>
                             <ComboBox
-                                Grid.Row="7"
                                 HorizontalAlignment="Stretch"
                                 SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
                                 <ComboBoxItem Content="Off" />
@@ -267,14 +281,12 @@
                         <controls:SettingItem.BottomContent>
                             <StackPanel Orientation="Vertical">
                                 <TextBox
-                                    Grid.Row="8"
                                     Header="Path Delimiter"
                                     PlaceholderText="|"
                                     Text="{Binding PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
                                 <TextBox
-                                    Grid.Row="9"
                                     Margin="0,8,0,0"
                                     Header="Param"
                                     PlaceholderText="{}{path}"

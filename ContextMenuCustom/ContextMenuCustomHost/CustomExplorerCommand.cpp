@@ -156,10 +156,11 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring 
 	if (menus.Size() > 0)
 	{
 		std::wstring ext;
+		std::wstring name;
 		bool isDirectory = true; // TODO current_path may be empty when right click on desktop.  set directory as default?
 		if (!multipleFiles)
 		{
-			PathHelper::getExt(currentPath, isDirectory, ext);
+			PathHelper::getExt(currentPath, isDirectory, name, ext);
 		}
 
 		auto current = menus.begin();
@@ -171,7 +172,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring 
 				if (conent.size() > 0)
 				{
 					const auto command = Make<CustomSubExplorerCommand>(conent);
-					if (command->Accept(multipleFiles, isDirectory, ext))
+					if (command->Accept(multipleFiles, isDirectory, name, ext))
 					{
 						m_commands.push_back(command);
 					}
@@ -187,9 +188,10 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring 
 			folder /= "custom_commands";
 			if (exists(folder) && is_directory(folder)) {
 				std::wstring ext;
+				std::wstring name;
 				bool isDirectory = true; //TODO current_path may be empty when right click on desktop.  set directory as default?
 				if (!multipleFiles) {
-					PathHelper::getExt(currentPath, isDirectory, ext);
+					PathHelper::getExt(currentPath, isDirectory, name, ext);
 				}
 
 				for (auto& file : directory_iterator{ folder })
@@ -199,7 +201,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring 
 					buffer << fs.rdbuf();//TODO 
 					auto content = winrt::to_hstring(buffer.str());
 					auto command = Make<CustomSubExplorerCommand>(content);
-					if (command->Accept(multipleFiles, isDirectory, ext)) {
+					if (command->Accept(multipleFiles, isDirectory, name, ext)) {
 						m_commands.push_back(command);
 					}
 				}

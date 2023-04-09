@@ -11,12 +11,13 @@
 class PathHelper
 {
 public:
-	static void getExt(const std::wstring &path, bool &isDirectory, std::wstring &ext)
+	static void getExt(const std::wstring &path, bool &isDirectory, std::wstring&name, std::wstring &ext)
 	{
 		if (!path.empty())
 		{
 			std::filesystem::path file(path);
 			isDirectory = is_directory(file);
+			name = file.filename();
 			if (!isDirectory)
 			{
 				ext = file.extension();

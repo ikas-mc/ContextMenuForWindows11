@@ -16,7 +16,7 @@ namespace ContextMenuCustomApp.View.Menu
         private readonly MenuService _menuService;
         public ObservableCollection<MenuItem> MenuItems { get; }
 
-        public readonly int MultipleFilesFlagJOIN = (int)MultipleFilesFlag.JOIN;
+        public readonly int MultipleFilesFlagJOIN = (int)MultipleFilesFlagEnum.JOIN;
 
         public MenuPageViewModel()
         {

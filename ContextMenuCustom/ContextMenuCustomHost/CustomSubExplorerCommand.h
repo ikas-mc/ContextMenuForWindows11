@@ -9,6 +9,9 @@
 constexpr int MultipleFilesFlagEACH = 1;
 constexpr int MultipleFilesFlagJOIN = 2;
 
+constexpr int MATCH_FILE_EXT = 1;
+constexpr int MATCH_FILE_REGEX = 2;
+
 class CustomSubExplorerCommand final : public BaseExplorerCommand
 {
 public:
@@ -17,7 +20,7 @@ public:
 	IFACEMETHODIMP GetIcon(_In_opt_ IShellItemArray *, _Outptr_result_nullonfailure_ PWSTR *icon) override;
 	IFACEMETHODIMP GetState(_In_opt_ IShellItemArray *selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE *cmdState) override;
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray *selection, _In_opt_ IBindCtx *) noexcept override;
-	virtual bool Accept(bool multipleFiles, bool isDirectory, const std::wstring &ext);
+	virtual bool Accept(bool multipleFiles, bool isDirectory,const std::wstring &name, const std::wstring &ext);
 
 private:
 	void Execute(HWND parent, const std::wstring &path);
@@ -31,6 +34,8 @@ private:
 	std::wstring _param_for_multiple_files;
 	std::wstring _icon;
 	std::wstring _title;
+	std::wstring _accept_file_regex;
+	int _accept_file_flag;
 
 public:
 	int m_index;
