@@ -10,6 +10,7 @@ using ContextMenuCustomApp.View.Common;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System.Threading;
 using System;
+using Windows.ApplicationModel;
 
 namespace ContextMenuCustomApp
 {
@@ -19,6 +20,10 @@ namespace ContextMenuCustomApp
         {
             this.InitializeComponent();
             InitHeader();
+        }
+
+        public string AppName() {
+          return  Package.Current.DisplayName;
         }
 
         private void InitHeader()
