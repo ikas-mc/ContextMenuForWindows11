@@ -81,7 +81,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray *selecti
 			wchar_t szWndClassName[MAX_PATH] = { 0 };
 			GetClassName(hWnd, szWndClassName, _countof(szWndClassName));
 			// window class name: "NamespaceTreeControl"
-			if (wcscmp(szWndClassName, L"NamespaceTreeControl"))
+			if (wcscmp(szWndClassName, L"NamespaceTreeControl") != 0)
 			{
 				*cmdState = ECS_HIDDEN;
 				return S_OK;
@@ -123,7 +123,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray *selecti
 		}
 	}
 
-	if (m_commands.size() == 0)
+	if (m_commands.empty())
 	{
 		*cmdState = ECS_HIDDEN;
 	}
@@ -168,10 +168,11 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, const std::wstring 
 		{
 			if (current.HasCurrent())
 			{
-				auto conent = winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L"");
-				if (conent.size() > 0)
+				auto content = winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L"");
+				
+				if (!content.empty())
 				{
-					const auto command = Make<CustomSubExplorerCommand>(conent);
+					const auto command = Make<CustomSubExplorerCommand>(content);
 					if (command->Accept(multipleFiles, isDirectory, name, ext))
 					{
 						m_commands.push_back(command);

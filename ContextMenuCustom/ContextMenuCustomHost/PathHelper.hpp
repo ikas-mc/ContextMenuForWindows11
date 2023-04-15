@@ -112,7 +112,7 @@ public:
 						wil::unique_cotaskmem_string path;
 						if (SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, path.put())))
 						{
-							paths.push_back(path.get());
+							paths.emplace_back(path.get());
 						}
 					}
 				}
@@ -122,7 +122,7 @@ public:
 		return std::vector<std::wstring>(0);
 	}
 
-	static void replaceAll(std::wstring &src, const std::wstring &from, const std::wstring &to)
+	static void replaceAll(std::wstring &src, const std::wstring_view &from, const std::wstring &to)
 	{
 		if (src.length() == 0)
 		{

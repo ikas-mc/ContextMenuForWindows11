@@ -12,6 +12,10 @@ constexpr int MultipleFilesFlagJOIN = 2;
 constexpr int MATCH_FILE_EXT = 1;
 constexpr int MATCH_FILE_REGEX = 2;
 
+constexpr std::wstring_view PARAM_PATH = L"{path}";
+constexpr std::wstring_view PARAM_NAME = L"{name}";
+constexpr std::wstring_view PARAM_PARENT = L"{parent}";
+
 class CustomSubExplorerCommand final : public BaseExplorerCommand
 {
 public:

@@ -14,20 +14,22 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(winrt::hstring const& configC
 		_exe = result.GetNamedString(L"exe", L"");
 		_param = result.GetNamedString(L"param", L"");
 		_icon = result.GetNamedString(L"icon", L"");
-		_accept_directory = result.GetNamedBoolean(L"acceptDirectory", false);
-		_accept_file = result.GetNamedBoolean(L"acceptFile", true);
-		_accept_exts = result.GetNamedString(L"acceptExts", L"");
-		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
-		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
-		_accept_multiple_files_flag = (int)result.GetNamedNumber(L"acceptMultipleFilesFlag", 0);
-		_accept_file_flag = (int)result.GetNamedNumber(L"acceptFileFlag", 0);
-		_accept_file_regex = result.GetNamedString(L"acceptFileRegex", L"");
-		m_index = (int)result.GetNamedNumber(L"index", 0);
+        m_index = (int)result.GetNamedNumber(L"index", 0);
 
-		//
-		if (_accept_file_flag == 0 && _accept_file) {
-			_accept_file_flag = MATCH_FILE_EXT;
-		}
+		_accept_directory = result.GetNamedBoolean(L"acceptDirectory", false);
+
+		_accept_file = result.GetNamedBoolean(L"acceptFile", false); //v3.6, next to remove
+        _accept_file_flag = (int)result.GetNamedNumber(L"acceptFileFlag", 0);
+        _accept_file_regex = result.GetNamedString(L"acceptFileRegex", L"");
+		_accept_exts = result.GetNamedString(L"acceptExts", L"");
+        //
+        if (_accept_file_flag == 0 && _accept_file) {
+            _accept_file_flag = MATCH_FILE_EXT;
+        }
+
+        _accept_multiple_files_flag = (int)result.GetNamedNumber(L"acceptMultipleFilesFlag", 0);
+        _path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
+		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
 	}
 }
 
@@ -55,6 +57,7 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, bool isDirectory, cons
 			return true;
 		}
 
+        //TODO split first, .c .cpp bug
 		return _accept_exts.find(ext) != std::wstring::npos;
 	}
 	else if (_accept_file_flag == MATCH_FILE_REGEX)
@@ -65,7 +68,6 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, bool isDirectory, cons
 		}
 
 		std::wregex fileRegex(_accept_file_regex);
-
 		return  std::regex_match(name, fileRegex);
 	}
 
@@ -134,12 +136,12 @@ try
 					parentPath = file.parent_path().wstring();
 				}
 
-				if (param.find(L"{parent}") != std::wstring::npos)
+				if (param.find(PARAM_PARENT) != std::wstring::npos)
 				{
-					PathHelper::replaceAll(param, L"{parent}", parentPath);
+					PathHelper::replaceAll(param, PARAM_PARENT, parentPath);
 				}
 
-				PathHelper::replaceAll(param, L"{path}", paths);
+				PathHelper::replaceAll(param, PARAM_PATH, paths);
 				auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 				ShellExecute(parent, L"open", exePath.get(), param.c_str(), parentPath.data(), SW_SHOWNORMAL);
 			}
@@ -177,16 +179,16 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path)
 
 		std::filesystem::path file(path);
 
-		if (param.find(L"{parent}") != std::wstring::npos)
+		if (param.find(PARAM_PARENT) != std::wstring::npos)
 		{
-			PathHelper::replaceAll(param, L"{parent}", file.parent_path().wstring());
+			PathHelper::replaceAll(param, PARAM_PARENT, file.parent_path().wstring());
 		}
-		if (param.find(L"{name}") != std::wstring::npos)
+		if (param.find(PARAM_NAME) != std::wstring::npos)
 		{
-			PathHelper::replaceAll(param, L"{name}", file.filename().wstring());
+			PathHelper::replaceAll(param, PARAM_NAME, file.filename().wstring());
 		}
 
-		PathHelper::replaceAll(param, L"{path}", path);
+		PathHelper::replaceAll(param, PARAM_PATH, path);
 
 		auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 		ShellExecute(parent, L"open", exePath.get(), param.c_str(), file.parent_path().c_str(), SW_SHOWNORMAL);
