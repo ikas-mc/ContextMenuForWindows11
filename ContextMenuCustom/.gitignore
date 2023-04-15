@@ -370,3 +370,6 @@ ContextMenuCustomHost.pdb
 .idea/
 logo.svg
 logo.png
+
+
+**/cmake-build-*/
