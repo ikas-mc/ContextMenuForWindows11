@@ -3,7 +3,20 @@
 #include "CustomSubExplorerCommand.h"
 #include <string>
 
-class __declspec(uuid("46F650E5-9959-48D6-AC13-A9637C5B3787")) CustomExplorerCommand : public BaseExplorerCommand
+class 
+
+//#define CMC_GITHUB_RELEASE
+//#define CMC_STORE_RELEASE
+
+#if defined(CMC_STORE_RELEASE)
+	__declspec(uuid("46F650E5-9959-48D6-AC13-A9637C5B3787"))
+#elif defined(CMC_GITHUB_RELEASE)
+	__declspec(uuid("EB9DD180-53C8-4E8E-B61F-36FDD0D0CD13"))
+#else // debug or test
+	__declspec(uuid("62213977-E22F-49D5-B4DB-29E72E6A5D37"))
+#endif	
+
+CustomExplorerCommand : public BaseExplorerCommand
 {
 public:
 	CustomExplorerCommand();
