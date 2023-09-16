@@ -79,6 +79,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\Settings.cs" />
     <Compile Include="Patchs\Patch1.cs" />
     <Compile Include="AppVersion.cs" />
     <Compile Include="View\Common\Alert.cs" />

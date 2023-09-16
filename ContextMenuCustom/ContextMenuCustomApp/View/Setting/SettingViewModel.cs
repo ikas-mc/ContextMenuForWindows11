@@ -1,4 +1,5 @@
-﻿using ContextMenuCustomApp.View.Common;
+﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.View.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,10 +12,10 @@ namespace ContextMenuCustomApp.View.Setting
 {
     public class SettingViewModel : BaseViewModel
     {
-
+        private readonly Settings _settings;
         public SettingViewModel()
         {
-
+            _settings = Settings.INS;
         }
 
         public string Version()
@@ -72,12 +73,11 @@ namespace ContextMenuCustomApp.View.Setting
         {
             get
             {
-                var themeType = SettingHelper.Get<int>("Settings:Style:themeType", 0);
-                return themeType;
+                return _settings.ThemeType;
             }
             set
             {
-                SettingHelper.Set("Settings:Style:themeType", value);
+                _settings.ThemeType = value;
 
                 if (value == 1)
                 {

@@ -3,9 +3,6 @@ using ContextMenuCustomApp.View.Common;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -77,7 +74,7 @@ namespace ContextMenuCustomApp
         public void SetTheme()
         {
             ThemeHelper.Initialize();
-            var themeType = SettingHelper.Get<int>("Settings:Style:themeType", 0);
+            var themeType = Settings.INS.ThemeType;
 
             if (themeType == 1)
             {
@@ -91,7 +88,7 @@ namespace ContextMenuCustomApp
             {
                 ThemeHelper.RootTheme = ElementTheme.Default;
             }
-        
+
         }
 
     }

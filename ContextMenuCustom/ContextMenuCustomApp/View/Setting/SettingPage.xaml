@@ -50,11 +50,6 @@
                 </Paragraph>
 
                 <Paragraph>
-                    <Run Text="{x:Bind _viewModel.SdkVersion()}" />
-                    <LineBreak />
-                </Paragraph>
-
-                <Paragraph>
                     <Hyperlink NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki" UnderlineStyle="None">
                         Help
                     </Hyperlink>

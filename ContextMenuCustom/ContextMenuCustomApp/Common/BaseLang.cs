@@ -15,9 +15,8 @@ namespace ContextMenuCustomApp.Common
 
         }
 
-        public virtual async void Load()
+        public virtual async void Load(string lang)
         {
-            var lang = SettingHelper.Get<string>("Settings:Local:Lang", "");
             if (string.IsNullOrEmpty(lang)) {
                 return;
             }
