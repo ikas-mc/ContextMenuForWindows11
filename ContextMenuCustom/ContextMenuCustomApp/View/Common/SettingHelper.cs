@@ -6,17 +6,30 @@ namespace ContextMenuCustomApp.View.Common
     {
         public static void Set(string key, object value)
         {
-            ApplicationData.Current.LocalSettings.Values[key] = value;
+            Set(ApplicationData.Current.LocalSettings, key, value);
         }
 
-        public static T Get<T>(string propertyName, T defaultValue)
+        public static T Get<T>(string key, T defaultValue)
         {
-            if (!string.IsNullOrEmpty(propertyName))
+            return Get<T>(ApplicationData.Current.LocalSettings, key, defaultValue);
+        }
+
+        public static void Set(ApplicationDataContainer container, string key, object value)
+        {
+            if (!string.IsNullOrEmpty(key))
             {
-                var value = ApplicationData.Current.LocalSettings.Values[propertyName];
-                if (null != value)
+                container.Values[key] = value;
+            }
+        }
+
+        public static T Get<T>(ApplicationDataContainer container, string key, T defaultValue)
+        {
+            if (!string.IsNullOrEmpty(key))
+            {
+                var value = container.Values[key];
+                if (null != value && value is T t)
                 {
-                    return (T)value;
+                    return t;
                 }
             }
             return defaultValue;

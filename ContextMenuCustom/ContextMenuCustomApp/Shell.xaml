@@ -52,7 +52,7 @@
 
         <muxc:InfoBar
             x:Name="AppInfoBar"
-            Margin="0,80,0,0"
+            Margin="0,8,0,0"
             HorizontalAlignment="Center"
             IsOpen="False"
             Message=""

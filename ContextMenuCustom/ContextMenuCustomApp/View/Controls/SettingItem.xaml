@@ -5,12 +5,13 @@
     <Style TargetType="local:SettingItem">
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Background" Value="{ThemeResource SettingItemBackgroundBrush}" />
-        <Setter Property="BorderThickness" Value="{ThemeResource SettingItemBorderThickness}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="BorderBrush" Value="{ThemeResource SettingItemBorderBrush}" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Padding" Value="16" />
+        <Setter Property="MinHeight" Value="48" />
         <Setter Property="Margin" Value="0,0,0,0" />
         <Setter Property="Template">
             <Setter.Value>
@@ -26,7 +27,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="36" />
                             <ColumnDefinition Width="Auto" MinWidth="120" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -41,7 +42,7 @@
                             x:Name="IconPresenter"
                             Grid.RowSpan="2"
                             MaxWidth="24"
-                            HorizontalAlignment="Center"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             AutomationProperties.AccessibilityView="Raw"
                             Content="{TemplateBinding Icon}"

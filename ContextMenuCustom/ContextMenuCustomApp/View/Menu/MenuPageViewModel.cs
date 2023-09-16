@@ -150,29 +150,5 @@ namespace ContextMenuCustomApp.View.Menu
 
         #endregion cache
 
-
-        #region setting
-
-        public string Version()
-        {
-            var version = Package.Current.Id.Version;
-            return $"{version.Major}.{version.Minor}.{version.Build}";
-        }
-
-        public string GetCustomMenuName()
-        {
-            var value = ApplicationData.Current.LocalSettings.Values["Custom_Menu_Name"];
-            return (value as string) ?? "Open With";
-        }
-
-        public async void SetCustomMenuName(string name)
-        {
-            await Task.Run(() =>
-            {
-                ApplicationData.Current.LocalSettings.Values["Custom_Menu_Name"] = name ?? "Open With";
-            });
-        }
-
-        #endregion setting
     }
 }

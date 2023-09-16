@@ -36,24 +36,25 @@
 
         <Grid
             Grid.Column="0"
-            Padding="4,40,4,4"
+            Padding="4,40,4,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             BorderBrush="{ThemeResource NavContentBorderColor}"
             BorderThickness="0,0,1,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="48" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="32" />
+                <RowDefinition Height="48" />
             </Grid.RowDefinitions>
+
             <ListView
                 x:Name="CommandList"
                 Grid.Row="1"
                 Grid.Column="0"
-                CanDragItems="False"
-                DragItemsCompleted="CommandList_DragItemsCompleted"
                 AllowDrop="False"
+                CanDragItems="False"
                 CanReorderItems="False"
+                DragItemsCompleted="CommandList_DragItemsCompleted"
                 ItemsSource="{Binding MenuItems}"
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
@@ -62,53 +63,60 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackPanel
+
+            <CommandBar
                 Grid.Row="0"
                 Grid.Column="0"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
+                DefaultLabelPosition="Collapsed">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton
+                        Width="40"
+                        Click="Add_Click"
+                        Label="Add"
+                        LabelPosition="Collapsed"
+                        ToolTipService.ToolTip="Add menu">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE109;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        Width="40"
+                        Click="Refresh_Click"
+                        LabelPosition="Collapsed"
+                        ToolTipService.ToolTip="Refresh menus">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE72C;" />
+                        </AppBarButton.Icon>
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="F5" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                    <AppBarButton
+                        Width="40"
+                        Click="Open_Folder_Click"
+                        LabelPosition="Collapsed"
+                        ToolTipService.ToolTip="Open menus folder">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE838;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
 
-                <Button
-                    Margin="4,0"
-                    Padding="4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Click="Add_Click"
-                    ToolTipService.ToolTip="Add a menu">
-                    <SymbolIcon Symbol="Add" />
-                </Button>
-                <Button
-                    Margin="4,0"
-                    Padding="4"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Click="Refresh_Click"
-                    ToolTipService.ToolTip="Refresh menus"
-                    >
-                    <Button.KeyboardAccelerators>
-                        <KeyboardAccelerator Key="F5" />
-                    </Button.KeyboardAccelerators>
-                    <SymbolIcon Symbol="Refresh" />
-                </Button>
-                <Button
-                    Margin="4,0"
-                    Padding="4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Click="Open_Folder_Click"
-                    ToolTipService.ToolTip="Open menus folder">
-                    <SymbolIcon Symbol="Folder" />
-                </Button>
-            </StackPanel>
-            <StackPanel
-                Grid.Row="2"
-                Grid.Column="0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" TextLineBounds="Full">
-                    Cache:
-                </TextBlock>
+            <Grid Grid.Row="2" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <AppBarButton
+                    Width="40"
+                    Click="OpenSetting_Click"
+                    Icon="Setting"
+                    Label="Setting"
+                    LabelPosition="Collapsed"
+                    ToolTipService.ToolTip="Open Setting" />
                 <muxc:TeachingTip
                     x:Name="CacheTip"
                     Title="About Cache:"
@@ -119,9 +127,9 @@
                     Target="{x:Bind BuildCacheTipButton}">
                     <muxc:TeachingTip.Content>
                         <TextBlock>
-                            <Run>Cache menu content</Run>
+                            <Run>Add menu to the cache</Run>
                             <LineBreak />
-                            <Run>This can optimize the menu loading speed</Run>
+                            <Run>to optimize loading menus</Run>
                             <LineBreak />
                             <LineBreak />
                             <Run>Cache Time:</Run>
@@ -131,35 +139,38 @@
                     </muxc:TeachingTip.Content>
 
                 </muxc:TeachingTip>
-                <Button
+                <AppBarButton
                     x:Name="BuildCacheTipButton"
-                    Margin="4,0"
-                    Padding="4"
+                    Grid.Column="2"
                     VerticalAlignment="Center"
                     Background="{x:Null}"
                     BorderThickness="0"
-                    Click="BuildCacheTipButton_Click">
-                    <SymbolIcon Symbol="Help" />
-                </Button>
+                    Click="BuildCacheTipButton_Click"
+                    Content="Cache:"
+                    ToolTipService.ToolTip="Open Cache Help" />
                 <ToggleSwitch
+                    Grid.Column="3"
                     MinWidth="0"
                     MinHeight="40"
                     VerticalAlignment="Center"
                     IsOn="{x:Bind _viewModel.CacheEnabled, Mode=TwoWay}"
                     Style="{ThemeResource ToggleSwitchContentLelft}" />
-            </StackPanel>
+            </Grid>
+
         </Grid>
+
         <Grid
             Grid.Column="1"
-            Padding="4,40,4,4"
+            Padding="4,48,4,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{ThemeResource NavContentBackGroundColor}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="0" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="32" />
+                <RowDefinition Height="48" />
             </Grid.RowDefinitions>
+
             <ScrollViewer
                 Grid.Row="1"
                 Grid.Column="2"
@@ -167,31 +178,38 @@
                 Padding="4,4,16,4"
                 DataContext="{Binding SelectedItem, ElementName=CommandList}"
                 Visibility="{Binding SelectedItem, ElementName=CommandList, Converter={StaticResource VisibilityConverter}}">
-                <StackPanel Padding="0,0,0,64" Orientation="Vertical">
-
-                    <controls:SettingItem Header="Title">
+                <StackPanel Padding="0" Orientation="Vertical">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Title">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF683;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <TextBox PlaceholderText="open with notepad" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Header="Order">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Order">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8CB;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <muxc:NumberBox
+                                LargeChange="10"
                                 Maximum="999999"
                                 Minimum="-999999"
                                 PlaceholderText="0"
                                 SmallChange="1"
-                                LargeChange="10"
                                 SpinButtonPlacementMode="Inline"
                                 Value="{Binding Index, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Header="Exe">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Exe">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7AC;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;"
-                                     Text="{Binding Exe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;" Text="{Binding Exe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
 
                         <controls:SettingItem.RightContent>
@@ -206,33 +224,39 @@
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-
-                    <controls:SettingItem Header="Param">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Param">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEA86;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;{path}&quot;"
-                                     Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox PlaceholderText="&quot;{path}&quot;" Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-
-                    <controls:SettingItem Header="Icon">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Icon">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B9;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;"
-                                     Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;" Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Header="Match Folder">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Match Folder">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B7;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
                             <ToggleSwitch IsOn="{Binding AcceptDirectory, Mode=TwoWay}" Style="{ThemeResource ToggleSwitchContentLelft}" />
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Header="Match File">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Match File">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8A5;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
-                            <ComboBox
-                                HorizontalAlignment="Stretch"
-                                SelectedIndex="{Binding AcceptFileFlag, Mode=TwoWay}">
+                            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AcceptFileFlag, Mode=TwoWay}">
                                 <ComboBoxItem Content="Off" />
                                 <ComboBoxItem Content="Ext" />
                                 <ComboBoxItem Content="Regex" />
@@ -241,25 +265,27 @@
                         <controls:SettingItem.BottomContent>
                             <StackPanel Orientation="Vertical">
                                 <TextBox
-                                Header="File Extensions"
-                                PlaceholderText=".txt .zip  or *"
-                                Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
+                                    Header="File Extensions"
+                                    PlaceholderText=".txt .zip  or *"
+                                    Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
 
                                 <TextBox
-                                Header="Regex"
-                                PlaceholderText="\\.txt"
-                                Text="{Binding AcceptFileRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+                                    Header="Regex"
+                                    PlaceholderText="\\.txt"
+                                    Text="{Binding AcceptFileRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
                             </StackPanel>
-                          
+
                         </controls:SettingItem.BottomContent>
 
                     </controls:SettingItem>
 
-
-                    <controls:SettingItem Header="Match Multi-File">
+                    <controls:SettingItem Margin="0,0,0,8" Header="Match Multi-File">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8D5;" />
+                        </controls:SettingItem.Icon>
                         <controls:SettingItem.Description>
                             <HyperlinkButton
                                 Padding="0"
@@ -269,9 +295,7 @@
                             </HyperlinkButton>
                         </controls:SettingItem.Description>
                         <controls:SettingItem.RightContent>
-                            <ComboBox
-                                HorizontalAlignment="Stretch"
-                                SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
+                            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
                                 <ComboBoxItem Content="Off" />
                                 <ComboBoxItem Content="Each (execute [exe] on each path)" />
                                 <ComboBoxItem Content="Join (execute [exe] only once)" />
@@ -295,18 +319,13 @@
 
                             </StackPanel>
                         </controls:SettingItem.BottomContent>
-
-
-
                     </controls:SettingItem>
-                    <!--    -->
                 </StackPanel>
-
             </ScrollViewer>
+
             <Grid
                 Grid.Row="1"
                 Grid.Column="2"
-                Margin="0,-80,0,0"
                 Padding="0"
                 Visibility="{Binding SelectedItem, ElementName=CommandList, Converter={StaticResource VisibilityConverter}, ConverterParameter=!}">
                 <RichTextBlock
@@ -316,93 +335,56 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                     <Paragraph>
-                        <Hyperlink Click="Add_Click">Add a menu</Hyperlink>
-                        <Run>or Select one menu from left list to edit</Run>
+                        <Hyperlink Click="Add_Click">Add Menu</Hyperlink>
                     </Paragraph>
                 </RichTextBlock>
-
             </Grid>
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
 
-                <Button
-                    Margin="4,0"
-                    Padding="4"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Click="Save_Click"
-                    ToolTipService.ToolTip="Save menu">
-                    <SymbolIcon Symbol="Save" />
-                    <Button.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control"
-                                             Key="S" />
-                    </Button.KeyboardAccelerators>
-                </Button>
+            <CommandBar Grid.Row="2" DefaultLabelPosition="Right">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="OpenHelp_Click"
+                        Icon="Help"
+                        Label="Help"
+                        ToolTipService.ToolTip="Open Setting" />
+                    <AppBarSeparator />
 
-                <Button
-                    Margin="4,0"
-                    Padding="4"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Click="Delete_Click"
-                    ToolTipService.ToolTip="Delete menu">
-                    <Button.KeyboardAccelerators>
-                        <KeyboardAccelerator Key="Delete" />
-                    </Button.KeyboardAccelerators>
-                    <SymbolIcon Symbol="Delete" />
-                </Button>
+                    <AppBarButton
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="Save_Click"
+                        Icon="Save"
+                        Label="Save"
+                        ToolTipService.ToolTip="Save menu">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="S" Modifiers="Control" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
 
-                <Button
-                    Margin="4,0"
-                    Padding="4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Click="Open_Click"
-                    ToolTipService.ToolTip="Open menu file">
-                    <SymbolIcon Symbol="OpenFile" />
-                </Button>
-            </StackPanel>
-            <StackPanel
-                Grid.Row="2"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Margin="04,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Orientation="Horizontal">
+                    <AppBarButton
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="Delete_Click"
+                        Icon="Delete"
+                        Label="Delete"
+                        ToolTipService.ToolTip="Delete menu">
+                        <Button.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="Delete" />
+                        </Button.KeyboardAccelerators>
+                    </AppBarButton>
 
-                <HyperlinkButton
-                    Margin="4,0"
-                    Padding="4"
-                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki">
-                    <TextBlock>
-                        <Run>Help</Run>
-                    </TextBlock>
-                </HyperlinkButton>
+                    <AppBarButton
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="Open_Click"
+                        Icon="OpenFile"
+                        Label="Open File"
+                        ToolTipService.ToolTip="Open menu file" />
 
-                <HyperlinkButton
-                    Margin="4,0"
-                    Padding="4"
-                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11">
-                    <TextBlock>
-                        <Run Text="{x:Bind _viewModel.Version()}" />
-                        <Run>ikas</Run>
-                    </TextBlock>
-                </HyperlinkButton>
-                <Button Padding="4">
-                    <Button.Flyout>
-                        <Flyout>
-                            <StackPanel MinWidth="320" MinHeight="120">
-                                <TextBox Header="Custom Menu Title" Text="{x:Bind _viewModel.GetCustomMenuName(), BindBack=_viewModel.SetCustomMenuName, Mode=TwoWay}" />
-                            </StackPanel>
-                        </Flyout>
-                    </Button.Flyout>
-                    <SymbolIcon Symbol="Setting" />
-                </Button>
-            </StackPanel>
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
         </Grid>
     </Grid>
 </Page>

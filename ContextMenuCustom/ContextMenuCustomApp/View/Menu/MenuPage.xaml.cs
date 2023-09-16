@@ -5,12 +5,14 @@ using ContextMenuCustomApp.Service.Menu;
 using System.Linq;
 using Windows.Storage.Pickers;
 using ContextMenuCustomApp.View.Common;
+using Windows.System;
+using ContextMenuCustomApp.View.Setting;
 
 namespace ContextMenuCustomApp.View.Menu
 {
     public sealed partial class MenuPage
     {
-        private MenuPageViewModel _viewModel;
+        private readonly MenuPageViewModel _viewModel;
 
         public MenuPage()
         {
@@ -22,7 +24,10 @@ namespace ContextMenuCustomApp.View.Menu
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            _ = _viewModel.LoadAsync();
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                _ = _viewModel.LoadAsync();
+            }
         }
 
         private async void Refresh_Click(object sender, RoutedEventArgs e)
@@ -127,5 +132,16 @@ namespace ContextMenuCustomApp.View.Menu
         {
 
         }
+
+        private void OpenSetting_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SettingPage));
+        }
+
+        private void OpenHelp_Click(object sender, RoutedEventArgs e)
+        {
+            _ = Launcher.LaunchUriAsync(new Uri("https://github.com/ikas-mc/ContextMenuForWindows11/wiki"));
+        }
+
     }
 }

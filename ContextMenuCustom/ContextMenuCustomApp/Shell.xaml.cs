@@ -22,8 +22,9 @@ namespace ContextMenuCustomApp
             InitHeader();
         }
 
-        public string AppName() {
-          return  Package.Current.DisplayName;
+        public string AppName()
+        {
+            return Package.Current.DisplayName;
         }
 
         private void InitHeader()
@@ -105,7 +106,6 @@ namespace ContextMenuCustomApp
             base.OnNavigatedTo(e);
             ShellFrame.Navigate(typeof(MenuPage));
         }
-
 
         public void UpdateMessage(bool show, MessageType messageType, string message = "")
         {
