@@ -1,54 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ContextMenuCustomApp.View.Common;
+using System;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
+
+using Windows.Data.Json;
+using Windows.Storage;
 
 namespace ContextMenuCustomApp.Common
 {
     public abstract class BaseLang
     {
-        private readonly ResourceLoader _resourceLoader;
+
         protected BaseLang()
         {
-#if WIN_UI
-            _resourceLoader = new ResourceLoader();
-#else
-            _resourceLoader = ResourceLoader.GetForCurrentView();
-#endif
+
         }
 
-        public virtual void Load()
+        public virtual async void Load()
         {
+            var lang = SettingHelper.Get<string>("Settings:Local:Lang", "");
+            if (string.IsNullOrEmpty(lang)) {
+                return;
+            }
 
-            if (null != _resourceLoader)
+            var folder = await ApplicationData.Current.LocalFolder.TryGetItemAsync("langs");
+            if (null == folder || !folder.IsOfType(StorageItemTypes.Folder))
             {
-                var properties = GetType().GetTypeInfo().DeclaredProperties;
-                foreach (PropertyInfo propertyInfo in properties)
+                return;
+            }
+
+            var file = await ((StorageFolder)folder).TryGetItemAsync(lang);
+            if (null == file || !file.IsOfType(StorageItemTypes.File))
+            {
+                return;
+            }
+
+            var content = await FileIO.ReadTextAsync((StorageFile)file);
+            if (!JsonObject.TryParse(content, out var langJson))
+            {
+                return;
+            }
+
+            var properties = GetType().GetTypeInfo().DeclaredProperties;
+            foreach (PropertyInfo propertyInfo in properties)
+            {
+                var name = propertyInfo.Name;
+                var value = langJson.GetNamedString(name);
+                if (!string.IsNullOrEmpty(value))
                 {
-                    var name = propertyInfo.Name;
-                    var value = _resourceLoader.GetString(name);
-                    if (string.IsNullOrEmpty(value))
-                    {
-                        value = name;
-                    }
                     propertyInfo.SetValue(this, value);
                 }
             }
-        }
 
-        public string GetString(string key, string de = "")
-        {
-            string value = _resourceLoader.GetString(key);
-            return value ?? de;
-        }
-
-        public string GetStringForUri(Uri uri, string de = "")
-        {
-            string value = _resourceLoader.GetStringForUri(uri);
-            return value ?? de;
         }
     }
 }
