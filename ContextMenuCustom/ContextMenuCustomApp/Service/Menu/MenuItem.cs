@@ -134,7 +134,7 @@ namespace ContextMenuCustomApp.Service.Menu
 
             if (string.IsNullOrEmpty(content.Param))
             {
-                return (false, nameof(content.Param));
+               // return (false, nameof(content.Param));
             }
 
             return (true, string.Empty);
