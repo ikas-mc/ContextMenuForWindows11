@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.View.Common;
+using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
@@ -23,13 +25,8 @@ namespace ContextMenuCustomApp
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            //TODO check first run
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
-            //var size = new Size(800, 768);
-            //ApplicationView.PreferredLaunchViewSize = size;
-            //ApplicationView.GetForCurrentView().TryResizeView(size);
 
-            //TODO use shell
             Frame rootFrame = Window.Current.Content as Frame;
             if (rootFrame == null)
             {
@@ -39,6 +36,7 @@ namespace ContextMenuCustomApp
                 {
                 }
                 Window.Current.Content = rootFrame;
+                SetTheme();
             }
 
             if (e.PrelaunchActivated == false)
@@ -75,5 +73,26 @@ namespace ContextMenuCustomApp
                 }
             }
         }
+
+        public void SetTheme()
+        {
+            ThemeHelper.Initialize();
+            var themeType = SettingHelper.Get<int>("Settings:Style:themeType", 0);
+
+            if (themeType == 1)
+            {
+                ThemeHelper.RootTheme = ElementTheme.Dark;
+            }
+            else if (themeType == 2)
+            {
+                ThemeHelper.RootTheme = ElementTheme.Light;
+            }
+            else
+            {
+                ThemeHelper.RootTheme = ElementTheme.Default;
+            }
+        
+        }
+
     }
 }

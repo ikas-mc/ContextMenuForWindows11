@@ -97,10 +97,7 @@ namespace ContextMenuCustomApp
 
         private void Current_Activated(object sender, WindowActivatedEventArgs e)
         {
-            var defaultForegroundBrush = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
-            var inactiveForegroundBrush = (SolidColorBrush)Application.Current.Resources["TextFillColorDisabledBrush"];
 
-            AppTitle.Foreground = e.WindowActivationState == CoreWindowActivationState.Deactivated ? inactiveForegroundBrush : defaultForegroundBrush;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

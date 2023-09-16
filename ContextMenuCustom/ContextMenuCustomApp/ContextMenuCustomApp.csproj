@@ -79,7 +79,6 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Common\Settings.cs" />
     <Compile Include="Patchs\Patch1.cs" />
     <Compile Include="AppVersion.cs" />
     <Compile Include="View\Common\Alert.cs" />
@@ -101,12 +100,18 @@
     <Compile Include="View\Common\IStatusSupport.cs" />
     <Compile Include="View\Common\MessageHelper.cs" />
     <Compile Include="View\Common\PageMessageExt.cs" />
+    <Compile Include="View\Common\SettingHelper.cs" />
+    <Compile Include="View\Common\ThemeHelper.cs" />
     <Compile Include="View\Common\VisibilityConverter.cs" />
     <Compile Include="View\Controls\SettingItem.cs" />
     <Compile Include="View\Menu\MenuPage.xaml.cs">
       <DependentUpon>MenuPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Menu\MenuPageViewModel.cs" />
+    <Compile Include="View\Setting\SettingPage.xaml.cs">
+      <DependentUpon>SettingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Setting\SettingViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -151,6 +156,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Menu\MenuPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Setting\SettingPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
