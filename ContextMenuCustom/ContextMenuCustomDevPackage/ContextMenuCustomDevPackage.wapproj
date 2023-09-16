@@ -107,7 +107,6 @@
     <Content Include="Images\Square44x44Logo.targetsize-32.png" />
     <Content Include="Images\Square44x44Logo.targetsize-48.png" />
     <Content Include="Images\StoreLogo.backup.png" />
-    <Content Include="Images\StoreLogo.png" />
     <Content Include="Images\StoreLogo.scale-100.png" />
     <Content Include="Images\StoreLogo.scale-125.png" />
     <Content Include="Images\StoreLogo.scale-150.png" />
