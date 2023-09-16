@@ -265,14 +265,14 @@
                         <controls:SettingItem.BottomContent>
                             <StackPanel Orientation="Vertical">
                                 <TextBox
-                                    Header="File Extensions"
+                                    Header="File Extensions (* match all)  (.c match .c .cpp)"
                                     PlaceholderText=".txt .zip  or *"
                                     Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
 
                                 <TextBox
-                                    Header="Regex"
-                                    PlaceholderText="\\.txt"
+                                    Header="Regex for name (.+?\.txt match x.txt)"
+                                    PlaceholderText="+?\.txt"
                                     Text="{Binding AcceptFileRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
