@@ -36,7 +36,7 @@ jobs:
       
     - name: Build ContextMenuCustomDevPackage
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild ContextMenuCustom\ContextMenuCustomDevPackage\ContextMenuCustomDevPackage.wapproj /m /p:configuration="release"   /p:platform="x64" /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
+      run: msbuild ContextMenuCustom\ContextMenuCustomDevPackage\ContextMenuCustomDevPackage.wapproj /m /p:configuration="release"   /p:platform="x64" /p:PackageCertificateKeyFile=".\TemporaryKey.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
     
     - name: Build ContextMenuCustomGithubPackage
       working-directory: ${{env.GITHUB_WORKSPACE}}
