@@ -1,0 +1,1 @@
+{"title":"Open TortoiseGit Sync Window","exe":"\"C:\\Program Files\\TortoiseGit\\bin\\TortoiseGitProc.exe\"","param":"/command:sync /path:\"{path}\"","icon":"","index":24,"acceptDirectory":true,"acceptExts":"","acceptFileFlag":0,"acceptFileRegex":"","acceptMultipleFilesFlag":1,"pathDelimiter":"","paramForMultipleFiles":""}

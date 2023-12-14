@@ -1,0 +1,1 @@
+{"title":"Open With Notepad","exe":"\"C:\\Windows\\notepad.exe\"","param":"\"{path}\"","icon":"\"C:\\Windows\\notepad.exe\",0","index":20,"acceptDirectory":false,"acceptExts":".txt .xml .java .html .md .js .bat .cmd .vbs .ps","acceptFileFlag":1,"acceptFileRegex":"","acceptMultipleFilesFlag":1,"pathDelimiter":"","paramForMultipleFiles":""}

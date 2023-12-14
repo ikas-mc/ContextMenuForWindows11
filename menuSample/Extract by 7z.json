@@ -1,0 +1,1 @@
+{"title":"Extract by 7z","exe":"\"C:\\Program Files\\7-Zip\\7zG.exe\"","param":"x \"{path}\" -o\"{path}\"~","icon":"\"C:\\Program Files\\7-Zip\\7zG.exe\",0","index":11,"acceptDirectory":false,"acceptExts":".7z,.rar,.zip,.tar,.tar.gz,.iso","acceptFileFlag":1,"acceptFileRegex":"","acceptMultipleFilesFlag":1,"pathDelimiter":"","paramForMultipleFiles":""}

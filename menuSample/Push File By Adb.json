@@ -1,0 +1,1 @@
+{"title":"Push File By Adb","exe":"PowerShell","param":"adb push \\\"{path}\\\"  /storage/emulated/0/Download/\\\"{name}\\\"","icon":"","index":31,"acceptDirectory":false,"acceptExts":"*","acceptFileFlag":1,"acceptFileRegex":"","acceptMultipleFilesFlag":0,"pathDelimiter":"","paramForMultipleFiles":""}

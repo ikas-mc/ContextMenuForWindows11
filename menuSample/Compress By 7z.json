@@ -1,0 +1,1 @@
+{"title":"Compress By 7z","exe":"\"C:\\Program Files\\7-Zip\\7zG.exe\"","param":"a -ad  \"{parent}\\{name}.7z\"   \"{path}\"","icon":"\"C:\\Program Files\\7-Zip\\7zFM.exe\",0","index":10,"acceptDirectory":true,"acceptExts":"*","acceptFileFlag":1,"acceptFileRegex":"","acceptMultipleFilesFlag":2,"pathDelimiter":" ","paramForMultipleFiles":"a -ad \"{parent}\\files.7z\" {path}"}
