@@ -13,6 +13,8 @@ constexpr int MATCH_FILE_REGEX = 2;
 constexpr std::wstring_view PARAM_PATH = L"{path}";
 constexpr std::wstring_view PARAM_NAME = L"{name}";
 constexpr std::wstring_view PARAM_PARENT = L"{parent}";
+constexpr std::wstring_view PARAM_NAME_NO_EXT = L"{nameNoExt}";
+
 
 class CustomSubExplorerCommand final : public BaseExplorerCommand {
 public:
