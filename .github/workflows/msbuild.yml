@@ -20,7 +20,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-        [IO.File]::WriteAllBytes("ContextMenuCustom\ContextMenuCustomPackage\ContextMenuCustomPackage_TemporaryKey.pfx", $pfx_cert_byte)
+        [IO.File]::WriteAllBytes(".\TemporaryKey.pfx", $pfx_cert_byte)
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -34,6 +34,10 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild ContextMenuCustom\ContextMenuCustomHost\ContextMenuCustomHost.vcxproj /m /p:configuration="release" /p:SolutionDir=../  /p:platform="x64"
       
-    - name: Build ContextMenuCustomPackage
+    - name: Build ContextMenuCustomDevPackage
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild ContextMenuCustom\ContextMenuCustomPackage\ContextMenuCustomPackage.wapproj /m /p:configuration="release"   /p:platform="x64"
+      run: msbuild ContextMenuCustom\ContextMenuCustomDevPackage\ContextMenuCustomDevPackage.wapproj /m /p:configuration="release"   /p:platform="x64" /p:PackageCertificateKeyFile=".\TemporaryKey.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
+    
+    - name: Build ContextMenuCustomGithubPackage
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild ContextMenuCustom\ContextMenuCustomGithubPackage\ContextMenuCustomGithubPackage.wapproj /m /p:configuration="release"   /p:platform="x64" /p:PackageCertificateKeyFile=".\TemporaryKey.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
