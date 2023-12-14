@@ -14,28 +14,41 @@ Windows store|Github release
 ms-windows-store://pdp/?ProductId=9PC7BZZ28G0X|use self-signed certificate,not recommended
 
 
-
-
-
 ##  Guides
 https://github.com/ikas-mc/ContextMenuForWindows11/wiki
+
+
+## Samples
+https://github.com/ikas-mc/ContextMenuForWindows11/tree/main/menuSample
+
+
+<img src="https://raw.githubusercontent.com/ikas-mc/ContextMenuForWindows11/main/screenshots/samples.png" width=500 >
+
+1. download file and copy to menu folder 
+2. toggle cache when cache is on
+
+```
+    Compress By 7z.json
+    Debug Echo 2.json
+    Debug Echo 3.json
+    Debug Echo.json
+    Echo path.json
+    Extract by 7z (only v3.9+).json
+    Extract by 7z.json
+    Install Apk By Adb.json
+    Open In Explorer.json
+    Open In Windows Photo Viewer.json
+    Open TortoiseGit Sync Window.json
+    Open With Notepad.json
+    Open With VScode.json
+    Push File By Adb.json
+    Send Image To Wsa By Adb.json
+```
+some from https://github.com/ikas-mc/ContextMenuForWindows11/issues,thanks for share
+
+
 
 ##  Build   
 https://github.com/ikas-mc/ContextMenuForWindows11/blob/main/build.md
 
 
-## More 
-
-https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/desktop-to-uwp-extensions#context-menu
-
-https://github.com/MicrosoftDocs/winrt-related/blob/docs/winrt-related-src/schemas/appxpackage/uapmanifestschema/element-desktop5-itemtype.md
-
-https://github.com/microsoft/Windows-classic-samples/tree/master/Samples/Win7Samples/winui/shell/appshellintegration/ExplorerCommandVerb
-
-https://github.com/microsoft/AppModelSamples/tree/0f88fe0a8bbb90051f6c126741b881288bb5cabb/Samples/SparsePackages/PhotoStoreContextMenu
-
-https://github.com/microsoft/terminal/tree/fb597ed304ec6eef245405c9652e9b8a029b821f/src/cascadia/ShellExtension
-
-https://github.com/MicrosoftDocs/windows-uwp/blob/docs/hub/apps/desktop/modernize/integrate-packaged-app-with-file-explorer.md
-
-https://docs.microsoft.com/en-us/cpp/cppcx/wrl/windows-runtime-cpp-template-library-wrl?view=msvc-170
