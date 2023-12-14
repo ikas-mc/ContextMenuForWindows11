@@ -1,1 +1,0 @@
-{"title":"install apk","exe":"PowerShell","param":" -noexit adb install -r -t \\\"{path}\\\"","icon":""}

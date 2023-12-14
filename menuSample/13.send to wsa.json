@@ -1,1 +1,0 @@
-{"title":"send to wsa","exe":"PowerShell","param":"adb push \\\"{path}\\\"  /storage/emulated/0/Download/\\\"{name}\\\"","icon":""}

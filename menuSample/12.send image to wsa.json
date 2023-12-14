@@ -1,1 +1,0 @@
-{"title":"send image to wsa","exe":"PowerShell","param":"if ((adb connect 127.0.0.1:58526) -like \\\"*connected*\\\") { adb push -p \\\"{path}\\\" \\\"/sdcard/Download/{name}\\\" | adb shell \\\"am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d 'file:///storage/emulated/0/Download/{name}'\\\"}else{msg \\\"wsa is not running\\\"}","icon":""}

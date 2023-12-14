@@ -1,1 +1,0 @@
-{"title":"open in 7z","exe":"\"C:\\Program Files\\7-Zip\\7zG.exe\"","param":"x \"{path}\" -o\"{path}\"~"}

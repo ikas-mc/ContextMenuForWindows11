@@ -1,1 +1,0 @@
-{"title":"PhotoViewer","exe":"rundll32","param":"\"C:\\Program Files\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen   {path}","icon":"\"C:\\Program Files\\Windows Photo Viewer\\PhotoViewer.dll\",0","acceptExts":".jpg .jpeg .bmp .png .webp","acceptDirectory":false}

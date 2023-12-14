@@ -1,1 +1,0 @@
-{"title":"Echo path","exe":"Powershell","param":" -noexit echo  {path}","icon":"","acceptExts":"","acceptDirectory":true}
