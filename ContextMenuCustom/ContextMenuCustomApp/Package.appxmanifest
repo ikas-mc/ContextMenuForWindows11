@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -12,7 +12,7 @@
 
   <Identity
     Name="7061touchwp.CustomContextMenu"
-    Publisher="CN=test"
+    Publisher="CN=ikas-mc-dev"
     Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="a6cb77ab-4892-4cdd-9bee-8716defefa2e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
