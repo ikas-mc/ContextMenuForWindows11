@@ -8,10 +8,18 @@
 
 ##  Download
 
-Windows store|Github release
------------- | -------------
-<a href="https://apps.microsoft.com/detail/9PC7BZZ28G0X">Windows store</a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release </a>
-free , no limit , buy = coffee  |use self-signed certificate
+Windows store|Github release|Github Action
+------------ | ------------- | -------------
+<a href="https://apps.microsoft.com/detail/9PC7BZZ28G0X">Windows store</a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release </a> | Github Action
+free , no limit , buy = coffee | use self-signed certificate |  test only
+store package | github package , dev package | github package, dev package
+
+* store : ...m9vp3t2f55f5t.Msixbundle
+* github : ContextMenuCustomDevPackage 
+* dev : ContextMenuCustomGithubPackage
+
+
+*from v3.8,store package,github package,dev package can be installed at the same time*
 
 
 ##  Guides
