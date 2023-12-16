@@ -43,6 +43,9 @@ https://github.com/ikas-mc/ContextMenuForWindows11/tree/main/menuSample
     Open With VScode.json
     Push File By Adb.json
     Send Image To Wsa By Adb.json
+    
+    // powershell  and multity files 
+    Calculate Md5 By PowerShell.json
 ```
 some from https://github.com/ikas-mc/ContextMenuForWindows11/issues 
 thanks for share
