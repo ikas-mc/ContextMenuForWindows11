@@ -39,7 +39,7 @@ jobs:
       
     - name: Build ContextMenuCustomDevPackage
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild ContextMenuCustom\ContextMenuCustomDevPackage\ContextMenuCustomDevPackage.wapproj /m /p:configuration="release" /p:platform="x64" /p:UapAppxPackageBuildMode=SideloadOnly /p:PackageCertificateKeyFile="${{github.workspace}}\GitHubActionsWorkflow.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="${{github.workspace}}\Packages\"
+      run: msbuild ContextMenuCustom\ContextMenuCustomDevPackage\ContextMenuCustomDevPackage.wapproj /m /p:configuration="release" /p:platform="x64" /p:AppxBundlePlatforms="x64" /p:UapAppxPackageBuildMode=SideloadOnly /p:PackageCertificateKeyFile="${{github.workspace}}\GitHubActionsWorkflow.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="${{github.workspace}}\Packages\"
 
     # build github package
     - name: Build ContextMenuCustomHost
@@ -48,7 +48,7 @@ jobs:
 
     - name: Build ContextMenuCustomGithubPackage
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild ContextMenuCustom\ContextMenuCustomGithubPackage\ContextMenuCustomGithubPackage.wapproj /m /p:configuration="release" /p:platform="x64" /p:UapAppxPackageBuildMode=SideloadOnly  /p:PackageCertificateKeyFile="${{github.workspace}}\GitHubActionsWorkflow.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="${{github.workspace}}\Packages\"
+      run: msbuild ContextMenuCustom\ContextMenuCustomGithubPackage\ContextMenuCustomGithubPackage.wapproj /m /p:configuration="release" /p:platform="x64" /p:AppxBundlePlatforms="x64" /p:UapAppxPackageBuildMode=SideloadOnly  /p:PackageCertificateKeyFile="${{github.workspace}}\GitHubActionsWorkflow.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="${{github.workspace}}\Packages\"
 
     - name: Remove the pfx
       run: Remove-Item -path "${{github.workspace}}\GitHubActionsWorkflow.pfx"

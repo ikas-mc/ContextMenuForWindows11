@@ -15,8 +15,6 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomDevPackage
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomGithubPackage", "ContextMenuCustomGithubPackage\ContextMenuCustomGithubPackage.wapproj", "{9D1E21A1-543C-470A-B411-761AC33F150E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ContextMenuCustomTest", "ContextMenuCustomTest\ContextMenuCustomTest.vcxproj", "{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -88,14 +86,6 @@ Global
 		{9D1E21A1-543C-470A-B411-761AC33F150E}.Release|x64.ActiveCfg = Release|x64
 		{9D1E21A1-543C-470A-B411-761AC33F150E}.Release|x64.Build.0 = Release|x64
 		{9D1E21A1-543C-470A-B411-761AC33F150E}.Release|x64.Deploy.0 = Release|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Debug|ARM64.ActiveCfg = Debug|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Debug|ARM64.Build.0 = Debug|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Debug|x64.ActiveCfg = Debug|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Debug|x64.Build.0 = Debug|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Release|ARM64.ActiveCfg = Release|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Release|ARM64.Build.0 = Release|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Release|x64.ActiveCfg = Release|x64
-		{1DCFA063-A6F2-4C10-BECC-2C9E84EA7DA2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
