@@ -15,10 +15,9 @@ free , no limit , buy = coffee | use self-signed certificate |  test only
 store package | github package , dev package | github package, dev package
 
 * store : ...m9vp3t2f55f5t.Msixbundle
-* github : ContextMenuCustomDevPackage 
-* dev : ContextMenuCustomGithubPackage
-
-
+* github : ContextMenuCustomGithubPackage
+* dev : ContextMenuCustomDevPackage
+  
 *from v3.8,store package,github package,dev package can be installed at the same time*
 
 
