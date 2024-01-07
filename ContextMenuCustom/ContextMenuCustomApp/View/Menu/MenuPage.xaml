@@ -238,7 +238,13 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B9;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;" Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <StackPanel>
+                                <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;" Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox
+                                    Margin="0,8,0,0"
+                                    PlaceholderText="icon for dark theme"
+                                    Visibility="Collapsed" />
+                            </StackPanel>
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
@@ -263,20 +269,33 @@
                             </ComboBox>
                         </controls:SettingItem.RightContent>
                         <controls:SettingItem.BottomContent>
-                            <StackPanel Orientation="Vertical">
+                            <RelativePanel HorizontalAlignment="Stretch">
                                 <TextBox
+                                    x:Name="FileAcceptExtsInput"
                                     Header="File Extensions (* match all)  (.c match .c .cpp)"
                                     PlaceholderText=".txt .zip  or *"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
                                     Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
+
+                                <HyperlinkButton
+                                    Margin="0,8,0,0"
+                                    Content="file extensions"
+                                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/File%E2%80%90Extensions"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.Below="FileAcceptExtsInput"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
 
                                 <TextBox
                                     Header="Regex for name (.+?\.txt match x.txt)"
                                     PlaceholderText="+?\.txt"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
                                     Text="{Binding AcceptFileRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
-                            </StackPanel>
+                            </RelativePanel>
 
                         </controls:SettingItem.BottomContent>
 
@@ -348,7 +367,7 @@
                         Click="OpenHelp_Click"
                         Icon="Help"
                         Label="Help"
-                        ToolTipService.ToolTip="Open Setting" />
+                        ToolTipService.ToolTip="Open wiki" />
                     <AppBarSeparator />
 
                     <AppBarButton
