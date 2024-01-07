@@ -141,14 +141,15 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 		auto param = std::wstring{_param};
 
 		const std::filesystem::path file(path);
-		/*
-		//TODO parser
+
+		//TODO use parser
 		PathHelper::replaceAll(param, PARAM_PARENT, file.parent_path().wstring());
 		PathHelper::replaceAll(param, PARAM_NAME, file.filename().wstring());
-		PathHelper::replaceAll (param, PARAM_STEM, file.stem().wstring ());
+		PathHelper::replaceAll (param, PARAM_NAME_NO_EXT, file.stem().wstring ());
 		PathHelper::replaceAll(param, PARAM_PATH, path);
-		*/
-		/**/
+		
+		/*
+		//just fot test
 		if (param.length () > 5) {
 			std::wstring_view paramView{ param };
 			std::wstringstream out;
@@ -185,6 +186,7 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 			}
 
 		}
+		*/
 		
 		const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 		ShellExecute(parent, L"open", exePath.get(), param.c_str(), file.parent_path().c_str(), SW_SHOWNORMAL);
