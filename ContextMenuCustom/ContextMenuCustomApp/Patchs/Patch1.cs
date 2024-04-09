@@ -11,19 +11,18 @@ namespace ContextMenuCustomApp.Patchs
 {
     public class Patch1
     {
-
         public static void Run()
         {
             var appVersion = AppVersion.Current();
-            var patchVersion = Settings.INS.PatchVersion;
-            if (patchVersion < 2003)
+            var patchVersion = Settings.Default.PatchVersion;
+            if (patchVersion > 0 && patchVersion < 2003)
             {
                 FixCacheSetting();
             }
-
+          
             if (patchVersion != appVersion)
             {
-                Settings.INS.PatchVersion = appVersion;
+                Settings.Default.PatchVersion = appVersion;
             }
         }
 
@@ -34,14 +33,14 @@ namespace ContextMenuCustomApp.Patchs
                 var cacheTimeValue = ApplicationData.Current.LocalSettings.Values["Cache_Time"];
                 if (cacheTimeValue is string cacheTime)
                 {
-                    Settings.INS.CacheEnabled = !string.IsNullOrEmpty(cacheTime);
+                    Settings.Default.CacheEnabled = !string.IsNullOrEmpty(cacheTime);
                 }
             }
-            catch
+            catch (Exception )
             {
-
+                // ignored
             }
         }
-
+       
     }
 }

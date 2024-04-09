@@ -8,6 +8,8 @@ using Windows.System;
 using ContextMenuCustomApp.Service.Menu;
 using ContextMenuCustomApp.View.Common;
 using ContextMenuCustomApp.Common;
+using System.Data;
+using System.Reflection;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -15,16 +17,21 @@ namespace ContextMenuCustomApp.View.Menu
     {
         private readonly MenuService _menuService;
         public ObservableCollection<MenuItem> MenuItems { get; }
+        public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
+        public ObservableCollection<EnumItem> DirectoryMatchEnumItems { get; }
+        public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
 
-        public readonly int MultipleFilesFlagJOIN = (int)MultipleFilesFlagEnum.JOIN;
-
-        public MenuPageViewModel()
+        public MenuPageViewModel(MenuService menuService)
         {
+            _menuService = menuService;
+
             MenuItems = new ObservableCollection<MenuItem>();
-            _menuService = MenuService.Ins;
+            FileMatchEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<FileMatchFlagEnum>());
+            DirectoryMatchEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<DirectoryMatchFlagEnum>());
+            FilesMatchFlagEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<FilesMatchFlagEnum>());
         }
 
-        #region menu 
+        #region menu
 
         public async Task LoadAsync()
         {
@@ -38,7 +45,8 @@ namespace ContextMenuCustomApp.View.Menu
 
         public MenuItem New()
         {
-            var item = new MenuItem() { Title = "new menu", Param = @"""{path}""", AcceptFile = true, AcceptDirectory = true };
+            var item = new MenuItem()
+            { Title = "new menu", Param = @"""{path}""", AcceptFile = true, AcceptDirectory = true };
             MenuItems.Add(item);
             return item;
         }
@@ -52,6 +60,26 @@ namespace ContextMenuCustomApp.View.Menu
                 await UpdateCache();
                 OnMessage("Save Successfully");
             });
+        }
+
+        public async Task RefreshMenuAsync(MenuItem menuItem)
+        {
+            await RunWith(async () =>
+           {
+               var newMenuItem = await _menuService.ReadAsync(menuItem.File);
+               ReplaceMenu(menuItem, newMenuItem);
+           });
+        }
+
+        public void ReplaceMenu(MenuItem menuItem, MenuItem newMenuItem)
+        {
+
+            PropertyInfo[] propsSource = typeof(MenuItem).GetProperties();
+            foreach (PropertyInfo infoSource in propsSource)
+            {
+                object value = infoSource.GetValue(newMenuItem, null);
+                infoSource.SetValue(menuItem, value, null);
+            }
         }
 
         public async Task DeleteAsync(MenuItem item)
@@ -77,6 +105,7 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 return;
             }
+
             _ = await Launcher.LaunchFileAsync(item.File);
         }
 
@@ -84,6 +113,7 @@ namespace ContextMenuCustomApp.View.Menu
 
 
         #region menu cache
+
         public string CacheTime
         {
             get
@@ -100,13 +130,10 @@ namespace ContextMenuCustomApp.View.Menu
 
         public bool CacheEnabled
         {
-            get
-            {
-                return Settings.INS.CacheEnabled;
-            }
+            get { return Settings.Default.CacheEnabled; }
             set
             {
-                Settings.INS.CacheEnabled = value;
+                Settings.Default.CacheEnabled = value;
                 OnPropertyChanged(nameof(CacheEnabled));
                 _ = UpdateCache();
             }
@@ -114,7 +141,7 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async Task UpdateCache()
         {
-            if (Settings.INS.CacheEnabled)
+            if (Settings.Default.CacheEnabled)
             {
                 await BuildCache();
             }
@@ -130,7 +157,8 @@ namespace ContextMenuCustomApp.View.Menu
             await RunWith(async () =>
             {
                 await _menuService.BuildToCacheAsync();
-                ApplicationData.Current.LocalSettings.Values["Cache_Time"] = DateTime.Now.ToString(CultureInfo.CurrentCulture);
+                ApplicationData.Current.LocalSettings.Values["Cache_Time"] =
+                    DateTime.Now.ToString(CultureInfo.CurrentCulture);
                 OnMessage("Build Successfully");
             });
         }
@@ -149,6 +177,5 @@ namespace ContextMenuCustomApp.View.Menu
         }
 
         #endregion cache
-
     }
 }

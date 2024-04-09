@@ -21,9 +21,8 @@
         </Grid.ColumnDefinitions>
 
         <Grid
-            Grid.Row="1"
             Grid.Column="0"
-            Padding="4,40,4,4"
+            Padding="4,40,4,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             BorderBrush="{ThemeResource NavContentBorderColor}"
@@ -84,8 +83,17 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{ThemeResource NavContentBackGroundColor}">
-            <StackPanel Grid.Row="0">
-                <TextBlock Margin="4,0,0,0" Text="Style" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                Margin="4,-8,0,0"
+                FontSize="28"
+                Text="Settings" />
+            <StackPanel Grid.Row="1">
+                <TextBlock Margin="4,16,0,0" Text="Style" />
                 <muxc:Expander
                     MinHeight="64"
                     Margin="0,8,0,0"
@@ -166,16 +174,26 @@
                             <TextBlock
                                 RelativePanel.AlignVerticalCenterWithPanel="True"
                                 RelativePanel.RightOf="MenuIcon"
-                                Text="Context Menu Title" />
+                                Text="Menu Title And Icon" />
                         </RelativePanel>
 
                     </muxc:Expander.Header>
 
                     <muxc:Expander.Content>
                         <StackPanel Margin="16" Orientation="Vertical">
-                            <TextBox Header="Menu Title" Text="{x:Bind _viewModel.GetCustomMenuName(), BindBack=_viewModel.SetCustomMenuName, Mode=TwoWay}" />
+                            <TextBox
+                                Margin="0,0,0,16"
+                                Header="Menu Title"
+                                Text="{x:Bind _viewModel.settings.MenuName, Mode=TwoWay}" />
+                            <TextBox
+                                Margin="0,0,0,16"
+                                Header="Menu Icon For Dark Theme"
+                                Text="{x:Bind _viewModel.settings.MenuDarkIcon, Mode=TwoWay}" />
+                            <TextBox
+                                Margin="0,0,0,16"
+                                Header="Menu Icon For Light Theme"
+                                Text="{x:Bind _viewModel.settings.MenuLightIcon, Mode=TwoWay}" />
                         </StackPanel>
-
                     </muxc:Expander.Content>
 
                 </muxc:Expander>

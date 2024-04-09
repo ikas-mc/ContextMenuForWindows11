@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ContextMenuCustomApp.Common
 {
-    public class Langs : BaseLang
+    public class Langs 
     {
         public string AppName { get; set; } = "Custom Context Menu";
 

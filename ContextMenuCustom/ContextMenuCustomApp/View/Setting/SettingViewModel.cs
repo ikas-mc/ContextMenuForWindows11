@@ -12,10 +12,10 @@ namespace ContextMenuCustomApp.View.Setting
 {
     public class SettingViewModel : BaseViewModel
     {
-        private readonly Settings _settings;
+        public readonly Settings settings = Settings.Default;
         public SettingViewModel()
         {
-            _settings = Settings.INS;
+
         }
 
         public string Version()
@@ -55,29 +55,15 @@ namespace ContextMenuCustomApp.View.Setting
             }
         }
 
-        public string GetCustomMenuName()
-        {
-            var value = SettingHelper.Get<string>("Custom_Menu_Name", "Open With");
-            return value;
-        }
-
-        public async void SetCustomMenuName(string name)
-        {
-            await Task.Run(() =>
-            {
-                SettingHelper.Set("Custom_Menu_Name", name ?? "Open With");
-            });
-        }
-
         public int ThemeType
         {
             get
             {
-                return _settings.ThemeType;
+                return settings.ThemeType;
             }
             set
             {
-                _settings.ThemeType = value;
+                settings.ThemeType = value;
 
                 if (value == 1)
                 {

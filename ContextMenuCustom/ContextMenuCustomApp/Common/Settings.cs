@@ -12,75 +12,69 @@ namespace ContextMenuCustomApp.Common
 
     public class Settings
     {
-        private readonly static ApplicationDataContainer settings;
+        private static readonly AppDataSettings MainSettingDao;
+        private static readonly AppDataSettings DllSettingDao;
 
-        public readonly static Settings INS;
+        public static readonly Settings Default;
         static Settings()
         {
-            settings = ApplicationData.Current.LocalSettings.CreateContainer("app-settings", ApplicationDataCreateDisposition.Always);
-            INS = new Settings();
+            MainSettingDao = new AppDataSettings("app-settings");
+            DllSettingDao = new AppDataSettings();
+            Default = new Settings();
         }
 
         public bool CacheEnabled
         {
-            get
-            {
-                return GetValue(nameof(CacheEnabled), false);
-            }
-            set
-            {
-                SetValue(nameof(CacheEnabled), value);
-            }
+            get => MainSettingDao.GetValue(nameof(CacheEnabled), false);
+            set => MainSettingDao.SetValue(nameof(CacheEnabled), value);
         }
 
         public int PatchVersion
         {
-            get
-            {
-                return GetValue(nameof(PatchVersion), 0);
-            }
-            set
-            {
-                SetValue(nameof(PatchVersion), value);
-            }
+            get => MainSettingDao.GetValue(nameof(PatchVersion), 0);
+            set => MainSettingDao.SetValue(nameof(PatchVersion), value);
         }
 
         public string AppLang
         {
-            get
-            {
-                return GetValue(nameof(AppLang), "");
-            }
-            set
-            {
-                SetValue(nameof(AppLang), value);
-            }
+            get => MainSettingDao.GetValue(nameof(AppLang), "");
+            set => MainSettingDao.SetValue(nameof(AppLang), value);
         }
 
         public int ThemeType
         {
-            get
-            {
-                return GetValue(nameof(ThemeType), 0);
-            }
-            set
-            {
-                SetValue(nameof(ThemeType), value);
-            }
+            get => MainSettingDao.GetValue(nameof(ThemeType), 0);
+            set => MainSettingDao.SetValue(nameof(ThemeType), value);
+        }
+        
+        public string MenuName
+        {
+            get => DllSettingDao.GetValue("Custom_Menu_Name", "Open With");
+            set => DllSettingDao.SetValue("Custom_Menu_Name", value);
         }
 
-        private T GetValue<T>(string key, T defaultValue = default)
+        public string MenuDarkIcon
         {
-            return SettingHelper.Get<T>(settings, key, defaultValue);
+            get => DllSettingDao.GetValue("Custom_Menu_Dark_Icon", string.Empty);
+            set => DllSettingDao.SetValue("Custom_Menu_Dark_Icon", value);
         }
 
-
-        private T SetValue<T>(string key, T value)
+        public string MenuLightIcon
         {
-            SettingHelper.Set(settings, key, value);
+            get => DllSettingDao.GetValue("Custom_Menu_Light_Icon", string.Empty);
+            set => DllSettingDao.SetValue("Custom_Menu_Light_Icon", value);
+        }
+
+        public T GetValue<T>(string key, T defaultValue = default)
+        {
+            return MainSettingDao.GetValue(key, defaultValue);
+        }
+
+        public T SetValue<T>(string key, T value)
+        {
+            MainSettingDao.SetValue(key, value);
             return value;
         }
-
 
     }
 }

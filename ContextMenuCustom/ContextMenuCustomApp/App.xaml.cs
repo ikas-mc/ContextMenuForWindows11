@@ -74,7 +74,7 @@ namespace ContextMenuCustomApp
         public void SetTheme()
         {
             ThemeHelper.Initialize();
-            var themeType = Settings.INS.ThemeType;
+            var themeType = Settings.Default.ThemeType;
 
             if (themeType == 1)
             {

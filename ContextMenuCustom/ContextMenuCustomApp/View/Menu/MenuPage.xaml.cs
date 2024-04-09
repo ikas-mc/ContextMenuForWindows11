@@ -7,6 +7,12 @@ using Windows.Storage.Pickers;
 using ContextMenuCustomApp.View.Common;
 using Windows.System;
 using ContextMenuCustomApp.View.Setting;
+using Windows.UI.Xaml.Controls;
+using System.Collections.Generic;
+using Windows.ApplicationModel.DataTransfer;
+using ContextMenuCustomApp.Service.Common.Json;
+using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -18,7 +24,7 @@ namespace ContextMenuCustomApp.View.Menu
         {
             NavigationCacheMode = NavigationCacheMode.Required;
             InitializeComponent();
-            _viewModel = new MenuPageViewModel();
+            _viewModel = new MenuPageViewModel(MenuService.Ins);
             this.RegisterMessageHandler(_viewModel);
         }
 
@@ -122,6 +128,49 @@ namespace ContextMenuCustomApp.View.Menu
             }
         }
 
+        private async void OpenIconButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && CommandList.SelectedItem is MenuItem item)
+            {
+                var fileOpenPicker = new FileOpenPicker
+                {
+                    SuggestedStartLocation = PickerLocationId.ComputerFolder
+                };
+
+                fileOpenPicker.FileTypeFilter.Add(".dll");
+                fileOpenPicker.FileTypeFilter.Add(".exe");
+                fileOpenPicker.FileTypeFilter.Add(".icon");
+                fileOpenPicker.FileTypeFilter.Add(".png");
+                fileOpenPicker.FileTypeFilter.Add(".bmp");
+                fileOpenPicker.FileTypeFilter.Add(".jpeg");
+                fileOpenPicker.FileTypeFilter.Add(".jpg");
+                fileOpenPicker.FileTypeFilter.Add(".heic");
+                fileOpenPicker.FileTypeFilter.Add(".tif");
+                var file = await fileOpenPicker.PickSingleFileAsync();
+                if (null != file)
+                {
+                    string iconPath;
+                    if (file.Name.EndsWith(".dll") || file.Name.EndsWith(".exe"))
+                    {
+                        iconPath = $"\"{file.Path}\",0";
+                    }
+                    else
+                    {
+                        iconPath = $"\"{file.Path}\"";
+                    }
+
+                    if (button.Tag is string tag && tag == "Dark")
+                    {
+                        item.IconDark = iconPath;
+                    }
+                    else
+                    {
+                        item.Icon = iconPath;
+                    }
+                }
+            }
+        }
+
         private void BuildCacheTipButton_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.UpdateCacheTime();
@@ -143,5 +192,76 @@ namespace ContextMenuCustomApp.View.Menu
             _ = Launcher.LaunchUriAsync(new Uri("https://github.com/ikas-mc/ContextMenuForWindows11/wiki"));
         }
 
+        private async void Refresh_Menu_Click(object sender, RoutedEventArgs e)
+        {
+            if (CommandList.SelectedItem is MenuItem item)
+            {
+                if (null != item.File)
+                {
+                    await _viewModel.RefreshMenuAsync(item);
+                }
+            }
+            else
+            {
+                this.ShowMessage("no selected item", MessageType.Warnning);
+            }
+        }
+
+        private void CopyToClipboard_Click(object sender, RoutedEventArgs e)
+        {
+            if (CommandList.SelectedItem is MenuItem item)
+            {
+                var json = JsonUtil.Serialize(item, true);
+                DataPackage dataPackage = new DataPackage
+                {
+                    RequestedOperation = DataPackageOperation.Copy
+                };
+                dataPackage.SetText(json);
+                Clipboard.SetContent(dataPackage);
+                this.ShowMessage("Copy To Clipboard Successfully", MessageType.Success);
+            }
+            else
+            {
+                this.ShowMessage("no selected item", MessageType.Warnning);
+            }
+        }
+
+        private async void CopyFromClipboard_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (CommandList.SelectedItem is MenuItem menuItem)
+            {
+                DataPackageView dataPackageView = Clipboard.GetContent();
+                if (dataPackageView.Contains(StandardDataFormats.Text))
+                {
+                    string text = await dataPackageView.GetTextAsync();
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        this.ShowMessage("Clipboard text is empty", MessageType.Warnning);
+                        return;
+                    }
+
+                    MenuItem newMenuItem;
+
+                    try
+                    {
+                        newMenuItem = JsonUtil.Deserialize<MenuItem>(text);
+                        newMenuItem.File = menuItem.File;
+                        _viewModel.ReplaceMenu(menuItem, newMenuItem);
+                        this.ShowMessage("Copy From Clipboard Successfully", MessageType.Success);
+                    }
+                    catch (Exception)
+                    {
+                        this.ShowMessage("parse from Clipboard error", MessageType.Warnning);
+                    }
+
+                }
+            }
+            else
+            {
+                this.ShowMessage("no selected item", MessageType.Warnning);
+            }
+
+        }
     }
 }

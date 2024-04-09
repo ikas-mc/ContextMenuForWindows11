@@ -4,8 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="using:ContextMenuCustomApp.View.Common"
     xmlns:controls="using:ContextMenuCustomApp.View.Controls"
+    xmlns:converter="using:ContextMenuCustomApp.View.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ContextMenuCustomApp.View.Menu"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:menu="using:ContextMenuCustomApp.Service.Menu"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     d:Height="400"
@@ -16,8 +19,8 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <common:VisibilityConverter x:Key="VisibilityConverter" />
-        <common:EqualsVisibilityConverter x:Key="EqualsVisibilityConverter" />
+        <converter:VisibilityConverter x:Key="VisibilityConverter" />
+        <converter:EqualsVisibilityConverter x:Key="EqualsVisibilityConverter" />
     </Page.Resources>
 
     <Grid>
@@ -59,7 +62,13 @@
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Title}" />
+                        <Grid>
+                            <TextBlock
+                                Grid.Column="1"
+                                Text="{Binding Title}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap" />
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -231,6 +240,7 @@
                         <controls:SettingItem.ActionContent>
                             <TextBox PlaceholderText="&quot;{path}&quot;" Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
+
                     </controls:SettingItem>
 
                     <controls:SettingItem Margin="0,0,0,8" Header="Icon">
@@ -239,13 +249,39 @@
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <StackPanel>
-                                <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;" Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBox
-                                    Margin="0,8,0,0"
+                                    Margin="0,0,0,8"
+                                    PlaceholderText="&quot;c:\some\icon.icon&quot;"
+                                    Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTipService.ToolTip="Icon For Light Theme Or Default" />
+                                <TextBox
+                                    Margin="0,0,0,8"
                                     PlaceholderText="icon for dark theme"
-                                    Visibility="Collapsed" />
+                                    Text="{Binding IconDark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTipService.ToolTip="Icon For Dark Theme" />
                             </StackPanel>
                         </controls:SettingItem.ActionContent>
+                        <controls:SettingItem.RightContent>
+                            <StackPanel>
+                                <Button
+                                    Width="56"
+                                    Margin="8,1,0,8"
+                                    Click="OpenIconButton_OnClick"
+                                    Tag="Light"
+                                    ToolTipService.ToolTip="Open">
+                                    <SymbolIcon Symbol="OpenFile" />
+                                </Button>
+                                <Button
+                                    Width="56"
+                                    Margin="8,-1,0,8"
+                                    Click="OpenIconButton_OnClick"
+                                    Tag="Dark"
+                                    ToolTipService.ToolTip="Open">
+                                    <SymbolIcon Symbol="OpenFile" />
+                                </Button>
+                            </StackPanel>
+
+                        </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
                     <controls:SettingItem Margin="0,0,0,8" Header="Match Folder">
@@ -253,7 +289,7 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B7;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
-                            <ToggleSwitch IsOn="{Binding AcceptDirectory, Mode=TwoWay}" Style="{ThemeResource ToggleSwitchContentLelft}" />
+                            <local:DirectoryMatchCheckbox Value="{Binding AcceptDirectoryFlag, Mode=TwoWay}" />
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
@@ -262,22 +298,33 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8A5;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
-                            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AcceptFileFlag, Mode=TwoWay}">
-                                <ComboBoxItem Content="Off" />
-                                <ComboBoxItem Content="Ext" />
-                                <ComboBoxItem Content="Regex" />
-                            </ComboBox>
+                            <ComboBox
+                                MinWidth="160"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Label"
+                                ItemsSource="{x:Bind _viewModel.FileMatchEnumItems}"
+                                SelectedValue="{Binding AcceptFileFlag, Mode=TwoWay}"
+                                SelectedValuePath="Value" />
                         </controls:SettingItem.RightContent>
                         <controls:SettingItem.BottomContent>
                             <RelativePanel HorizontalAlignment="Stretch">
                                 <TextBox
                                     x:Name="FileAcceptExtsInput"
-                                    Header="File Extensions (* match all)  (.c match .c .cpp)"
+                                    Header="Extensions Like (empty = all, * = all, .cpp|.cxx match .c or .cpp or .cxx)"
                                     PlaceholderText=".txt .zip  or *"
                                     RelativePanel.AlignLeftWithPanel="True"
                                     RelativePanel.AlignRightWithPanel="True"
                                     Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
+
+                                <TextBox
+                                    x:Name="FileAcceptExtsInput2"
+                                    Header="Extensions List (use | as delimiter) (.cpp|.cxx match .cpp or .cxx)"
+                                    PlaceholderText=".txt .zip  or *"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=3}" />
 
                                 <HyperlinkButton
                                     Margin="0,8,0,0"
@@ -286,6 +333,15 @@
                                     RelativePanel.AlignRightWithPanel="True"
                                     RelativePanel.Below="FileAcceptExtsInput"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
+
+                                <HyperlinkButton
+                                    Margin="0,8,0,0"
+                                    Content="file extensions"
+                                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/File%E2%80%90Extensions"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.Below="FileAcceptExtsInput2"
+                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=3}" />
+
 
                                 <TextBox
                                     Header="Regex for name (.+?\.txt match x.txt)"
@@ -314,11 +370,13 @@
                             </HyperlinkButton>
                         </controls:SettingItem.Description>
                         <controls:SettingItem.RightContent>
-                            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
-                                <ComboBoxItem Content="Off" />
-                                <ComboBoxItem Content="Each (execute [exe] on each path)" />
-                                <ComboBoxItem Content="Join (execute [exe] only once)" />
-                            </ComboBox>
+                            <ComboBox
+                                MinWidth="160"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Label"
+                                ItemsSource="{x:Bind _viewModel.FilesMatchFlagEnumItems}"
+                                SelectedValue="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}"
+                                SelectedValuePath="Value" />
                         </controls:SettingItem.RightContent>
 
                         <controls:SettingItem.BottomContent>
@@ -339,6 +397,11 @@
                             </StackPanel>
                         </controls:SettingItem.BottomContent>
                     </controls:SettingItem>
+                    <TextBlock
+                        Margin="4"
+                        IsTextSelectionEnabled="True"
+                        Text="{Binding File.Name}"
+                        ToolTipService.ToolTip="Menu Config File Name" />
                 </StackPanel>
             </ScrollViewer>
 
@@ -368,19 +431,27 @@
                         Icon="Help"
                         Label="Help"
                         ToolTipService.ToolTip="Open wiki" />
+
+
                     <AppBarSeparator />
 
                     <AppBarButton
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Click="Save_Click"
-                        Icon="Save"
-                        Label="Save"
-                        ToolTipService.ToolTip="Save menu">
-                        <AppBarButton.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="S" Modifiers="Control" />
-                        </AppBarButton.KeyboardAccelerators>
-                    </AppBarButton>
+                        Click="CopyToClipboard_Click"
+                        Icon="Copy"
+                        Label="Copy"
+                        ToolTipService.ToolTip="Copy To Clipboard" />
+
+                    <AppBarButton
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="CopyFromClipboard_Click"
+                        Icon="Paste"
+                        Label="Paste"
+                        ToolTipService.ToolTip="Paste From Clipboard" />
+
+                    <AppBarSeparator />
 
                     <AppBarButton
                         HorizontalAlignment="Center"
@@ -395,12 +466,35 @@
                     </AppBarButton>
 
                     <AppBarButton
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="Save_Click"
+                        Icon="Save"
+                        Label="Save"
+                        ToolTipService.ToolTip="Save menu">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="S" Modifiers="Control" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+
+                    <AppBarSeparator />
+
+                    <AppBarButton
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Click="Open_Click"
                         Icon="OpenFile"
                         Label="Open File"
                         ToolTipService.ToolTip="Open menu file" />
+
+                    <AppBarButton
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="Refresh_Menu_Click"
+                        Icon="Refresh"
+                        Label="Refresh"
+                        ToolTipService.ToolTip="Refresh menu from file" />
+                    <AppBarSeparator />
 
                 </CommandBar.PrimaryCommands>
             </CommandBar>
