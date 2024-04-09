@@ -12,6 +12,18 @@
 
 using namespace Microsoft::WRL;
 
+enum ThemeType {
+	Light = 0,
+	Dark = 1
+};
+
+enum FileType {
+	File = 0,
+	Directory = 1,
+	Background = 2,
+	Desktop = 3
+};
+
 class BaseExplorerCommand : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IExplorerCommand, IObjectWithSite> {
 public:
 	IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) override;
@@ -27,4 +39,5 @@ public:
 
 protected:
 	wil::com_ptr_nothrow<IUnknown> m_site;
+	ThemeType m_theme_type {Light};
 };

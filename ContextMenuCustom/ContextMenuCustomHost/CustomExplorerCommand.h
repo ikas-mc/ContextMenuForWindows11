@@ -26,9 +26,11 @@ public:
 	IFACEMETHODIMP GetCanonicalName(_Out_ GUID* guidCommandName) override;
 	IFACEMETHODIMP EnumSubCommands(__RPC__deref_out_opt IEnumExplorerCommand** enumCommands) override;
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept override;
-	void ReadCommands(bool multipleFiles, const std::wstring& currentPath);
+	void ReadCommands(bool multipleFiles,bool isBackground,bool isDesktop, const std::wstring& currentPath);
 	HRESULT FindLocationFromSite(IShellItem** location) const noexcept;
+	bool IsShiftPressed();
 
 private:
 	std::vector<ComPtr<CustomSubExplorerCommand>> m_commands;
+		
 };

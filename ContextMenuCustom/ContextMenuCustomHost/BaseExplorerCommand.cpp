@@ -4,21 +4,29 @@
 
 IFACEMETHODIMP BaseExplorerCommand::GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) {
 	*name = nullptr;
-	return SHStrDupW(L"Open With", name);
+	auto title = wil::make_cotaskmem_string_nothrow(L"Open With");
+	RETURN_IF_NULL_ALLOC(title);
+	*name = title.release();
+	return S_OK;
 }
 
 IFACEMETHODIMP BaseExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon) {
 	*icon = nullptr;
-	const std::filesystem::path modulePath{wil::GetModuleFileNameW<std::wstring>(wil::GetModuleInstanceHandle())};
-
-	DWORD value = 0;
-	DWORD size = sizeof(value);
-	if (const auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme", SRRF_RT_DWORD, nullptr, &value, &size); result == ERROR_SUCCESS && !!value) {
-		const auto iconPath{modulePath.wstring() + L",-103"};
-		return SHStrDupW(iconPath.c_str(), icon);
+	const auto customIcon = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(m_theme_type == ThemeType::Dark ? L"Custom_Menu_Dark_Icon" : L"Custom_Menu_Light_Icon"), L"");
+	if (customIcon.empty()) {
+		const std::filesystem::path modulePath{ wil::GetModuleFileNameW<std::wstring>(wil::GetModuleInstanceHandle()) };
+		OutputDebugStringW(std::format(L"BaseExplorerCommand::GetIcon ,m_theme_type={}", static_cast<int>(m_theme_type)).c_str());
+		auto iconPath = wil::make_cotaskmem_string_nothrow((modulePath.wstring() + (m_theme_type == ThemeType::Dark ? L",-101" : L",-103")).c_str());
+		RETURN_IF_NULL_ALLOC(iconPath);
+		*icon = iconPath.release();
 	}
-	const auto iconPath{modulePath.wstring() + L",-101"};
-	return SHStrDupW(iconPath.c_str(), icon);
+	else {
+		OutputDebugStringW(std::format(L"BaseExplorerCommand::GetIcon ,m_theme_type={},custom icon={}", static_cast<int>(m_theme_type), customIcon).c_str());
+		auto iconPath = wil::make_cotaskmem_string_nothrow(customIcon.c_str());
+		RETURN_IF_NULL_ALLOC(iconPath);
+		*icon = iconPath.release();
+	}
+	return S_OK;
 }
 
 IFACEMETHODIMP BaseExplorerCommand::GetToolTip(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* infoTip) {
