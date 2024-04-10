@@ -59,8 +59,7 @@ namespace ContextMenuCustomApp.Service.Menu
                 case StorageFolder storageFolder:
                     return storageFolder;
                 default:
-                    return await ApplicationData.Current.LocalFolder.CreateFolderAsync(MenusFolderName,
-                        CreationCollisionOption.OpenIfExists);
+                    return await ApplicationData.Current.LocalFolder.CreateFolderAsync(MenusFolderName, CreationCollisionOption.OpenIfExists);
             }
         }
 
@@ -80,7 +79,7 @@ namespace ContextMenuCustomApp.Service.Menu
             var menuFile = item.File;
             if (menuFile == null)
             {
-                var fileName = item.Title + ".json";
+                var fileName = $"{item.Title}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.json";
                 menuFile = await CreateMenuFileAsync(fileName);
             }
 
@@ -104,11 +103,11 @@ namespace ContextMenuCustomApp.Service.Menu
                 item.File = menuFile;
                 return item;
             }
-            catch ( Exception e) {
-                throw new Exception("Read From Menu file error",e);
+            catch (Exception e)
+            {
+                throw new Exception("Read From Menu file error", e);
             }
         }
-
 
         public async Task DeleteAsync(MenuItem item)
         {
@@ -126,8 +125,7 @@ namespace ContextMenuCustomApp.Service.Menu
             var configFolder = await GetMenusFolderAsync();
             var files = await configFolder.GetFilesAsync();
 
-            var menus = ApplicationData.Current.LocalSettings
-                .CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
+            var menus = ApplicationData.Current.LocalSettings.CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
             menus.Clear();
 
             for (var i = 0; i < files.Count; i++)
@@ -139,12 +137,11 @@ namespace ContextMenuCustomApp.Service.Menu
 
         public void ClearCache()
         {
-            var menus = ApplicationData.Current.LocalSettings
-                .CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
+            var menus = ApplicationData.Current.LocalSettings.CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
             menus.Clear();
         }
 
-        private MenuItem ConvertMenuFromJson(string content)
+        public MenuItem ConvertMenuFromJson(string content)
         {
             var menu = JsonUtil.Deserialize<MenuItem>(content);
 
@@ -165,9 +162,9 @@ namespace ContextMenuCustomApp.Service.Menu
             return menu;
         }
 
-        private string ConvertMenuToJson(MenuItem content)
+        public string ConvertMenuToJson(MenuItem content, bool indented = false)
         {
-            var json = JsonUtil.Serialize(content);
+            var json = JsonUtil.Serialize(content, indented);
             return json;
         }
 
@@ -175,12 +172,12 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (string.IsNullOrEmpty(content.Title))
             {
-                return (false, "title is null");
+                return (false, "Title is empty");
             }
 
             if (string.IsNullOrEmpty(content.Exe))
             {
-                return (false, "exe is null");
+                return (false, "Exe is empty");
             }
 
             return (true, string.Empty);

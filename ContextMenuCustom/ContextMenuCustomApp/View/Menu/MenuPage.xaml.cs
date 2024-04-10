@@ -8,11 +8,8 @@ using ContextMenuCustomApp.View.Common;
 using Windows.System;
 using ContextMenuCustomApp.View.Setting;
 using Windows.UI.Xaml.Controls;
-using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
-using ContextMenuCustomApp.Service.Common.Json;
-using Newtonsoft.Json;
-using static System.Net.Mime.MediaTypeNames;
+using Windows.Storage;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -48,39 +45,31 @@ namespace ContextMenuCustomApp.View.Menu
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            var item = _viewModel.New();
+            var item = _viewModel.CreateMenu();
             CommandList.SelectedItem = item;
         }
 
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (CommandList.SelectedItem is MenuItem item)
+            if (GetSeletedMenu(true, out MenuItem menuItem))
             {
-                await _viewModel.SaveAsync(item);
-                if (null != item.File)
+                await _viewModel.SaveAsync(menuItem);
+                if (null != menuItem.File)
                 {
-                    CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(menu => Equals(item.File.Path, menu.File.Path));
+                    CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(menu => Equals(menuItem.File.Path, menu.File.Path));
                 }
-            }
-            else
-            {
-                this.ShowMessage("no selected item", MessageType.Warnning);
             }
         }
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
-            if (CommandList.SelectedItem is MenuItem item)
+            if (GetSeletedMenu(true, out MenuItem menuItem))
             {
-                var result = await Alert.ChooseAsync("confirm to delete", "Warn");
+                var result = await Alert.ChooseAsync("Delete Menu ?", "Warning");
                 if (result)
                 {
-                    await _viewModel.DeleteAsync(item);
+                    await _viewModel.DeleteAsync(menuItem);
                 }
-            }
-            else
-            {
-                this.ShowMessage("no selected item", MessageType.Warnning);
             }
         }
 
@@ -91,18 +80,15 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async void Open_Click(object sender, RoutedEventArgs e)
         {
-            if (CommandList.SelectedItem is MenuItem item)
+            if (GetSeletedMenu(true, out MenuItem menuItem))
             {
-                await _viewModel.OpenMenuFileAsync(item);
-            }
-            else
-            {
-                this.ShowMessage("no selected item", MessageType.Warnning);
+                await _viewModel.OpenMenuFileAsync(menuItem);
             }
         }
+
         private async void OpenExeButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (CommandList.SelectedItem is MenuItem item)
+            if (GetSeletedMenu(true, out MenuItem menuItem))
             {
                 var fileOpenPicker = new FileOpenPicker
                 {
@@ -119,10 +105,10 @@ namespace ContextMenuCustomApp.View.Menu
                 var file = await fileOpenPicker.PickSingleFileAsync();
                 if (null != file)
                 {
-                    item.Exe = $"\"{file.Path}\"";
-                    if (string.IsNullOrEmpty(item.Icon))
+                    menuItem.Exe = $"\"{file.Path}\"";
+                    if (string.IsNullOrEmpty(menuItem.Icon))
                     {
-                        item.Icon = $"\"{file.Path}\",0";
+                        menuItem.Icon = $"\"{file.Path}\",0";
                     }
                 }
             }
@@ -130,7 +116,7 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async void OpenIconButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && CommandList.SelectedItem is MenuItem item)
+            if (sender is Button button && GetSeletedMenu(true, out MenuItem menuItem))
             {
                 var fileOpenPicker = new FileOpenPicker
                 {
@@ -161,11 +147,11 @@ namespace ContextMenuCustomApp.View.Menu
 
                     if (button.Tag is string tag && tag == "Dark")
                     {
-                        item.IconDark = iconPath;
+                        menuItem.IconDark = iconPath;
                     }
                     else
                     {
-                        item.Icon = iconPath;
+                        menuItem.Icon = iconPath;
                     }
                 }
             }
@@ -194,25 +180,23 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async void Refresh_Menu_Click(object sender, RoutedEventArgs e)
         {
-            if (CommandList.SelectedItem is MenuItem item)
+            if (GetSeletedMenu(true, out MenuItem menuItem) && menuItem.File is StorageFile)
             {
-                if (null != item.File)
-                {
-                    await _viewModel.RefreshMenuAsync(item);
-                }
-            }
-            else
-            {
-                this.ShowMessage("no selected item", MessageType.Warnning);
+                await _viewModel.RefreshMenuAsync(menuItem);
             }
         }
 
-        private void CopyToClipboard_Click(object sender, RoutedEventArgs e)
+        private async void CopyToClipboard_Click(object sender, RoutedEventArgs e)
         {
-            if (CommandList.SelectedItem is MenuItem item)
+            if (GetSeletedMenu(true, out MenuItem menuItem))
             {
-                var json = JsonUtil.Serialize(item, true);
-                DataPackage dataPackage = new DataPackage
+                var json = await _viewModel.ToJson(menuItem, true);
+                if (string.IsNullOrEmpty(json))
+                {
+                    return;
+                }
+
+                var dataPackage = new DataPackage
                 {
                     RequestedOperation = DataPackageOperation.Copy
                 };
@@ -220,48 +204,52 @@ namespace ContextMenuCustomApp.View.Menu
                 Clipboard.SetContent(dataPackage);
                 this.ShowMessage("Copy To Clipboard Successfully", MessageType.Success);
             }
-            else
-            {
-                this.ShowMessage("no selected item", MessageType.Warnning);
-            }
+
         }
 
+
+        //TODO refactor
         private async void CopyFromClipboard_Click(object sender, RoutedEventArgs e)
         {
-
-            if (CommandList.SelectedItem is MenuItem menuItem)
+            if (GetSeletedMenu(true, out MenuItem menuItem))
             {
+                var json = string.Empty;
                 DataPackageView dataPackageView = Clipboard.GetContent();
                 if (dataPackageView.Contains(StandardDataFormats.Text))
                 {
-                    string text = await dataPackageView.GetTextAsync();
-                    if (string.IsNullOrEmpty(text))
-                    {
-                        this.ShowMessage("Clipboard text is empty", MessageType.Warnning);
-                        return;
-                    }
+                    json = await dataPackageView.GetTextAsync();
+                }
 
-                    MenuItem newMenuItem;
-
-                    try
-                    {
-                        newMenuItem = JsonUtil.Deserialize<MenuItem>(text);
-                        newMenuItem.File = menuItem.File;
-                        _viewModel.ReplaceMenu(menuItem, newMenuItem);
-                        this.ShowMessage("Copy From Clipboard Successfully", MessageType.Success);
-                    }
-                    catch (Exception)
-                    {
-                        this.ShowMessage("parse from Clipboard error", MessageType.Warnning);
-                    }
-
+                if (string.IsNullOrEmpty(json))
+                {
+                    this.ShowMessage("Clipboard text is empty", MessageType.Warnning);
+                    return;
+                }
+             
+                //bad
+                if (await _viewModel.SetMenu(menuItem, json))
+                {
+                    this.ShowMessage("Copy From Clipboard Successfully", MessageType.Success);
                 }
             }
-            else
+        }
+
+        private bool GetSeletedMenu(bool showWarnning, out MenuItem selectedMenuItem)
+        {
+            if (CommandList.SelectedItem is MenuItem menuItem)
             {
-                this.ShowMessage("no selected item", MessageType.Warnning);
+                selectedMenuItem = menuItem;
+                return true;
             }
 
+            if (showWarnning)
+            {
+                this.ShowMessage("No selected menu", MessageType.Warnning);
+            }
+
+            selectedMenuItem = null;
+            return false;
         }
+
     }
 }

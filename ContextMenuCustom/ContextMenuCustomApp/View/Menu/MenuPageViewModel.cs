@@ -2,13 +2,11 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.System;
 using ContextMenuCustomApp.Service.Menu;
 using ContextMenuCustomApp.View.Common;
 using ContextMenuCustomApp.Common;
-using System.Data;
 using System.Reflection;
 
 namespace ContextMenuCustomApp.View.Menu
@@ -43,10 +41,17 @@ namespace ContextMenuCustomApp.View.Menu
             });
         }
 
-        public MenuItem New()
+        public MenuItem CreateMenu()
         {
             var item = new MenuItem()
-            { Title = "new menu", Param = @"""{path}""", AcceptFile = true, AcceptDirectory = true };
+            {
+                Title = $"Menu-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
+                Param = @"""{path}""",
+                AcceptFileFlag = (int)FileMatchFlagEnum.All,
+                AcceptDirectoryFlag = (int)(DirectoryMatchFlagEnum.Directory | DirectoryMatchFlagEnum.Background | DirectoryMatchFlagEnum.Desktop),
+                AcceptMultipleFilesFlag = (int)FilesMatchFlagEnum.Each,
+                Index = 0
+            };
             MenuItems.Add(item);
             return item;
         }
@@ -73,7 +78,6 @@ namespace ContextMenuCustomApp.View.Menu
 
         public void ReplaceMenu(MenuItem menuItem, MenuItem newMenuItem)
         {
-
             PropertyInfo[] propsSource = typeof(MenuItem).GetProperties();
             foreach (PropertyInfo infoSource in propsSource)
             {
@@ -107,6 +111,37 @@ namespace ContextMenuCustomApp.View.Menu
             }
 
             _ = await Launcher.LaunchFileAsync(item.File);
+        }
+
+        public async Task<bool> SetMenu(MenuItem menuItem, String json)
+        {
+            return await RunWith(async () =>
+               {
+                   var newMenuItem = await Task.Run(() =>
+                   {
+                       return _menuService.ConvertMenuFromJson(json);
+                   });
+
+                   if (null == newMenuItem)
+                   {
+                       return false;
+                   }
+
+                   newMenuItem.File = menuItem.File;
+                   ReplaceMenu(menuItem, newMenuItem);
+                   return true;
+               });
+        }
+
+        public async Task<string> ToJson(MenuItem menuItem, bool indented)
+        {
+            return await RunWith(() =>
+             {
+                 return Task.Run(() =>
+                 {
+                     return _menuService.ConvertMenuToJson(menuItem, indented);
+                 });
+             });
         }
 
         #endregion menu
