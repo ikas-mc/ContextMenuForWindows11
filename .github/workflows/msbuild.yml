@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4.1.1
+      with:
+        ref: dev-2024
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.3.1
