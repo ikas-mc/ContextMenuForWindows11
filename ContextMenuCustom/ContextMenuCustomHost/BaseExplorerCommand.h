@@ -39,5 +39,5 @@ public:
 
 protected:
 	wil::com_ptr_nothrow<IUnknown> m_site;
-	ThemeType m_theme_type {Light};
+	ThemeType m_theme_type{ Light };
 };

@@ -15,7 +15,6 @@ IFACEMETHODIMP BaseExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Ou
 	const auto customIcon = winrt::unbox_value_or<winrt::hstring>(winrt::Windows::Storage::ApplicationData::Current().LocalSettings().Values().Lookup(m_theme_type == ThemeType::Dark ? L"Custom_Menu_Dark_Icon" : L"Custom_Menu_Light_Icon"), L"");
 	if (customIcon.empty()) {
 		const std::filesystem::path modulePath{ wil::GetModuleFileNameW<std::wstring>(wil::GetModuleInstanceHandle()) };
-		OutputDebugStringW(std::format(L"BaseExplorerCommand::GetIcon ,m_theme_type={}", static_cast<int>(m_theme_type)).c_str());
 		auto iconPath = wil::make_cotaskmem_string_nothrow((modulePath.wstring() + (m_theme_type == ThemeType::Dark ? L",-101" : L",-103")).c_str());
 		RETURN_IF_NULL_ALLOC(iconPath);
 		*icon = iconPath.release();

@@ -16,7 +16,7 @@ class
 	__declspec(uuid("62213977-E22F-49D5-B4DB-29E72E6A5D37"))
 #endif
 
-	CustomExplorerCommand : public BaseExplorerCommand {
+CustomExplorerCommand: public BaseExplorerCommand{
 public:
 	CustomExplorerCommand();
 	IFACEMETHODIMP GetFlags(_Out_ EXPCMDFLAGS* flags) override;
@@ -28,9 +28,8 @@ public:
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept override;
 	void ReadCommands(bool multipleFiles,bool isBackground,bool isDesktop, const std::wstring& currentPath);
 	HRESULT FindLocationFromSite(IShellItem** location) const noexcept;
-	bool IsShiftPressed();
 
 private:
 	std::vector<ComPtr<CustomSubExplorerCommand>> m_commands;
-		
+
 };

@@ -1,7 +1,6 @@
 #pragma once
 #include "BaseExplorerCommand.h"
 #include <string>
-#include <winrt/base.h>
 
 enum FilesMatchFlagEnum {
 	FILES_OFF = 0,
@@ -32,7 +31,7 @@ constexpr std::wstring_view PARAM_NAME_NO_EXT = L"{nameNoExt}";
 
 class CustomSubExplorerCommand final : public BaseExplorerCommand {
 public:
-	CustomSubExplorerCommand(const winrt::hstring& configContent,ThemeType themeType);
+	CustomSubExplorerCommand(const winrt::hstring& configContent, ThemeType themeType);
 	IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) override;
 	IFACEMETHODIMP GetIcon(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* icon) override;
 	IFACEMETHODIMP GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) override;
@@ -40,7 +39,7 @@ public:
 	virtual bool Accept(bool multipleFiles, FileType fileType, const std::wstring& name, const std::wstring& ext);
 
 private:
-	void Execute(HWND parent, const std::wstring& path) ;
+	void Execute(HWND parent, const std::wstring& path);
 	std::wstring _exe;
 	std::wstring _param;
 	bool _accept_directory;
