@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContextMenuCustomApp", "Con
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomPackage", "ContextMenuCustomPackage\ContextMenuCustomPackage.wapproj", "{0D0E2A13-5161-4315-932F-D24400934867}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContextMenuCustom", "ContextMenuCustom\ContextMenuCustom.csproj", "{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}"
-EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomDevPackage", "ContextMenuCustomDevPackage\ContextMenuCustomDevPackage.wapproj", "{741BF773-8A6B-428E-953F-1081C66ED973}"
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomGithubPackage", "ContextMenuCustomGithubPackage\ContextMenuCustomGithubPackage.wapproj", "{9D1E21A1-543C-470A-B411-761AC33F150E}"
@@ -50,18 +48,6 @@ Global
 		{0D0E2A13-5161-4315-932F-D24400934867}.Release|x64.ActiveCfg = Release|x64
 		{0D0E2A13-5161-4315-932F-D24400934867}.Release|x64.Build.0 = Release|x64
 		{0D0E2A13-5161-4315-932F-D24400934867}.Release|x64.Deploy.0 = Release|x64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Debug|ARM64.Build.0 = Debug|ARM64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Debug|ARM64.Deploy.0 = Debug|ARM64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Debug|x64.ActiveCfg = Debug|x64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Debug|x64.Build.0 = Debug|x64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Debug|x64.Deploy.0 = Debug|x64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Release|ARM64.ActiveCfg = Release|ARM64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Release|ARM64.Build.0 = Release|ARM64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Release|ARM64.Deploy.0 = Release|ARM64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Release|x64.ActiveCfg = Release|x64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Release|x64.Build.0 = Release|x64
-		{44C62B7E-7B88-4F31-88B9-8962AEC5BDE6}.Release|x64.Deploy.0 = Release|x64
 		{741BF773-8A6B-428E-953F-1081C66ED973}.Debug|ARM64.ActiveCfg = Debug|ARM64
 		{741BF773-8A6B-428E-953F-1081C66ED973}.Debug|ARM64.Build.0 = Debug|ARM64
 		{741BF773-8A6B-428E-953F-1081C66ED973}.Debug|ARM64.Deploy.0 = Debug|ARM64
