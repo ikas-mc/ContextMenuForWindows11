@@ -128,7 +128,7 @@
                     ToolTipService.ToolTip="Open Setting" />
                 <muxc:TeachingTip
                     x:Name="CacheTip"
-                    Title="About Cache:"
+                    Title=""
                     CloseButtonContent="Got it!"
                     IsLightDismissEnabled="True"
                     PlacementMargin="4"
@@ -136,9 +136,7 @@
                     Target="{x:Bind BuildCacheTipButton}">
                     <muxc:TeachingTip.Content>
                         <TextBlock>
-                            <Run>Add menu to the cache</Run>
-                            <LineBreak />
-                            <Run>to optimize loading menus</Run>
+                            <Run>Caching Menus to Optimize Loading Speed</Run>
                             <LineBreak />
                             <LineBreak />
                             <Run>Cache Time:</Run>
@@ -170,7 +168,7 @@
 
         <Grid
             Grid.Column="1"
-            Padding="4,48,4,0"
+            Padding="4,40,4,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{ThemeResource NavContentBackGroundColor}">
@@ -180,6 +178,13 @@
                 <RowDefinition Height="48" />
             </Grid.RowDefinitions>
 
+            <TextBlock
+                Grid.Row="0"
+                Margin="4,-8,0,0"
+                FontSize="28"
+                Text="Menu"
+                Visibility="Collapsed" />
+
             <ScrollViewer
                 Grid.Row="1"
                 Grid.Column="2"
@@ -188,6 +193,8 @@
                 DataContext="{Binding SelectedItem, ElementName=CommandList}"
                 Visibility="{Binding SelectedItem, ElementName=CommandList, Converter={StaticResource VisibilityConverter}}">
                 <StackPanel Padding="0" Orientation="Vertical">
+                    <TextBlock Margin="0,0,0,8" Text="Menu Config" />
+
                     <controls:SettingItem Margin="0,0,0,8" Header="Title">
                         <controls:SettingItem.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF683;" />
@@ -397,11 +404,25 @@
                             </StackPanel>
                         </controls:SettingItem.BottomContent>
                     </controls:SettingItem>
-                    <TextBlock
-                        Margin="4"
-                        IsTextSelectionEnabled="True"
-                        Text="{Binding File.Name}"
-                        ToolTipService.ToolTip="Menu Config File Name" />
+
+                    <TextBlock Margin="0,8,0,8" Text="Menu File" />
+
+                    <controls:SettingItem Margin="0,0,0,8" Header="File Name">
+                        <controls:SettingItem.Icon>
+                            <FontIcon
+                                Height="32"
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xF683;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.ActionContent>
+                            <TextBlock
+                                IsTextSelectionEnabled="True"
+                                Text="{Binding FileName}"
+                                ToolTipService.ToolTip="Menu Config File Name" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
+
+
                 </StackPanel>
             </ScrollViewer>
 
@@ -428,8 +449,8 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Click="OpenHelp_Click"
-                        Icon="Help"
-                        Label="Help"
+                        Icon="Globe"
+                        Label="Wiki"
                         ToolTipService.ToolTip="Open wiki" />
 
 
@@ -450,6 +471,23 @@
                         Icon="Paste"
                         Label="Paste"
                         ToolTipService.ToolTip="Paste From Clipboard" />
+                    <AppBarSeparator />
+
+                    <AppBarButton
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="Open_Click"
+                        Icon="OpenFile"
+                        Label="Open"
+                        ToolTipService.ToolTip="Open menu file" />
+
+                    <AppBarButton
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="Rename_Click"
+                        Icon="Rename"
+                        Label="Rename"
+                        ToolTipService.ToolTip="Rename menu file" />
 
                     <AppBarSeparator />
 
@@ -476,16 +514,6 @@
                             <KeyboardAccelerator Key="S" Modifiers="Control" />
                         </AppBarButton.KeyboardAccelerators>
                     </AppBarButton>
-
-                    <AppBarSeparator />
-
-                    <AppBarButton
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Click="Open_Click"
-                        Icon="OpenFile"
-                        Label="Open File"
-                        ToolTipService.ToolTip="Open menu file" />
 
                     <AppBarButton
                         HorizontalAlignment="Right"

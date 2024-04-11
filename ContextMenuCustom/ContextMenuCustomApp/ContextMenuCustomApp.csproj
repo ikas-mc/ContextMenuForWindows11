@@ -114,6 +114,9 @@
     <Compile Include="View\Menu\DirectoryMatchCheckbox.xaml.cs">
       <DependentUpon>DirectoryMatchCheckbox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Menu\MenuFileRenameDialog.xaml.cs">
+      <DependentUpon>MenuFileRenameDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Menu\MenuPage.xaml.cs">
       <DependentUpon>MenuPage.xaml</DependentUpon>
     </Compile>
@@ -166,6 +169,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Menu\DirectoryMatchCheckbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Menu\MenuFileRenameDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -10,6 +10,7 @@ using ContextMenuCustomApp.View.Setting;
 using Windows.UI.Xaml.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using System.IO;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -83,6 +84,26 @@ namespace ContextMenuCustomApp.View.Menu
             if (GetSeletedMenu(true, out MenuItem menuItem))
             {
                 await _viewModel.OpenMenuFileAsync(menuItem);
+            }
+        }
+
+        private async void Rename_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                var file = menuItem.File;
+                if (file == null)
+                {
+                    this.ShowMessage("Menu is not saved", MessageType.Warnning);
+                    return;
+                }
+
+                var dialog = new MenuFileRenameDialog(menuItem);
+                (bool result, string name) = await dialog.ShowAsync();
+                if (result)
+                {
+                    await _viewModel.RenameMenuFile(menuItem, name);
+                }
             }
         }
 
@@ -225,7 +246,7 @@ namespace ContextMenuCustomApp.View.Menu
                     this.ShowMessage("Clipboard text is empty", MessageType.Warnning);
                     return;
                 }
-             
+
                 //bad
                 if (await _viewModel.SetMenu(menuItem, json))
                 {

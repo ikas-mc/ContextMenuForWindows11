@@ -1,5 +1,4 @@
-﻿using ContextMenuCustomApp.Service.Common.Json;
-using ContextMenuCustomApp.View.Common;
+﻿using ContextMenuCustomApp.View.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Windows.Data.Json;
@@ -7,10 +6,20 @@ using Windows.Storage;
 
 namespace ContextMenuCustomApp.Service.Menu
 {
-    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy),ItemNullValueHandling = NullValueHandling.Ignore)]
+    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     public class MenuItem : BaseModel
     {
         [JsonIgnore] public StorageFile File { get; set; }
+
+        [JsonIgnore]
+        public string FileName
+        {
+            get => File?.Name;
+            set
+            {
+                OnPropertyChanged(nameof(FileName));
+            }
+        }
 
         private string _title;
         private string _exe;
@@ -121,8 +130,7 @@ namespace ContextMenuCustomApp.Service.Menu
             set => SetProperty(ref _index, value);
         }
 
-       
 
-       
+
     }
 }

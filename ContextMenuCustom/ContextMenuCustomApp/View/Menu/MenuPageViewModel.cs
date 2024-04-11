@@ -52,7 +52,7 @@ namespace ContextMenuCustomApp.View.Menu
                 AcceptMultipleFilesFlag = (int)FilesMatchFlagEnum.Each,
                 Index = 0
             };
-            MenuItems.Add(item);
+            MenuItems.Insert(0, item);
             return item;
         }
 
@@ -61,8 +61,8 @@ namespace ContextMenuCustomApp.View.Menu
             await RunWith(async () =>
             {
                 await _menuService.SaveAsync(item);
-                await LoadAsync();
                 await UpdateCache();
+                await LoadAsync();
                 OnMessage("Save Successfully");
             });
         }
@@ -91,9 +91,21 @@ namespace ContextMenuCustomApp.View.Menu
             await RunWith(async () =>
             {
                 await _menuService.DeleteAsync(item);
-                await LoadAsync();
+                //await LoadAsync();
                 await UpdateCache();
+                MenuItems.Remove(item);
                 OnMessage("Delete Successfully");
+            });
+        }
+
+        public async Task RenameMenuFile(MenuItem item, string name)
+        {
+            await RunWith(async () =>
+            {
+                var newFile = await _menuService.RenameMenuFile(item, name);
+                item.File = newFile;
+                item.FileName = newFile.Name;
+                OnMessage("Rename Successfully");
             });
         }
 

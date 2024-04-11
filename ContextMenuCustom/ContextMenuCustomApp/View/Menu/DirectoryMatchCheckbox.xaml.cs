@@ -1,19 +1,6 @@
 ﻿using ContextMenuCustomApp.Service.Menu;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -32,7 +19,6 @@ namespace ContextMenuCustomApp.View.Menu
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(int), typeof(DirectoryMatchCheckbox), new PropertyMetadata(0, (o, v) =>
         {
-            Debug.WriteLine($"BitMaskCheckbox value={v.NewValue}");
             var self = (DirectoryMatchCheckbox)o;
             if (v.NewValue is int value)
             {

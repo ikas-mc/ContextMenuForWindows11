@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Storage;
 using ContextMenuCustomApp.Service.Common.Json;
+using System.IO;
 
 namespace ContextMenuCustomApp.Service.Menu
 {
@@ -79,7 +80,7 @@ namespace ContextMenuCustomApp.Service.Menu
             var menuFile = item.File;
             if (menuFile == null)
             {
-                var fileName = $"{item.Title}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.json";
+                var fileName = $"{item.Title}.json";
                 menuFile = await CreateMenuFileAsync(fileName);
             }
 
@@ -107,6 +108,29 @@ namespace ContextMenuCustomApp.Service.Menu
             {
                 throw new Exception("Read From Menu file error", e);
             }
+        }
+
+        public async Task<StorageFile> RenameMenuFile(MenuItem item, string name)
+        {
+            if (null == item)
+            {
+                throw new Exception("Menu is null");
+            }
+
+            var file = (item?.File) ?? throw new Exception("Menu file is null");
+
+            string newName = null;
+            if (!string.IsNullOrEmpty(name))
+            {
+                newName = Path.GetFileName(name);
+            }
+            if (string.IsNullOrEmpty(newName))
+            {
+                throw new Exception("New Name is empty");
+            }
+
+            await file.RenameAsync(newName, NameCollisionOption.GenerateUniqueName);
+            return file;
         }
 
         public async Task DeleteAsync(MenuItem item)
