@@ -14,7 +14,7 @@
   <Identity
     Name="31896935-DD54-4362-ACDD-6DA496624671"
     Publisher="CN=ikas-mc-dev"
-    Version="5.0.2.0" />
+    Version="5.0.3.0" />
 
   <Properties>
     <DisplayName>Custom Context Menu (Github)</DisplayName>
