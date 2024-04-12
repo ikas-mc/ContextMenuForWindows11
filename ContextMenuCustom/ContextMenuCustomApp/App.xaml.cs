@@ -3,6 +3,7 @@ using ContextMenuCustomApp.View.Common;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -57,7 +58,7 @@ namespace ContextMenuCustomApp
             deferral.Complete();
         }
 
-        protected override void OnActivated(IActivatedEventArgs args)
+        protected async override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
             if (args.Kind == ActivationKind.CommandLineLaunch)
@@ -65,8 +66,17 @@ namespace ContextMenuCustomApp
                 if (args is CommandLineActivatedEventArgs commandLineActivatedEventArgs)
                 {
                     var arguments = commandLineActivatedEventArgs.Operation.Arguments;
-                    MessageDialog dialog = new MessageDialog(arguments);
-                    _ = dialog.ShowAsync();
+                    var dialog = new MessageDialog(arguments);
+                    dialog.Commands.Add(new UICommand("Copy To Clipboard", (e) => {
+                        var dataPackage = new DataPackage
+                        {
+                            RequestedOperation = DataPackageOperation.Copy
+                        };
+                        dataPackage.SetText(arguments);
+                        Clipboard.SetContent(dataPackage);
+                    }));
+                    dialog.Commands.Add(new UICommand("Close"));
+                    _ = await dialog.ShowAsync();
                 }
             }
         }
