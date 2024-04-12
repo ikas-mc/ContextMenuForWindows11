@@ -109,18 +109,28 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 		wil::com_ptr_nothrow<IShellItem> psi;
 		FindLocationFromSite(psi.put());
 		if (psi) {
-			const auto currentPath = PathHelper::getPath(psi.get());
-			OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState LocationFromSite={}", currentPath).c_str());
+			//check for ( this pc background , zip... folder )
+			SFGAOF attributes;
+			const bool isFileSystemItem = psi && (psi->GetAttributes(SFGAO_FILESYSTEM, &attributes) == S_OK);
+			const bool isCompressed = psi && (psi->GetAttributes(SFGAO_FOLDER | SFGAO_STREAM, &attributes) == S_OK);
+			OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState isFileSystemItem={} ,isCompressed={}", isFileSystemItem, isCompressed).c_str());
+			
+			//valid path
+			if (isFileSystemItem && !isCompressed) {
+				const std::wstring currentPath = PathHelper::getPath(psi.get());
+				OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState LocationFromSite={}", currentPath).c_str());
+				if (!currentPath.empty()) {
+					//TODO desktop ?? 
+					bool isDesktop = false;
+					wchar_t desktopPath[MAX_PATH] = { 0 };
+					if (SUCCEEDED(::SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT, desktopPath))) {
+						isDesktop = wcscmp(currentPath.c_str(), desktopPath) == 0;
+						OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState isDesktop={}, path={}", isDesktop, desktopPath).c_str());
+					}
 
-			//TODO desktop ?? 
-			bool isDesktop = false;
-			wchar_t desktopPath[MAX_PATH] = { 0 };
-			if (SUCCEEDED(::SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT, desktopPath))) {
-				isDesktop = wcscmp(currentPath.c_str(), desktopPath) == 0;
-				OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState isDesktop={}, path={}", isDesktop, desktopPath).c_str());
+					ReadCommands(false, true, isDesktop, currentPath);
+				}
 			}
-
-			ReadCommands(false, true, isDesktop, currentPath);
 		}
 	}
 
