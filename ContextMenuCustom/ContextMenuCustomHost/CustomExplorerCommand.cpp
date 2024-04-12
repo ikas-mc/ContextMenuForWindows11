@@ -4,10 +4,7 @@
 #include "CustomSubExplorerCommand.h"
 #include <fstream>
 #include <ppltasks.h>
-#include <shlwapi.h>
 #include "PathHelper.hpp"
-#include <ShlObj.h>
-#include <wil/com.h>
 
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;

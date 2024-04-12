@@ -2,13 +2,7 @@
 #include <wrl/module.h>
 #include <wrl/implements.h>
 #include <wrl/client.h>
-#include <shobjidl_core.h>
 #include <filesystem>
-#include <wil/Common.h>
-#include <wil/resource.h>
-#include <wil/stl.h>
-#include <wil/filesystem.h>
-#include <wil/com.h>
 
 using namespace Microsoft::WRL;
 

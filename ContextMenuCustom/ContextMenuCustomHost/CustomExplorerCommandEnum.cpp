@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "CustomExplorerCommandEnum.h"
-#include <wil/common.h>
 
 CustomExplorerCommandEnum::CustomExplorerCommandEnum(std::vector<ComPtr<CustomSubExplorerCommand>>& commands) :
 	m_current(0) {

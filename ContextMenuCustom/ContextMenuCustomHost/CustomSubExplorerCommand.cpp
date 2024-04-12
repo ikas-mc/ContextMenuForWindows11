@@ -2,7 +2,6 @@
 #include "CustomSubExplorerCommand.h"
 #include "PathHelper.hpp"
 #include <regex>
-#include <shellapi.h>
 
 using namespace winrt::Windows::Data::Json;
 
