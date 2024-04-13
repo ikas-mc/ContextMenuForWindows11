@@ -5,9 +5,10 @@
 
 using namespace winrt::Windows::Data::Json;
 
-CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configContent, ThemeType themeType)
+CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configContent, ThemeType themeType, bool enableDebug)
 {
 	m_theme_type = themeType;
+	m_enable_debug= enableDebug;
 	try
 	{
 		const JsonObject result = JsonObject::Parse(configContent);
@@ -15,7 +16,7 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 		_exe = result.GetNamedString(L"exe", L"");
 		_param = result.GetNamedString(L"param", L"");
 		_icon = result.GetNamedString(L"icon", L"");
-		_iconDark = result.GetNamedString(L"iconDark", L"");
+		_icon_dark = result.GetNamedString(L"iconDark", L"");
 		m_index = static_cast<int>(result.GetNamedNumber(L"index", 0));
 
 		_accept_directory = result.GetNamedBoolean(L"acceptDirectory", false);
@@ -41,26 +42,26 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 	catch (winrt::hresult_error const& e)
 	{
 		_title = _title + L" (config parse error)";
-		OutputDebugStringW(std::format(L"CustomSubExplorerCommand::CustomSubExplorerCommand parse error,message={}, json={}", e.message(), configContent).c_str());
+		DEBUG_LOG(L"CustomSubExplorerCommand::CustomSubExplorerCommand parse error,message={}, json={}", e.message(), configContent);
 	}
 }
 
 bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, const std::wstring& name, const std::wstring& ext) {
-	OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={}, isMultipleFiles={}, fileType={}, fileName={}, fileExt={}", _title, multipleFiles, static_cast<int>(fileType), name, ext).c_str());
+	DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, isMultipleFiles={}, fileType={}, fileName={}, fileExt={}", _title, multipleFiles, static_cast<int>(fileType), name, ext);
 
 	if (multipleFiles) {
-		OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept multiple_files_flag={}", _accept_multiple_files_flag).c_str());
+		DEBUG_LOG(L"CustomSubExplorerCommand::Accept multiple_files_flag={}", _accept_multiple_files_flag);
 		return _accept_multiple_files_flag == FILES_JOIN || _accept_multiple_files_flag == FILES_EACH;
 	}
 
 	//file
 	if (fileType == FileType::File) {
 		if (_accept_file_flag == FileMatchFlagEnum::FILE_ALL) {
-			OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={},file=all", _title).c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={},file=all", _title);
 			return true;
 		}
 		else if (_accept_file_flag == FileMatchFlagEnum::FILE_EXT) {
-			OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={}, file=ext like, ext={}", _title, _accept_exts).c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, file=ext like, ext={}", _title, _accept_exts);
 			if (ext.empty() || _accept_exts.empty()) {
 				return true;
 			}
@@ -70,7 +71,7 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, con
 			return _accept_exts.find(ext) != std::wstring::npos;
 		}
 		else if (_accept_file_flag == FileMatchFlagEnum::FILE_EXT2) {
-			OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={}, file=ext list, ext={}", _title, _accept_exts).c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, file=ext list, ext={}", _title, _accept_exts);
 			if (ext.empty() || _accept_exts.empty()) {
 				return false;
 			}
@@ -89,7 +90,7 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, con
 			return false;
 		}
 		else if (_accept_file_flag == FileMatchFlagEnum::FILE_REGEX) {
-			OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={}, file=regex, ext={}", _title, _accept_file_regex).c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, file=regex, ext={}", _title, _accept_file_regex);
 			if (_accept_file_regex.empty()) {
 				return false;
 			}
@@ -100,29 +101,29 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, con
 	}
 	//directory
 	else if (fileType == FileType::Directory) {
-		OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={}, directory=Directory", _title).c_str());
+		DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, directory=Directory", _title);
 		return (_accept_directory_flag & DIRECTORY_DIRECTORY) == DIRECTORY_DIRECTORY;
 	}
 	//background
 	else if (fileType == FileType::Background) {
-		OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={}, directory=Background", _title).c_str());
+		DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, directory=Background", _title);
 		return  (_accept_directory_flag & DIRECTORY_BACKGROUND) == DIRECTORY_BACKGROUND;
 	}
 	//desktop
 	else if (fileType == FileType::Desktop) {
-		OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept menu={}, directory=Desktop", _title).c_str());
+		DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, directory=Desktop", _title);
 		return  (_accept_directory_flag & DIRECTORY_DESKTOP) == DIRECTORY_DESKTOP;
 	}
 
-	OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Accept skip, menu={}", _title).c_str());
+	DEBUG_LOG(L"CustomSubExplorerCommand::Accept skip, menu={}", _title);
 	return false;
 }
 
 IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon) {
 	*icon = nullptr;
 
-	if (m_theme_type == ThemeType::Dark && !_iconDark.empty()) {
-		auto iconPath = wil::make_cotaskmem_string_nothrow(_iconDark.c_str());
+	if (m_theme_type == ThemeType::Dark && !_icon_dark.empty()) {
+		auto iconPath = wil::make_cotaskmem_string_nothrow(_icon_dark.c_str());
 		RETURN_IF_NULL_ALLOC(iconPath);
 		*icon = iconPath.release();
 		return S_OK;
@@ -153,7 +154,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::GetState(_In_opt_ IShellItemArray* sele
 }
 
 IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept try {
-	OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Invoke , menu={}", _title).c_str());
+	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke , menu={}", _title);
 
 	HWND parent = nullptr;
 	if (m_site) {
@@ -165,11 +166,11 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 		selection->GetCount(&count);
 	}
 
-	OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Invoke  menu={}, selection size={}", _title, count).c_str());
+	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke  menu={}, selection size={}", _title, count);
 
 	if (count > 1 && _accept_multiple_files_flag == FILES_JOIN) {
 		if (const auto paths = PathHelper::getPaths(selection, _path_delimiter); !paths.empty()) {
-			OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Invoke menu={}, join, paths={}", _title, paths).c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, join, paths={}", _title, paths);
 
 			auto param = _param_for_multiple_files.empty() ? std::wstring{ _param } : std::wstring{ _param_for_multiple_files };
 			// get parent from first path
@@ -186,13 +187,13 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 
 			PathHelper::replaceAll(param, PARAM_PATH, paths);
 			const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
-			OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Invoke menu={}, exePath={}, param={}", _title, exePath.get(), param).c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exePath={}, param={}", _title, exePath.get(), param);
 			ShellExecute(parent, L"open", exePath.get(), param.c_str(), parentPath.data(), SW_SHOWNORMAL);
 		}
 	}
 	else if (count > 1 && _accept_multiple_files_flag == FILES_EACH) {
 		if (const auto paths = PathHelper::getPathList(selection); !paths.empty()) {
-			OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Invoke menu={}, each", _title).c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, each", _title);
 
 			for (auto& path : paths) {
 				if (path.empty()) {
@@ -211,7 +212,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 }CATCH_RETURN();
 
 void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
-	OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Execute menu={}, path={}", _title, path).c_str());
+	DEBUG_LOG(L"CustomSubExplorerCommand::Execute menu={}, path={}", _title, path);
 
 	if (path.empty()) {
 		return;
@@ -277,6 +278,6 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 	*/
 
 	const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
-	OutputDebugStringW(std::format(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath.get(), param).c_str());
+	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath.get(), param);
 	ShellExecute(parent, L"open", exePath.get(), param.c_str(), file.parent_path().c_str(), SW_SHOWNORMAL);
 }

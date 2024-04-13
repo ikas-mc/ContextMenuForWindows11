@@ -48,7 +48,9 @@ IFACEMETHODIMP CustomExplorerCommand::GetCanonicalName(_Out_ GUID* guidCommandNa
 }
 
 IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) {
-	OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState okToBeSlow={}", okToBeSlow).c_str());
+	m_enable_debug = winrt::unbox_value_or<bool>(ApplicationData::Current().LocalSettings().Values().Lookup(L"Custom_Menu_Enable_Debug"), false);
+	DEBUG_LOG(L"CustomExplorerCommand::GetState enableDebug={}, okToBeSlow={}", m_enable_debug, okToBeSlow);
+
 	if (!okToBeSlow) {
 		*cmdState = ECS_DISABLED;
 		return E_PENDING;
@@ -60,7 +62,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 		wil::com_ptr_nothrow<IOleWindow> oleWindow;
 		m_site.query_to(IID_PPV_ARGS(oleWindow.put()));
 		if (oleWindow) {
-			OutputDebugStringW(L"CustomExplorerCommand::GetState classic context menu");
+			DEBUG_LOG(L"CustomExplorerCommand::GetState classic context menu");
 			// fix right click on explorer left tree view
 			// https://github.com/TortoiseGit/TortoiseGit/blob/master/src/TortoiseShell/ContextMenu.cpp
 			HWND hWnd = nullptr;
@@ -68,7 +70,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 				wchar_t szWndClassName[MAX_PATH] = { 0 };
 				GetClassName(hWnd, szWndClassName, _countof(szWndClassName));
 				// window class name: "NamespaceTreeControl"
-				OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState classic context menu, window={}", szWndClassName).c_str());
+				DEBUG_LOG(L"CustomExplorerCommand::GetState classic context menu, window={}", szWndClassName);
 				if (wcscmp(szWndClassName, L"NamespaceTreeControl") != 0) {
 					*cmdState = ECS_HIDDEN;
 					return S_OK;
@@ -81,7 +83,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	if (selection) {
 		selection->GetCount(&count);
 	}
-	OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState selection count={}", count).c_str());
+	DEBUG_LOG(L"CustomExplorerCommand::GetState selection count={}", count);
 
 	//theme type
 	DWORD themeValue = 0;
@@ -91,7 +93,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	if (result == ERROR_SUCCESS) {
 		m_theme_type = themeValue == 0 ? ThemeType::Dark : ThemeType::Light;
 	}
-	OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState m_theme_type={}", static_cast<int>(m_theme_type)).c_str());
+	DEBUG_LOG(L"CustomExplorerCommand::GetState m_theme_type={}", static_cast<int>(m_theme_type));
 
 	//
 	if (count > 1) {
@@ -110,19 +112,19 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 			SFGAOF attributes;
 			const bool isFileSystemItem = psi && (psi->GetAttributes(SFGAO_FILESYSTEM, &attributes) == S_OK);
 			const bool isCompressed = psi && (psi->GetAttributes(SFGAO_FOLDER | SFGAO_STREAM, &attributes) == S_OK);
-			OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState isFileSystemItem={} ,isCompressed={}", isFileSystemItem, isCompressed).c_str());
-			
+			DEBUG_LOG(L"CustomExplorerCommand::GetState isFileSystemItem={} ,isCompressed={}", isFileSystemItem, isCompressed);
+
 			//valid path
 			if (isFileSystemItem && !isCompressed) {
 				const std::wstring currentPath = PathHelper::getPath(psi.get());
-				OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState LocationFromSite={}", currentPath).c_str());
+				DEBUG_LOG(L"CustomExplorerCommand::GetState LocationFromSite={}", currentPath);
 				if (!currentPath.empty()) {
 					//TODO desktop ?? 
 					bool isDesktop = false;
 					wchar_t desktopPath[MAX_PATH] = { 0 };
 					if (SUCCEEDED(::SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, SHGFP_TYPE_CURRENT, desktopPath))) {
 						isDesktop = wcscmp(currentPath.c_str(), desktopPath) == 0;
-						OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState isDesktop={}, path={}", isDesktop, desktopPath).c_str());
+						DEBUG_LOG(L"CustomExplorerCommand::GetState isDesktop={}, path={}", isDesktop, desktopPath);
 					}
 
 					ReadCommands(false, true, isDesktop, currentPath);
@@ -131,7 +133,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 		}
 	}
 
-	OutputDebugStringW(std::format(L"CustomExplorerCommand::GetState commands count={}", m_commands.size()).c_str());
+	DEBUG_LOG(L"CustomExplorerCommand::GetState commands count={}", m_commands.size());
 	if (m_commands.empty()) {
 		*cmdState = ECS_HIDDEN;
 	}
@@ -173,11 +175,11 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 	else {
 		fileType = FileType::File;
 	}
-	OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands isMultipleFiles={},isBackground={},isDesktop={},fileType={},currentPath={}", multipleFiles, isBackground, isDesktop, static_cast<int>(fileType), currentPath).c_str());
+	DEBUG_LOG(L"CustomExplorerCommand::ReadCommands isMultipleFiles={},isBackground={},isDesktop={},fileType={},currentPath={}", multipleFiles, isBackground, isDesktop, static_cast<int>(fileType), currentPath);
 
 	const auto menus = ApplicationData::Current().LocalSettings().CreateContainer(L"menus", ApplicationDataCreateDisposition::Always).Values();
 	if (menus.Size() > 0) {
-		OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands useCache={},menus={}", true, menus.Size()).c_str());
+		DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},menus={}", true, menus.Size());
 
 		const auto current = menus.begin();
 		do {
@@ -185,7 +187,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 				try
 				{
 					if (auto content = winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L""); !content.empty()) {
-						const auto command = Make<CustomSubExplorerCommand>(content, m_theme_type);
+						const auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
 						if (command->Accept(multipleFiles, fileType, name, ext)) {
 							m_commands.push_back(command);
 						}
@@ -193,13 +195,13 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 				}
 				catch (winrt::hresult_error const& e)
 				{
-					OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands error useCache={},key={},e={}", true, current.Current().Key(), e.message()).c_str());
+					DEBUG_LOG(L"CustomExplorerCommand::ReadCommands error useCache={},key={},e={}", true, current.Current().Key(), e.message());
 				}
 			}
 		} while (current.MoveNext());
 	}
 	else {
-		OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands useCache={}", false).c_str());
+		DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={}", false);
 		const auto localFolder = ApplicationData::Current().LocalFolder().Path();
 		concurrency::create_task([&] {
 			path folder{ localFolder.c_str() };
@@ -207,27 +209,27 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 			if (exists(folder) && is_directory(folder)) {
 
 				for (auto& file : directory_iterator{ folder }) {
-					OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands useCache={},file={}", false, file.path().c_str()).c_str());
+					DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={}", false, file.path().c_str());
 					try
 					{
 						std::ifstream fs{ file.path() };
 						std::stringstream buffer;
 						buffer << fs.rdbuf(); //TODO 
 						auto content = winrt::to_hstring(buffer.str());
-						//OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content).c_str());
+						//DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content);
 
 						//std::ifstream fs(file.path(), std::ios::binary);
 						//std::string contentString{ std::istreambuf_iterator<char>{ fs },  std::istreambuf_iterator<char>{} };
 						//auto content = winrt::to_hstring(contentString);
 
-						auto command = Make<CustomSubExplorerCommand>(content, m_theme_type);
+						auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
 						if (command->Accept(multipleFiles, fileType, name, ext)) {
 							m_commands.push_back(command);
 						}
 					}
 					catch (winrt::hresult_error const& e)
 					{
-						OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands error useCache={},file={},e={}", false, file.path().c_str(), e.message()).c_str());
+						DEBUG_LOG(L"CustomExplorerCommand::ReadCommands error useCache={},file={},e={}", false, file.path().c_str(), e.message());
 					}
 
 				}
@@ -241,7 +243,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 			});
 	}
 
-	OutputDebugStringW(std::format(L"CustomExplorerCommand::ReadCommands commands count={}", m_commands.size()).c_str());
+	DEBUG_LOG(L"CustomExplorerCommand::ReadCommands commands count={}", m_commands.size());
 }
 
 IFACEMETHODIMP CustomExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx* ctx) noexcept try {

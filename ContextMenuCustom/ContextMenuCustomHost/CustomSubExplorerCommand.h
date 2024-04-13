@@ -31,7 +31,7 @@ constexpr std::wstring_view PARAM_NAME_NO_EXT = L"{nameNoExt}";
 
 class CustomSubExplorerCommand final : public BaseExplorerCommand {
 public:
-	CustomSubExplorerCommand(const winrt::hstring& configContent, ThemeType themeType);
+	CustomSubExplorerCommand(const winrt::hstring& configContent, ThemeType themeType,bool enableEnbug);
 	IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) override;
 	IFACEMETHODIMP GetIcon(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* icon) override;
 	IFACEMETHODIMP GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) override;
@@ -49,7 +49,7 @@ private:
 	std::wstring _path_delimiter;
 	std::wstring _param_for_multiple_files;
 	std::wstring _icon;
-	std::wstring _iconDark;
+	std::wstring _icon_dark;
 	std::wstring _title;
 	std::wstring _accept_file_regex;
 	int _accept_file_flag;

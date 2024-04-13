@@ -4,6 +4,10 @@
 #include <wrl/client.h>
 #include <filesystem>
 
+#define DEBUG_LOG(message, ...) if(m_enable_debug) { \
+	OutputDebugStringW(std::format(message, __VA_ARGS__).c_str());\
+}
+
 using namespace Microsoft::WRL;
 
 enum ThemeType {
@@ -34,4 +38,5 @@ public:
 protected:
 	wil::com_ptr_nothrow<IUnknown> m_site;
 	ThemeType m_theme_type{ Light };
+	bool m_enable_debug{ true };
 };

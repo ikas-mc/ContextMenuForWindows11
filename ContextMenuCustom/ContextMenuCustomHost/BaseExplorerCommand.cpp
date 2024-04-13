@@ -19,7 +19,7 @@ IFACEMETHODIMP BaseExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Ou
 		*icon = iconPath.release();
 	}
 	else {
-		OutputDebugStringW(std::format(L"BaseExplorerCommand::GetIcon ,m_theme_type={},custom icon={}", static_cast<int>(m_theme_type), customIcon).c_str());
+		DEBUG_LOG(L"BaseExplorerCommand::GetIcon ,m_theme_type={},custom icon={}", static_cast<int>(m_theme_type), customIcon);
 		auto iconPath = wil::make_cotaskmem_string_nothrow(customIcon.c_str());
 		RETURN_IF_NULL_ALLOC(iconPath);
 		*icon = iconPath.release();
