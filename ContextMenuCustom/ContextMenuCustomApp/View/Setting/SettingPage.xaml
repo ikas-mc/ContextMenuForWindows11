@@ -9,6 +9,10 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
+    <Page.Resources>
+        <x:Double x:Key="ToggleSwitchPreContentMargin">0</x:Double>
+        <x:Double x:Key="ToggleSwitchPostContentMargin">0</x:Double>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -50,7 +54,7 @@
 
                 <Paragraph>
                     <Hyperlink NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki" UnderlineStyle="None">
-                        Help
+                        Wiki
                     </Hyperlink>
                     <LineBreak />
                     <Hyperlink NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/issues" UnderlineStyle="None">
@@ -89,159 +93,131 @@
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
-                Margin="4,-8,0,0"
+                Margin="0,-8,0,0"
                 FontSize="28"
                 Text="Settings" />
             <StackPanel Grid.Row="1">
-                <TextBlock Margin="4,16,0,0" Text="Style" />
-                <muxc:Expander
-                    MinHeight="64"
-                    Margin="0,8,0,0"
-                    Padding="0"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    IsExpanded="False">
-                    <muxc:Expander.Header>
+                <TextBlock Margin="0,8,0,4" Text="Style" />
+                <controls:SettingItem Margin="0,0,0,8" Header="App Theme">
+                    <controls:SettingItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE790;" />
+                    </controls:SettingItem.Icon>
 
-                        <RelativePanel
-                            MinHeight="64"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            BorderThickness="1"
-                            CornerRadius="4">
-                            <FontIcon
-                                x:Name="ThemeIcon"
-                                Margin="0,0,16,0"
-                                FontFamily="Segoe Fluent Icons"
-                                Glyph="&#xE790;"
-                                RelativePanel.AlignLeftWithPanel="True"
-                                RelativePanel.AlignVerticalCenterWithPanel="True" />
+                    <controls:SettingItem.ActionContent>
+                        <TextBlock />
+                    </controls:SettingItem.ActionContent>
 
-                            <TextBlock
-                                RelativePanel.AlignVerticalCenterWithPanel="True"
-                                RelativePanel.RightOf="ThemeIcon"
-                                Text="App Theme" />
-                        </RelativePanel>
+                    <controls:SettingItem.RightContent>
+                        <ComboBox
+                            x:Name="ThemeSelect"
+                            MinWidth="100"
+                            SelectedIndex="{x:Bind _viewModel.ThemeType, Mode=TwoWay}">
+                            <ComboBoxItem>
+                                <TextBlock Text="Auto" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="Dark" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="Light" />
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
 
-                    </muxc:Expander.Header>
-                    <muxc:Expander.Content>
-                        <StackPanel Margin="16" HorizontalAlignment="Stretch">
-                            <ComboBox x:Name="ThemeSelect" SelectedIndex="{x:Bind _viewModel.ThemeType, Mode=TwoWay}">
-                                <ComboBoxItem>
-                                    <TextBlock Text="Auto" />
-                                </ComboBoxItem>
-                                <ComboBoxItem>
-                                    <TextBlock Text="Dark" />
-                                </ComboBoxItem>
-                                <ComboBoxItem>
-                                    <TextBlock Text="Light" />
-                                </ComboBoxItem>
-                            </ComboBox>
+
+                <TextBlock Margin="0,8,0,4" Text="Menu" />
+
+                <controls:SettingItem Margin="0,0,0,8" Header="Menu Title">
+                    <controls:SettingItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEDE3;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.ActionContent>
+                        <TextBox Text="{x:Bind _viewModel.settings.MenuName, Mode=TwoWay}" />
+                    </controls:SettingItem.ActionContent>
+
+                </controls:SettingItem>
+
+                <controls:SettingItem Margin="0,0,0,8" Header="Menu Icon">
+                    <controls:SettingItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B9;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.ActionContent>
+                        <StackPanel>
+                            <TextBox
+                                x:Name="MenuLightIconPath"
+                                Margin="0,0,0,8"
+                                PlaceholderText="Icon path, Light theme"
+                                Text="{x:Bind _viewModel.settings.MenuLightIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTipService.ToolTip="Icon For Light Theme" />
+                            <TextBox
+                                x:Name="MenuDarkIconPath"
+                                Margin="0,0,0,8"
+                                PlaceholderText="Icon path, Dark theme"
+                                Text="{x:Bind _viewModel.settings.MenuDarkIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTipService.ToolTip="Icon For Dark Theme" />
                         </StackPanel>
-                    </muxc:Expander.Content>
-                </muxc:Expander>
-
-                <TextBlock Margin="4,16,0,0" Text="Menu" />
-                <muxc:Expander
-                    MinHeight="64"
-                    Margin="0,8,0,0"
-                    Padding="0"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    IsExpanded="False">
-                    <muxc:Expander.Header>
-                        <RelativePanel
-                            MinHeight="64"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            BorderThickness="1"
-                            CornerRadius="4">
-
-                            <FontIcon
-                                x:Name="MenuIcon"
-                                Margin="0,0,16,0"
-                                FontFamily="Segoe Fluent Icons"
-                                Glyph="&#xEDE3;"
-                                RelativePanel.AlignLeftWithPanel="True"
-                                RelativePanel.AlignVerticalCenterWithPanel="True" />
-
-                            <TextBlock
-                                RelativePanel.AlignVerticalCenterWithPanel="True"
-                                RelativePanel.RightOf="MenuIcon"
-                                Text="Menu Title And Icon" />
-                        </RelativePanel>
-
-                    </muxc:Expander.Header>
-
-                    <muxc:Expander.Content>
-                        <StackPanel Margin="16" Orientation="Vertical">
-                            <TextBox
-                                Margin="0,0,0,16"
-                                Header="Menu Title"
-                                Text="{x:Bind _viewModel.settings.MenuName, Mode=TwoWay}" />
-                            <TextBox
-                                Margin="0,0,0,16"
-                                Header="Menu Icon For Dark Theme"
-                                Text="{x:Bind _viewModel.settings.MenuDarkIcon, Mode=TwoWay}" />
-                            <TextBox
-                                Margin="0,0,0,16"
-                                Header="Menu Icon For Light Theme"
-                                Text="{x:Bind _viewModel.settings.MenuLightIcon, Mode=TwoWay}" />
-                        </StackPanel>
-                    </muxc:Expander.Content>
-
-                </muxc:Expander>
-
-
-                <TextBlock Margin="4,16,0,0" Text="Data" />
-                <muxc:Expander
-                    MinHeight="64"
-                    Margin="0,8,0,0"
-                    Padding="0"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    IsExpanded="False">
-                    <muxc:Expander.Header>
-                        <RelativePanel
-                            MinHeight="64"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            BorderThickness="1"
-                            CornerRadius="4">
-                            <FontIcon
-                                x:Name="DataIcon"
-                                Margin="0,0,16,0"
-                                FontFamily="Segoe Fluent Icons"
-                                Glyph="&#xE8B7;"
-                                RelativePanel.AlignLeftWithPanel="True"
-                                RelativePanel.AlignVerticalCenterWithPanel="True" />
-
-                            <TextBlock
-                                RelativePanel.AlignVerticalCenterWithPanel="True"
-                                RelativePanel.RightOf="DataIcon"
-                                Text="App Data" />
-                        </RelativePanel>
-
-                    </muxc:Expander.Header>
-
-                    <muxc:Expander.Content>
-                        <StackPanel Margin="16" Orientation="Vertical">
+                    </controls:SettingItem.ActionContent>
+                    <controls:SettingItem.RightContent>
+                        <StackPanel>
                             <Button
-                                x:Name="OpenDataFolderBtn"
-                                Click="{x:Bind _viewModel.OpenDataFolder}"
-                                Content="Open Data Folder" />
+                                Width="56"
+                                Margin="8,1,0,8"
+                                Click="OpenIconButton_OnClick"
+                                Tag="Light"
+                                ToolTipService.ToolTip="Open">
+                                <SymbolIcon Symbol="OpenFile" />
+                            </Button>
+                            <Button
+                                Width="56"
+                                Margin="8,-1,0,8"
+                                Click="OpenIconButton_OnClick"
+                                Tag="Dark"
+                                ToolTipService.ToolTip="Open">
+                                <SymbolIcon Symbol="OpenFile" />
+                            </Button>
                         </StackPanel>
-                    </muxc:Expander.Content>
 
-                </muxc:Expander>
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
+
+                <TextBlock Margin="0,8,0,4" Text="Data" />
+
+                <controls:SettingItem Margin="0,0,0,8" Header="Enable Debug">
+                    <controls:SettingItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE946;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.RightContent>
+                        <ToggleSwitch
+                            Margin="0,4"
+                            FlowDirection="RightToLeft"
+                            IsOn="{x:Bind _viewModel.settings.EnableDebug, Mode=TwoWay}" />
+
+                    </controls:SettingItem.RightContent>
+                    <controls:SettingItem.ActionContent>
+                        <RichTextBlock>
+                            <Paragraph>
+                                <Run Text="Enable debug log, use" />
+                                <Hyperlink NavigateUri="https://learn.microsoft.com/en-us/sysinternals/downloads/debugview">DebugView</Hyperlink>
+                                <Run Text="to view logs. " />
+                                <Hyperlink NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Debug">Wiki for details</Hyperlink>
+                            </Paragraph>
+                        </RichTextBlock>
+                    </controls:SettingItem.ActionContent>
+                </controls:SettingItem>
+
+
+                <controls:SettingItem Margin="0,0,0,8" Header="App Data">
+                    <controls:SettingItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8E5;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.RightContent>
+                        <Button
+                            x:Name="OpenDataFolderBtn"
+                            Click="{x:Bind _viewModel.OpenDataFolder}"
+                            Content="Open Data Folder" />
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
 
             </StackPanel>
         </Grid>

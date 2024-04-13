@@ -64,7 +64,13 @@ namespace ContextMenuCustomApp.Common
             get => DllSettingDao.GetValue("Custom_Menu_Light_Icon", string.Empty);
             set => DllSettingDao.SetValue("Custom_Menu_Light_Icon", value);
         }
-
+        
+        public bool EnableDebug
+        {
+            get => DllSettingDao.GetValue("Custom_Menu_Enable_Debug", false);
+            set => DllSettingDao.SetValue("Custom_Menu_Enable_Debug", value);
+        }
+        
         public T GetValue<T>(string key, T defaultValue = default)
         {
             return MainSettingDao.GetValue(key, defaultValue);

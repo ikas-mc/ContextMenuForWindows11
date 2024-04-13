@@ -60,7 +60,7 @@
                                 x:Name="SwitchAreaGrid"
                                 Grid.RowSpan="3"
                                 Grid.ColumnSpan="3"
-                                Margin="0,5"
+                                Margin="0,4"
                                 contract7NotPresent:CornerRadius="{StaticResource ControlCornerRadius}"
                                 contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                                 Background="{ThemeResource ToggleSwitchContainerBackground}"

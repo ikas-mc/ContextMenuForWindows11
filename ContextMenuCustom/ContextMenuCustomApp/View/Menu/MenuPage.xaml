@@ -522,7 +522,6 @@
                         Icon="Refresh"
                         Label="Refresh"
                         ToolTipService.ToolTip="Refresh menu from file" />
-                    <AppBarSeparator />
 
                 </CommandBar.PrimaryCommands>
             </CommandBar>
