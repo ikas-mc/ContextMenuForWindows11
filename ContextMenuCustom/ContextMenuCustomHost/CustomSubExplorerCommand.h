@@ -25,7 +25,7 @@ enum DirectoryMatchFlagEnum {
 
 constexpr std::wstring_view PARAM_PATH = L"{path}";
 constexpr std::wstring_view PARAM_NAME = L"{name}";
-constexpr std::wstring_view PARAM_EXT = L"{ext}";
+constexpr std::wstring_view PARAM_EXT = L"{extension}";
 constexpr std::wstring_view PARAM_PARENT = L"{parent}";
 constexpr std::wstring_view PARAM_NAME_NO_EXT = L"{nameNoExt}";
 
