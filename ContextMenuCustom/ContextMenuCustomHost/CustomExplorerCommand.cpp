@@ -202,8 +202,10 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 	}
 	else {
 		DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={}", false);
-		const auto localFolder = ApplicationData::Current().LocalFolder().Path();
+		//const auto localFolder = ApplicationData::Current().LocalFolder().Path();
 		concurrency::create_task([&] {
+			//fix dll won't close
+			auto localFolder = winrt::Windows::Storage::AppDataPaths::GetDefault().LocalAppData();
 			path folder{ localFolder.c_str() };
 			folder /= "custom_commands";
 			if (exists(folder) && is_directory(folder)) {
