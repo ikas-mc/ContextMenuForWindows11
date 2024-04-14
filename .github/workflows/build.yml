@@ -71,5 +71,6 @@ jobs:
         name: ContextMenuCustom-${{ matrix.package }}-${{ matrix.platform }}
         path: |
           ${{github.workspace}}\Packages\**\*.msixbundle
+          ${{github.workspace}}\Packages\**\*.msix
           ${{github.workspace}}\Packages\**\*.cer
-          ${{github.workspace}}\Packages\**\Dependencies\x64\*
+          ${{github.workspace}}\Packages\**\Dependencies\${{ matrix.platform }}\*
