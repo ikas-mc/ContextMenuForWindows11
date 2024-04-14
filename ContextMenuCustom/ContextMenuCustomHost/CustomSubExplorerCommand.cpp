@@ -158,7 +158,10 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 
 	HWND parent = nullptr;
 	if (m_site) {
-		RETURN_IF_FAILED(IUnknown_GetWindow(m_site.get(), &parent));
+		const auto ret = IUnknown_GetWindow(m_site.get(), &parent);
+		if (FAILED(ret)) {
+			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke, menu={}, GetWindow failed={}", _title, ret);
+		}
 	}
 
 	DWORD count = 0;
