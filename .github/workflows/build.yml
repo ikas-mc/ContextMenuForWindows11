@@ -30,10 +30,6 @@ jobs:
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
         $certificatePath = "${{github.workspace}}\GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
-    - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget.exe restore ContextMenuCustom -SolutionDirectory ContextMenuCustom
       
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
