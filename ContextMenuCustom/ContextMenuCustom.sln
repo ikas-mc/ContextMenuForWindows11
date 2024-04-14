@@ -13,6 +13,8 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomDevPackage
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomGithubPackage", "ContextMenuCustomGithubPackage\ContextMenuCustomGithubPackage.wapproj", "{9D1E21A1-543C-470A-B411-761AC33F150E}"
 EndProject
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomAnyPackage", "ContextMenuCustomAnyPackage\ContextMenuCustomAnyPackage.wapproj", "{76142E54-9126-49A1-9BE3-4019EC96D42F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -72,6 +74,18 @@ Global
 		{9D1E21A1-543C-470A-B411-761AC33F150E}.Release|x64.ActiveCfg = Release|x64
 		{9D1E21A1-543C-470A-B411-761AC33F150E}.Release|x64.Build.0 = Release|x64
 		{9D1E21A1-543C-470A-B411-761AC33F150E}.Release|x64.Deploy.0 = Release|x64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Debug|ARM64.Build.0 = Debug|ARM64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Debug|x64.ActiveCfg = Debug|x64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Debug|x64.Build.0 = Debug|x64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Debug|x64.Deploy.0 = Debug|x64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Release|ARM64.ActiveCfg = Release|ARM64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Release|ARM64.Build.0 = Release|ARM64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Release|ARM64.Deploy.0 = Release|ARM64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Release|x64.ActiveCfg = Release|x64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Release|x64.Build.0 = Release|x64
+		{76142E54-9126-49A1-9BE3-4019EC96D42F}.Release|x64.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
