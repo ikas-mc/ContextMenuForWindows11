@@ -190,8 +190,8 @@
                     <controls:SettingItem.RightContent>
                         <ToggleSwitch
                             Margin="0,4"
-                            FlowDirection="RightToLeft"
-                            IsOn="{x:Bind _viewModel.settings.EnableDebug, Mode=TwoWay}" />
+                            IsOn="{x:Bind _viewModel.settings.EnableDebug, Mode=TwoWay}"
+                            Style="{ThemeResource ToggleSwitchContentLelft}" />
 
                     </controls:SettingItem.RightContent>
                     <controls:SettingItem.ActionContent>
