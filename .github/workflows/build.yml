@@ -1,4 +1,4 @@
-name: build X64
+name: build packages
 #https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp
 
 on:
