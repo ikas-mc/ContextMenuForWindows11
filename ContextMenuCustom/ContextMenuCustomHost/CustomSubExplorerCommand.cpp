@@ -222,15 +222,7 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 	}
 
 	const std::filesystem::path file(path);
-	/*
-	//TODO use parser
-	auto param = std::wstring{_param};
-	PathHelper::replaceAll(param, PARAM_PARENT, file.parent_path().wstring());
-	PathHelper::replaceAll(param, PARAM_NAME, file.filename().wstring());
-	PathHelper::replaceAll (param, PARAM_NAME_NO_EXT, file.stem().wstring ());
-	PathHelper::replaceAll(param, PARAM_PATH, path);
-	*/
-	std::map<std::wstring_view, std::wstring> replacements = {
+	std::unordered_map<std::wstring_view, std::wstring> replacements = {
 		{PARAM_PARENT, file.parent_path().wstring()},
 		{PARAM_NAME, file.filename().wstring()},
 		{PARAM_EXT, file.extension().wstring()},
@@ -238,47 +230,23 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 		{PARAM_PATH, path}
 	};
 
+	const std::wstring_view paramView { _param };
 	std::wstring param;
-	size_t index = 0;
-	while (index < _param.size()) {
+	for (size_t i = 0; i < paramView.size();) {
 		bool replaced = false;
 		for (const auto& [key, value] : replacements) {
-			if (_param.substr(index, key.size()) == key) {
+			if (paramView.substr(i, key.size()) == key) {
 				param += value;
-				index += key.size();
+				i += key.size();
 				replaced = true;
 				break;
 			}
 		}
 		if (!replaced) {
-			param += _param[index];
-			++index;
+			param += paramView[i];
+			++i;
 		}
 	}
-
-	/*
-	std::wstring param;
-	std::wstring tempKey;
-	bool recording = false;
-
-	for (const auto& ch : _param) {
-		if (ch == L'{') {
-			recording = true;
-			tempKey.clear();
-		} else if (ch == L'}') {
-			recording = false;
-			if (replacements.count(tempKey) > 0) {
-				param += replacements[tempKey];
-			} else {
-				param += L"{" + tempKey + L"}";
-			}
-		} else if (recording) {
-			tempKey += ch;
-		} else {
-			param += ch;
-		}
-	}
-	*/
 
 	const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath.get(), param);

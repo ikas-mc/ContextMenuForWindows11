@@ -317,7 +317,7 @@
                             <RelativePanel HorizontalAlignment="Stretch">
                                 <TextBox
                                     x:Name="FileAcceptExtsInput"
-                                    Header="Extensions Like (empty = all, * = all, .cpp|.cxx match .c or .cpp or .cxx)"
+                                    Header="Extension Like (empty = all, * = all, .cpp|.cxx match .c or .cpp or .cxx)"
                                     PlaceholderText=".txt .zip  or *"
                                     RelativePanel.AlignLeftWithPanel="True"
                                     RelativePanel.AlignRightWithPanel="True"
@@ -326,7 +326,7 @@
 
                                 <TextBox
                                     x:Name="FileAcceptExtsInput2"
-                                    Header="Extensions List (use | as delimiter) (.cpp|.cxx match .cpp or .cxx)"
+                                    Header="Extension List (use | as delimiter) (.cpp|.cxx match .cpp or .cxx)"
                                     PlaceholderText=".txt .zip  or *"
                                     RelativePanel.AlignLeftWithPanel="True"
                                     RelativePanel.AlignRightWithPanel="True"
