@@ -5,6 +5,7 @@
 #include <fstream>
 #include <ppltasks.h>
 #include "PathHelper.hpp"
+#include <wil/registry.h>
 
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Data::Json;
@@ -86,13 +87,10 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	DEBUG_LOG(L"CustomExplorerCommand::GetState selection count={}", count);
 
 	//theme type
-	DWORD themeValue = 0;
-	DWORD themeValueSize = sizeof(themeValue);
-	const std::filesystem::path modulePath{ wil::GetModuleFileNameW<std::wstring>(wil::GetModuleInstanceHandle()) };
-	const auto result = SHRegGetValueW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme", SRRF_RT_DWORD, nullptr, &themeValue, &themeValueSize);
-	if (result == ERROR_SUCCESS) {
-		m_theme_type = themeValue == 0 ? ThemeType::Dark : ThemeType::Light;
-	}
+	const std::optional<uint32_t> appsUseLightTheme = wil::reg::try_get_value_dword(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme");
+	if (appsUseLightTheme.has_value()) {
+		m_theme_type = appsUseLightTheme.value() == 0 ? ThemeType::Dark : ThemeType::Light;
+	}	
 	DEBUG_LOG(L"CustomExplorerCommand::GetState m_theme_type={}", static_cast<int>(m_theme_type));
 
 	//
@@ -214,15 +212,20 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 					DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={}", false, file.path().c_str());
 					try
 					{
-						std::ifstream fs{ file.path() };
-						std::stringstream buffer;
-						buffer << fs.rdbuf(); //TODO 
-						auto content = winrt::to_hstring(buffer.str());
+						//std::ifstream fs{ file.path() };
+						//std::stringstream buffer;
+						//buffer << fs.rdbuf(); //TODO 
+						//auto content = winrt::to_hstring(buffer.str());
 						//DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content);
 
-						//std::ifstream fs(file.path(), std::ios::binary);
-						//std::string contentString{ std::istreambuf_iterator<char>{ fs },  std::istreambuf_iterator<char>{} };
-						//auto content = winrt::to_hstring(contentString);
+						std::ifstream fs(file.path(), std::ios::binary);
+						if (!fs.is_open()) {
+							DEBUG_LOG(L"CustomExplorerCommand::ReadCommands read file open failed, useCache=false,file={}",file.path().c_str());
+							continue;
+						}
+						std::string contentString{ std::istreambuf_iterator<char>{ fs },  std::istreambuf_iterator<char>{} };
+						auto content = winrt::to_hstring(contentString);
+						//DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content);
 
 						auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
 						if (command->Accept(multipleFiles, fileType, name, ext)) {

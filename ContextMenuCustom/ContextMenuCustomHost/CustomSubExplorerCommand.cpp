@@ -129,7 +129,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items
 		return S_OK;
 	}
 
-	//TODO light or defalut
+	//TODO light or default
 	if (!_icon.empty()) {
 		auto iconPath = wil::make_cotaskmem_string_nothrow(_icon.c_str());
 		RETURN_IF_NULL_ALLOC(iconPath);
