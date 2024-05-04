@@ -1,0 +1,33 @@
+﻿<UserControl
+    x:Class="ContextMenuCustomApp.TipDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MinWidth="400"
+    d:Height="600"
+    d:Width="800"
+    mc:Ignorable="d">
+    <ScrollViewer>
+        <StackPanel Orientation="Vertical">
+            <TextBlock
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="{x:Bind Tip1}"
+                TextWrapping="WrapWholeWords" />
+            <TextBlock
+                Margin="4,4,0,8"
+                Text="{x:Bind Tip1Content}"
+                TextWrapping="WrapWholeWords" />
+
+            <TextBlock
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="{x:Bind Tip2}"
+                TextWrapping="WrapWholeWords" />
+            <TextBlock
+                Margin="4,4,0,8"
+                Text="{x:Bind Tip2Content}"
+                TextWrapping="WrapWholeWords" />
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

@@ -16,6 +16,7 @@ namespace ContextMenuCustomApp
     {
         public App()
         {
+            AppContext.Current.Init();
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             Patchs.Patch1.Run();
@@ -23,6 +24,8 @@ namespace ContextMenuCustomApp
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            AppContext.Current.WaitAll();
+
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
 
             Frame rootFrame = Window.Current.Content as Frame;

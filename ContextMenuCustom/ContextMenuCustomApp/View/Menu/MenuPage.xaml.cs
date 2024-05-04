@@ -10,7 +10,6 @@ using ContextMenuCustomApp.View.Setting;
 using Windows.UI.Xaml.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using System.IO;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -22,7 +21,7 @@ namespace ContextMenuCustomApp.View.Menu
         {
             NavigationCacheMode = NavigationCacheMode.Required;
             InitializeComponent();
-            _viewModel = new MenuPageViewModel(MenuService.Ins);
+            _viewModel = new MenuPageViewModel();
             this.RegisterMessageHandler(_viewModel);
         }
 
@@ -66,7 +65,8 @@ namespace ContextMenuCustomApp.View.Menu
         {
             if (GetSeletedMenu(true, out MenuItem menuItem))
             {
-                var result = await Alert.ChooseAsync("Delete Menu ?", "Warning");
+                var appLang = _viewModel.AppLang;
+                var result = await Alert.ChooseAsync("Delete Menu ?", appLang.CommonWarnning, appLang.CommonOk, appLang.CommonCancel);
                 if (result)
                 {
                     await _viewModel.DeleteAsync(menuItem);

@@ -16,17 +16,31 @@ namespace ContextMenuCustomApp.View.Menu
         private readonly MenuService _menuService;
         public ObservableCollection<MenuItem> MenuItems { get; }
         public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
-        public ObservableCollection<EnumItem> DirectoryMatchEnumItems { get; }
         public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
+        public AppLang AppLang { get; private set; }
 
-        public MenuPageViewModel(MenuService menuService)
+        public MenuPageViewModel()
         {
-            _menuService = menuService;
+            AppLang = AppContext.Current.AppLang;
+            _menuService = AppContext.Current.GetService<MenuService>();
 
             MenuItems = new ObservableCollection<MenuItem>();
-            FileMatchEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<FileMatchFlagEnum>());
-            DirectoryMatchEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<DirectoryMatchFlagEnum>());
-            FilesMatchFlagEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<FilesMatchFlagEnum>());
+            FileMatchEnumItems = new ObservableCollection<EnumItem>(
+                new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionOff, Value = (int)FileMatchFlagEnum.None },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionExtentionLike, Value = (int)FileMatchFlagEnum.Ext },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionNameRegex, Value = (int)FileMatchFlagEnum.Regex },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionExtention, Value = (int)FileMatchFlagEnum.ExtList },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionAll, Value = (int)FileMatchFlagEnum.All },
+                }
+                );
+            FilesMatchFlagEnumItems = new ObservableCollection<EnumItem>(
+                  new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionOff, Value = (int)FilesMatchFlagEnum.None },
+                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionEach, Value = (int)FilesMatchFlagEnum.Each },
+                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionJoin, Value = (int)FilesMatchFlagEnum.Join },
+                }
+                );
         }
 
         #region menu
@@ -204,8 +218,7 @@ namespace ContextMenuCustomApp.View.Menu
             await RunWith(async () =>
             {
                 await _menuService.BuildToCacheAsync();
-                ApplicationData.Current.LocalSettings.Values["Cache_Time"] =
-                    DateTime.Now.ToString(CultureInfo.CurrentCulture);
+                ApplicationData.Current.LocalSettings.Values["Cache_Time"] = DateTime.Now.ToString(CultureInfo.CurrentCulture);
                 OnMessage("Build Successfully");
             });
         }

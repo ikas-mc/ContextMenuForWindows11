@@ -80,22 +80,31 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AppContext.cs" />
     <Compile Include="Common\AppDataSettings.cs" />
     <Compile Include="Common\Settings.cs" />
     <Compile Include="Patchs\Patch1.cs" />
     <Compile Include="AppVersion.cs" />
     <Compile Include="Service\Common\Json\JsonUtil.cs" />
+    <Compile Include="Service\Lang\LangInfo.cs" />
+    <Compile Include="Service\Lang\LanguageService.cs" />
     <Compile Include="Service\Menu\DirectoryMatchFlagEnum.cs" />
     <Compile Include="Service\Menu\EnumItem.cs" />
     <Compile Include="Service\Menu\EnumItemUtil.cs" />
     <Compile Include="Service\Menu\FileMatchFlagEnum.cs" />
     <Compile Include="Service\Menu\FilesMatchFlagEnum.cs" />
+    <Compile Include="View\Setting\LanguageOverride.xaml.cs">
+      <DependentUpon>LanguageOverride.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Tip\TipDialog.xaml.cs">
+      <DependentUpon>TipDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Common\Alert.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\BaseModel.cs" />
-    <Compile Include="Common\Langs.cs" />
+    <Compile Include="Common\AppLang.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Menu\MenuItem.cs" />
     <Compile Include="Service\Menu\MenuService.cs" />
@@ -144,7 +153,6 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +169,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Setting\LanguageOverride.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Tip\TipDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

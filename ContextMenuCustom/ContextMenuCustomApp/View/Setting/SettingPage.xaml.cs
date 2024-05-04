@@ -23,12 +23,10 @@ namespace ContextMenuCustomApp.View.Setting
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-
         }
 
         private async void OpenIconButton_OnClick(object sender, RoutedEventArgs e)

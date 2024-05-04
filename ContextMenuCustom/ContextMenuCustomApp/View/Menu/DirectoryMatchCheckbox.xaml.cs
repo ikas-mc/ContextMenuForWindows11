@@ -1,4 +1,5 @@
-﻿using ContextMenuCustomApp.Service.Menu;
+﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Service.Menu;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -6,8 +7,10 @@ namespace ContextMenuCustomApp.View.Menu
 {
     public sealed partial class DirectoryMatchCheckbox : UserControl
     {
+        public AppLang AppLang { get; private set; }
         public DirectoryMatchCheckbox()
         {
+            AppLang = AppContext.Current.AppLang;
             this.InitializeComponent();
         }
 

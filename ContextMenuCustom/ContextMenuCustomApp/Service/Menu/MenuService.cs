@@ -12,8 +12,6 @@ namespace ContextMenuCustomApp.Service.Menu
     {
         private const string MenusFolderName = "custom_commands";
 
-        public static readonly MenuService Ins = new MenuService();
-
         public async Task<List<MenuItem>> QueryAllAsync()
         {
             var configFolder = await GetMenusFolderAsync();
@@ -141,7 +139,9 @@ namespace ContextMenuCustomApp.Service.Menu
             }
 
             var menuFile = item.File;
-            await menuFile?.DeleteAsync();
+            if (null != menuFile) {
+                await menuFile.DeleteAsync();
+            }
         }
 
         public async Task BuildToCacheAsync()

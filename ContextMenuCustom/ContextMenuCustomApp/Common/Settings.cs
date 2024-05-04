@@ -1,15 +1,5 @@
-﻿using ContextMenuCustomApp.View.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation.Collections;
-using Windows.Storage;
-
-namespace ContextMenuCustomApp.Common
+﻿namespace ContextMenuCustomApp.Common
 {
-
     public class Settings
     {
         private static readonly AppDataSettings MainSettingDao;
@@ -35,6 +25,12 @@ namespace ContextMenuCustomApp.Common
             set => MainSettingDao.SetValue(nameof(PatchVersion), value);
         }
 
+        public int AppVersion
+        {
+            get => MainSettingDao.GetValue(nameof(AppVersion), 0);
+            set => MainSettingDao.SetValue(nameof(AppVersion), value);
+        }
+
         public string AppLang
         {
             get => MainSettingDao.GetValue(nameof(AppLang), "");
@@ -46,7 +42,7 @@ namespace ContextMenuCustomApp.Common
             get => MainSettingDao.GetValue(nameof(ThemeType), 0);
             set => MainSettingDao.SetValue(nameof(ThemeType), value);
         }
-        
+
         public string MenuName
         {
             get => DllSettingDao.GetValue("Custom_Menu_Name", "Open With");
@@ -64,13 +60,13 @@ namespace ContextMenuCustomApp.Common
             get => DllSettingDao.GetValue("Custom_Menu_Light_Icon", string.Empty);
             set => DllSettingDao.SetValue("Custom_Menu_Light_Icon", value);
         }
-        
+
         public bool EnableDebug
         {
             get => DllSettingDao.GetValue("Custom_Menu_Enable_Debug", false);
             set => DllSettingDao.SetValue("Custom_Menu_Enable_Debug", value);
         }
-        
+
         public T GetValue<T>(string key, T defaultValue = default)
         {
             return MainSettingDao.GetValue(key, defaultValue);
