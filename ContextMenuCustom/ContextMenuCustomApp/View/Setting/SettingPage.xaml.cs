@@ -12,10 +12,10 @@ namespace ContextMenuCustomApp.View.Setting
         private readonly SettingViewModel _viewModel;
         public SettingPage()
         {
-            NavigationCacheMode = NavigationCacheMode.Required;
-            this.InitializeComponent();
             _viewModel = new SettingViewModel();
             this.DataContext = _viewModel;
+            NavigationCacheMode = NavigationCacheMode.Required;
+            this.InitializeComponent();
             this.RegisterMessageHandler(_viewModel);
         }
 

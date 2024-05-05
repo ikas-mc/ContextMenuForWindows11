@@ -1,4 +1,5 @@
-﻿using ContextMenuCustomApp.Service.Lang;
+﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Service.Lang;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -8,8 +9,11 @@ namespace ContextMenuCustomApp.View.Setting
     {
         private SettingViewModel _settingViewModel;
 
+        public readonly AppLang AppLang;
+
         public LanguageOverride()
         {
+            AppLang = AppContext.Current.AppLang;
             this.InitializeComponent();
             Loaded += Control_Loaded;
         }

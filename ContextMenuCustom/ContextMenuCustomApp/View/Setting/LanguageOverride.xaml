@@ -41,7 +41,7 @@
             Width="56"
             Margin="4,0,0,0"
             Click="{x:Bind _settingViewModel.LoadLanguages}"
-            ToolTipService.ToolTip="{x:Bind _settingViewModel.AppLang.SettingLanguagesReloadTip}">
+            ToolTipService.ToolTip="{x:Bind AppLang.SettingLanguagesReloadTip}">
             <SymbolIcon Symbol="Refresh" />
         </Button>
 
@@ -50,6 +50,7 @@
             Width="56"
             Margin="4,0,0,0"
             Click="ExportButton_Click"
+            ToolTipService.ToolTip="{x:Bind AppLang.SettingLanguagesExportTip}"
             Visibility="{Binding SelectedValue.IsDefault, ElementName=LanguageOverrideComboBox, Converter={StaticResource VisibilityConverter}}">
             <SymbolIcon Symbol="Download" />
         </Button>
