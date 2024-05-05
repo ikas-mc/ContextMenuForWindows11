@@ -5,10 +5,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-
 namespace ContextMenuCustomApp.View.Setting
 {
-
     public sealed partial class SettingPage : Page
     {
         private readonly SettingViewModel _viewModel;
@@ -68,7 +66,6 @@ namespace ContextMenuCustomApp.View.Setting
                 Frame.GoBack();
             }
         }
-
 
     }
 }

@@ -187,15 +187,22 @@
 
                 <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingLanguages}">
                     <controls:SettingItem.Icon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8E5;" />
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF2B7;" />
                     </controls:SettingItem.Icon>
                     <controls:SettingItem.ActionContent>
-                        <StackPanel
-                            Margin="0,0,4,0"
-                            HorizontalAlignment="Stretch"
-                            Orientation="Vertical">
-                            <local:LanguageOverride HorizontalAlignment="Stretch" />
-                        </StackPanel>
+                        <Grid Margin="0,0,4,0" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <local:LanguageOverride Grid.Column="0" HorizontalAlignment="Stretch" />
+                            <HyperlinkButton
+                                Grid.Column="1"
+                                Margin="4,0,0,0"
+                                Background="Transparent"
+                                Content="{x:Bind _viewModel.AppLang.SettingLanguagesHelp}"
+                                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Languages" />
+                        </Grid>
                     </controls:SettingItem.ActionContent>
                     <controls:SettingItem.RightContent>
                         <Button
@@ -203,7 +210,7 @@
                             Margin="4,0"
                             Click="{x:Bind _viewModel.OpenLanguagesFolder}"
                             ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingLanguagesFolderOpenTip}">
-                            <SymbolIcon Symbol="OpenFile" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE838;" />
                         </Button>
                     </controls:SettingItem.RightContent>
                 </controls:SettingItem>
@@ -227,6 +234,7 @@
                                 <Run Text="{x:Bind _viewModel.AppLang.SettingEnableDebugTip}" />
                             </TextBlock>
                             <HyperlinkButton
+                                Margin="4,0,0,0"
                                 Padding="8,0"
                                 Background="Transparent"
                                 Content="{x:Bind _viewModel.AppLang.SettingEnableDebugHelp}"
@@ -238,13 +246,16 @@
 
                 <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingDataTitle}">
                     <controls:SettingItem.Icon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8E5;" />
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE96A;" />
                     </controls:SettingItem.Icon>
                     <controls:SettingItem.RightContent>
                         <Button
                             x:Name="OpenDataFolderBtn"
+                            Width="56"
                             Click="{x:Bind _viewModel.OpenDataFolder}"
-                            Content="{x:Bind _viewModel.AppLang.SettingDataButton}" />
+                            ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingDataButtonTip}">
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE838;" />
+                        </Button>
                     </controls:SettingItem.RightContent>
                 </controls:SettingItem>
 

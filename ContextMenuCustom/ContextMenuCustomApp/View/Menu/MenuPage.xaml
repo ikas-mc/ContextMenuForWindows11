@@ -62,13 +62,11 @@
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <TextBlock
-                                Grid.Column="1"
-                                Text="{Binding Title}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="NoWrap" />
-                        </Grid>
+                        <TextBlock
+                            Text="{Binding Title}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTipService.ToolTip="{Binding Title}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -221,7 +219,7 @@
 
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuExe}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7AC;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xECAA;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;" Text="{Binding Exe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -292,7 +290,7 @@
 
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFolder}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B7;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF89A;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
                             <local:DirectoryMatchCheckbox Value="{Binding AcceptDirectoryFlag, Mode=TwoWay}" />
@@ -301,7 +299,7 @@
 
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFile}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8A5;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF16C;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
                             <ComboBox
@@ -365,7 +363,7 @@
 
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFiles}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8D5;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE9D5;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.Description>
                             <HyperlinkButton
@@ -408,10 +406,7 @@
 
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuFileFileName}">
                         <controls:SettingItem.Icon>
-                            <FontIcon
-                                Height="32"
-                                FontFamily="Segoe Fluent Icons"
-                                Glyph="&#xF683;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8AC;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <TextBlock

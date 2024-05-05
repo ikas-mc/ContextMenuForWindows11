@@ -11,6 +11,8 @@ namespace ContextMenuCustomApp.Service.Lang
 {
     public class LanguageService
     {
+        private const string LanguagesFolderName = "languages";
+
         private readonly List<string> DefaultLanguages = new List<string>() { "en-US" };
 
         public async Task<AppLang> LoadAsync()
@@ -43,7 +45,7 @@ namespace ContextMenuCustomApp.Service.Lang
         {
             return Task.Run(async () =>
             {
-                var langFile = await StorageFile.GetFileFromPathAsync(Path.Combine(AppDataPaths.GetDefault().LocalAppData, "Langs", langFileName));
+                var langFile = await GetCustomLanguageFileAsync(langFileName);
                 var langContent = await FileIO.ReadTextAsync(langFile);
                 return JsonUtil.Deserialize<AppLang>(langContent);
             });
@@ -74,7 +76,23 @@ namespace ContextMenuCustomApp.Service.Lang
 
         public async Task<StorageFolder> GetCustomLanguagesFolderAsync()
         {
-            return await ApplicationData.Current.LocalFolder.CreateFolderAsync("languages", CreationCollisionOption.OpenIfExists);
+            var item = await ApplicationData.Current.LocalFolder.TryGetItemAsync(LanguagesFolderName);
+            if (item is StorageFolder storageFolder)
+            {
+                return storageFolder;
+            }
+            else
+            {
+                StorageFolder folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(LanguagesFolderName, CreationCollisionOption.OpenIfExists);
+                return folder;
+            }
+        }
+
+        public async Task<StorageFile> GetCustomLanguageFileAsync(string langFileName)
+        {
+            string path = Path.Combine(AppDataPaths.GetDefault().LocalAppData, LanguagesFolderName, langFileName);
+            StorageFile file = await StorageFile.GetFileFromPathAsync(path);
+            return file;
         }
 
         public void UpdateLangSetting(LangInfo langInfo)

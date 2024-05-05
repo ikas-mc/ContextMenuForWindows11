@@ -48,7 +48,7 @@
 
         //files
         public string MenuMatchFiles { get; set; } = "Match Files";
-        public string MenuMatchFilesTips { get; set; } = "Read Wiki!";
+        public string MenuMatchFilesTips { get; set; } = "Wiki";
         public string MenuMatchFilesOptionOff { get; set; } = "Off";
         public string MenuMatchFilesOptionEach { get; set; } = "Each";
         public string MenuMatchFilesOptionJoin { get; set; } = "Join";
@@ -58,7 +58,7 @@
 
         //config file
         public string MenuFileGroup { get; set; } = "Menu File";
-        public string MenuFileFileName { get; set; } = "Menu File";
+        public string MenuFileFileName { get; set; } = "File Name";
         public string MenuFileFileNameTip { get; set; } = "Menu Config File Name";
 
         //menu command bar
@@ -120,8 +120,9 @@
         public string SettingMenuIconDarkInputTip { get; set; } = "Icon path,Dark theme";
 
         //setting language
-        public string SettingLanguagesGroup { get; set; } = "Language";
-        public string SettingLanguages { get; set; } = "App Languages";
+        public string SettingLanguagesGroup { get; set; } = "Languages";
+        public string SettingLanguages { get; set; } = "App Language";
+        public string SettingLanguagesHelp { get; set; } = "Wiki";
         public string SettingLanguagesReloadTip { get; set; } = "Reload Custom Languages";
         public string SettingLanguagesExportTip { get; set; } = "Export Currrent Language";
         public string SettingLanguagesFolderOpenTip { get; set; } = "Open Languages Folder";
@@ -133,6 +134,7 @@
         public string SettingEnableDebugHelp { get; set; } = "Wiki";
         public string SettingDataTitle { get; set; } = "App Data";
         public string SettingDataButton { get; set; } = "Open Data Folder";
+        public string SettingDataButtonTip { get; set; } = "Open Data Folder";
 
         //update tip
         public string UpdateTipTitle { get; set; } = "Tips";
