@@ -1,0 +1,76 @@
+name: build packages
+#https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp
+
+on:
+  workflow_dispatch:
+
+env:
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [x64, ARM64]
+        package: [CMC_GITHUB_RELEASE, CMC_DEV_RELEASE, CMC_ANY]
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.1
+      with:
+        ref: dev-2024
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.3.1
+      
+    - name: Decode Cert
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
+        $certificatePath = "${{github.workspace}}\GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget.exe restore ContextMenuCustom -SolutionDirectory ContextMenuCustom
+      
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        msbuild -t:restore ContextMenuCustom\ContextMenuCustomApp\ContextMenuCustomApp.csproj
+
+    # build package
+    - name: Build ContextMenuCustomHost
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild ContextMenuCustom\ContextMenuCustomHost\ContextMenuCustomHost.vcxproj /m /p:configuration="release" /p:SolutionDir=../  /p:platform="${{ matrix.platform }}" /p:packageType="${{ matrix.package }}"
+      
+    - name: Build ContextMenuCustomGithubPackage
+      if: matrix.package == 'CMC_GITHUB_RELEASE'
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild ContextMenuCustom\ContextMenuCustomGithubPackage\ContextMenuCustomGithubPackage.wapproj /m /p:configuration="release" /p:platform="${{ matrix.platform }}" /p:AppxBundlePlatforms="${{ matrix.platform }}" /p:UapAppxPackageBuildMode=SideloadOnly /p:PackageCertificateKeyFile="${{github.workspace}}\GitHubActionsWorkflow.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="${{github.workspace}}\Packages\"
+
+    - name: Build ContextMenuCustomDevPackage
+      if: matrix.package == 'CMC_DEV_RELEASE'
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild ContextMenuCustom\ContextMenuCustomDevPackage\ContextMenuCustomDevPackage.wapproj /m /p:configuration="release" /p:platform="${{ matrix.platform }}" /p:AppxBundlePlatforms="${{ matrix.platform }}" /p:UapAppxPackageBuildMode=SideloadOnly /p:PackageCertificateKeyFile="${{github.workspace}}\GitHubActionsWorkflow.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="${{github.workspace}}\Packages\"
+
+    - name: Build ContextMenuCustomAnyPackage
+      if: matrix.package == 'CMC_ANY'
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild ContextMenuCustom\ContextMenuCustomAnyPackage\ContextMenuCustomAnyPackage.wapproj /m /p:configuration="release" /p:platform="${{ matrix.platform }}" /p:AppxBundlePlatforms="${{ matrix.platform }}" /p:UapAppxPackageBuildMode=SideloadOnly /p:PackageCertificateKeyFile="${{github.workspace}}\GitHubActionsWorkflow.pfx" /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} /p:AppxPackageDir="${{github.workspace}}\Packages\"
+
+
+    - name: Remove Cert
+      run: Remove-Item -path "${{github.workspace}}\GitHubActionsWorkflow.pfx"
+
+
+    - name: Upload Packages
+      uses: actions/upload-artifact@v3.1.3
+      with:
+        name: ContextMenuCustom-${{ matrix.package }}-${{ matrix.platform }}
+        path: |
+          ${{github.workspace}}\Packages\**\*.msixbundle
+          ${{github.workspace}}\Packages\**\*.msix
+          ${{github.workspace}}\Packages\**\*.cer
+          ${{github.workspace}}\Packages\**\Dependencies\${{ matrix.platform }}\*
