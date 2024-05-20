@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace ContextMenuCustomApp.View.Common
+namespace ContextMenuCustomApp.View.Converter
 {
     public class EqualsVisibilityConverter : IValueConverter
     {

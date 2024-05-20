@@ -2,12 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.System;
 using ContextMenuCustomApp.Service.Menu;
 using ContextMenuCustomApp.View.Common;
 using ContextMenuCustomApp.Common;
+using System.Reflection;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -15,16 +15,35 @@ namespace ContextMenuCustomApp.View.Menu
     {
         private readonly MenuService _menuService;
         public ObservableCollection<MenuItem> MenuItems { get; }
-
-        public readonly int MultipleFilesFlagJOIN = (int)MultipleFilesFlagEnum.JOIN;
+        public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
+        public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
+        public AppLang AppLang { get; private set; }
 
         public MenuPageViewModel()
         {
+            AppLang = AppContext.Current.AppLang;
+            _menuService = AppContext.Current.GetService<MenuService>();
+
             MenuItems = new ObservableCollection<MenuItem>();
-            _menuService = MenuService.Ins;
+            FileMatchEnumItems = new ObservableCollection<EnumItem>(
+                new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionOff, Value = (int)FileMatchFlagEnum.None },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionExtentionLike, Value = (int)FileMatchFlagEnum.Ext },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionNameRegex, Value = (int)FileMatchFlagEnum.Regex },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionExtention, Value = (int)FileMatchFlagEnum.ExtList },
+                    new EnumItem() { Label = AppLang.MenuMatchFileOptionAll, Value = (int)FileMatchFlagEnum.All },
+                }
+                );
+            FilesMatchFlagEnumItems = new ObservableCollection<EnumItem>(
+                  new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionOff, Value = (int)FilesMatchFlagEnum.None },
+                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionEach, Value = (int)FilesMatchFlagEnum.Each },
+                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionJoin, Value = (int)FilesMatchFlagEnum.Join },
+                }
+                );
         }
 
-        #region menu 
+        #region menu
 
         public async Task LoadAsync()
         {
@@ -36,10 +55,18 @@ namespace ContextMenuCustomApp.View.Menu
             });
         }
 
-        public MenuItem New()
+        public MenuItem CreateMenu()
         {
-            var item = new MenuItem() { Title = "new menu", Param = @"""{path}""", AcceptFile = true, AcceptDirectory = true };
-            MenuItems.Add(item);
+            var item = new MenuItem()
+            {
+                Title = $"Menu-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
+                Param = @"""{path}""",
+                AcceptFileFlag = (int)FileMatchFlagEnum.All,
+                AcceptDirectoryFlag = (int)(DirectoryMatchFlagEnum.Directory | DirectoryMatchFlagEnum.Background | DirectoryMatchFlagEnum.Desktop),
+                AcceptMultipleFilesFlag = (int)FilesMatchFlagEnum.Each,
+                Index = 0
+            };
+            MenuItems.Insert(0, item);
             return item;
         }
 
@@ -48,10 +75,29 @@ namespace ContextMenuCustomApp.View.Menu
             await RunWith(async () =>
             {
                 await _menuService.SaveAsync(item);
-                await LoadAsync();
                 await UpdateCache();
+                await LoadAsync();
                 OnMessage("Save Successfully");
             });
+        }
+
+        public async Task RefreshMenuAsync(MenuItem menuItem)
+        {
+            await RunWith(async () =>
+           {
+               var newMenuItem = await _menuService.ReadAsync(menuItem.File);
+               ReplaceMenu(menuItem, newMenuItem);
+           });
+        }
+
+        public void ReplaceMenu(MenuItem menuItem, MenuItem newMenuItem)
+        {
+            PropertyInfo[] propsSource = typeof(MenuItem).GetProperties();
+            foreach (PropertyInfo infoSource in propsSource)
+            {
+                object value = infoSource.GetValue(newMenuItem, null);
+                infoSource.SetValue(menuItem, value, null);
+            }
         }
 
         public async Task DeleteAsync(MenuItem item)
@@ -59,9 +105,21 @@ namespace ContextMenuCustomApp.View.Menu
             await RunWith(async () =>
             {
                 await _menuService.DeleteAsync(item);
-                await LoadAsync();
+                //await LoadAsync();
                 await UpdateCache();
+                MenuItems.Remove(item);
                 OnMessage("Delete Successfully");
+            });
+        }
+
+        public async Task RenameMenuFile(MenuItem item, string name)
+        {
+            await RunWith(async () =>
+            {
+                var newFile = await _menuService.RenameMenuFile(item, name);
+                item.File = newFile;
+                item.FileName = newFile.Name;
+                OnMessage("Rename Successfully");
             });
         }
 
@@ -77,13 +135,46 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 return;
             }
+
             _ = await Launcher.LaunchFileAsync(item.File);
+        }
+
+        public async Task<bool> SetMenu(MenuItem menuItem, String json)
+        {
+            return await RunWith(async () =>
+               {
+                   var newMenuItem = await Task.Run(() =>
+                   {
+                       return _menuService.ConvertMenuFromJson(json);
+                   });
+
+                   if (null == newMenuItem)
+                   {
+                       return false;
+                   }
+
+                   newMenuItem.File = menuItem.File;
+                   ReplaceMenu(menuItem, newMenuItem);
+                   return true;
+               });
+        }
+
+        public async Task<string> ToJson(MenuItem menuItem, bool indented)
+        {
+            return await RunWith(() =>
+             {
+                 return Task.Run(() =>
+                 {
+                     return _menuService.ConvertMenuToJson(menuItem, indented);
+                 });
+             });
         }
 
         #endregion menu
 
 
         #region menu cache
+
         public string CacheTime
         {
             get
@@ -100,13 +191,10 @@ namespace ContextMenuCustomApp.View.Menu
 
         public bool CacheEnabled
         {
-            get
-            {
-                return Settings.INS.CacheEnabled;
-            }
+            get { return Settings.Default.CacheEnabled; }
             set
             {
-                Settings.INS.CacheEnabled = value;
+                Settings.Default.CacheEnabled = value;
                 OnPropertyChanged(nameof(CacheEnabled));
                 _ = UpdateCache();
             }
@@ -114,7 +202,7 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async Task UpdateCache()
         {
-            if (Settings.INS.CacheEnabled)
+            if (Settings.Default.CacheEnabled)
             {
                 await BuildCache();
             }
@@ -149,6 +237,5 @@ namespace ContextMenuCustomApp.View.Menu
         }
 
         #endregion cache
-
     }
 }

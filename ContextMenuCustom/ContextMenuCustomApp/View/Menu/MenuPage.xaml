@@ -4,8 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="using:ContextMenuCustomApp.View.Common"
     xmlns:controls="using:ContextMenuCustomApp.View.Controls"
+    xmlns:converter="using:ContextMenuCustomApp.View.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ContextMenuCustomApp.View.Menu"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:menu="using:ContextMenuCustomApp.Service.Menu"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     d:Height="400"
@@ -16,8 +19,8 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <common:VisibilityConverter x:Key="VisibilityConverter" />
-        <common:EqualsVisibilityConverter x:Key="EqualsVisibilityConverter" />
+        <converter:VisibilityConverter x:Key="VisibilityConverter" />
+        <converter:EqualsVisibilityConverter x:Key="EqualsVisibilityConverter" />
     </Page.Resources>
 
     <Grid>
@@ -59,7 +62,11 @@
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock
+                            Text="{Binding Title}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTipService.ToolTip="{Binding Title}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -72,9 +79,8 @@
                     <AppBarButton
                         Width="40"
                         Click="Add_Click"
-                        Label="Add"
                         LabelPosition="Collapsed"
-                        ToolTipService.ToolTip="Add menu">
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListAddTis}">
                         <AppBarButton.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE109;" />
                         </AppBarButton.Icon>
@@ -83,7 +89,7 @@
                         Width="40"
                         Click="Refresh_Click"
                         LabelPosition="Collapsed"
-                        ToolTipService.ToolTip="Refresh menus">
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListRefreshTips}">
                         <AppBarButton.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE72C;" />
                         </AppBarButton.Icon>
@@ -95,7 +101,7 @@
                         Width="40"
                         Click="Open_Folder_Click"
                         LabelPosition="Collapsed"
-                        ToolTipService.ToolTip="Open menus folder">
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListOpenFolderTips}">
                         <AppBarButton.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE838;" />
                         </AppBarButton.Icon>
@@ -119,20 +125,18 @@
                     ToolTipService.ToolTip="Open Setting" />
                 <muxc:TeachingTip
                     x:Name="CacheTip"
-                    Title="About Cache:"
-                    CloseButtonContent="Got it!"
+                    Title=""
+                    CloseButtonContent="{x:Bind _viewModel.AppLang.SettingCacheButtonOk}"
                     IsLightDismissEnabled="True"
                     PlacementMargin="4"
                     PreferredPlacement="Auto"
                     Target="{x:Bind BuildCacheTipButton}">
                     <muxc:TeachingTip.Content>
                         <TextBlock>
-                            <Run>Add menu to the cache</Run>
-                            <LineBreak />
-                            <Run>to optimize loading menus</Run>
+                            <Run Text="{x:Bind _viewModel.AppLang.SettingCacheContent}" />
                             <LineBreak />
                             <LineBreak />
-                            <Run>Cache Time:</Run>
+                            <Run Text="{x:Bind _viewModel.AppLang.SettingCacheTime}" />
                             <LineBreak />
                             <Run Text="{Binding CacheTime}" />
                         </TextBlock>
@@ -146,8 +150,8 @@
                     Background="{x:Null}"
                     BorderThickness="0"
                     Click="BuildCacheTipButton_Click"
-                    Content="Cache:"
-                    ToolTipService.ToolTip="Open Cache Help" />
+                    Content="{x:Bind _viewModel.AppLang.SettingCache}"
+                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheTips}" />
                 <ToggleSwitch
                     Grid.Column="3"
                     MinWidth="0"
@@ -161,7 +165,7 @@
 
         <Grid
             Grid.Column="1"
-            Padding="4,48,4,0"
+            Padding="4,40,4,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{ThemeResource NavContentBackGroundColor}">
@@ -171,6 +175,13 @@
                 <RowDefinition Height="48" />
             </Grid.RowDefinitions>
 
+            <TextBlock
+                Grid.Row="0"
+                Margin="4,-8,0,0"
+                FontSize="28"
+                Text="Menu"
+                Visibility="Collapsed" />
+
             <ScrollViewer
                 Grid.Row="1"
                 Grid.Column="2"
@@ -179,7 +190,9 @@
                 DataContext="{Binding SelectedItem, ElementName=CommandList}"
                 Visibility="{Binding SelectedItem, ElementName=CommandList, Converter={StaticResource VisibilityConverter}}">
                 <StackPanel Padding="0" Orientation="Vertical">
-                    <controls:SettingItem Margin="0,0,0,8" Header="Title">
+                    <TextBlock Margin="0,0,0,8" Text="{x:Bind _viewModel.AppLang.MenuConfigGroup}" />
+
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuTitle}">
                         <controls:SettingItem.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF683;" />
                         </controls:SettingItem.Icon>
@@ -188,7 +201,7 @@
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="Order">
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuOrder}">
                         <controls:SettingItem.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8CB;" />
                         </controls:SettingItem.Icon>
@@ -204,9 +217,9 @@
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="Exe">
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuExe}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7AC;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xECAA;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;" Text="{Binding Exe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -218,77 +231,124 @@
                                 Width="56"
                                 Margin="8,0,0,-1"
                                 Click="OpenExeButton_OnClick"
-                                ToolTipService.ToolTip="Open">
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuExeOpenTips}">
                                 <SymbolIcon Symbol="OpenFile" />
                             </Button>
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="Param">
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuParam}">
                         <controls:SettingItem.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEA86;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <TextBox PlaceholderText="&quot;{path}&quot;" Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
+
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="Icon">
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuIcon}">
                         <controls:SettingItem.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B9;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <StackPanel>
-                                <TextBox PlaceholderText="&quot;c:\some\icon.icon&quot;" Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBox
-                                    Margin="0,8,0,0"
-                                    PlaceholderText="icon for dark theme"
-                                    Visibility="Collapsed" />
+                                    Margin="0,0,0,8"
+                                    PlaceholderText="{x:Bind _viewModel.AppLang.MenuIconLightInputTip}"
+                                    Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconLightInputTip}" />
+                                <TextBox
+                                    Margin="0,0,0,8"
+                                    PlaceholderText="{x:Bind _viewModel.AppLang.MenuIconDarkInputTip}"
+                                    Text="{Binding IconDark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconDarkInputTip}" />
                             </StackPanel>
                         </controls:SettingItem.ActionContent>
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="Match Folder">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B7;" />
-                        </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
-                            <ToggleSwitch IsOn="{Binding AcceptDirectory, Mode=TwoWay}" Style="{ThemeResource ToggleSwitchContentLelft}" />
+                            <StackPanel>
+                                <Button
+                                    Width="56"
+                                    Margin="8,1,0,8"
+                                    Click="OpenIconButton_OnClick"
+                                    Tag="Light"
+                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconOpenTip}">
+                                    <SymbolIcon Symbol="OpenFile" />
+                                </Button>
+                                <Button
+                                    Width="56"
+                                    Margin="8,-1,0,8"
+                                    Click="OpenIconButton_OnClick"
+                                    Tag="Dark"
+                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconOpenTip}">
+                                    <SymbolIcon Symbol="OpenFile" />
+                                </Button>
+                            </StackPanel>
+
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="Match File">
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFolder}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8A5;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF89A;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
-                            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AcceptFileFlag, Mode=TwoWay}">
-                                <ComboBoxItem Content="Off" />
-                                <ComboBoxItem Content="Ext" />
-                                <ComboBoxItem Content="Regex" />
-                            </ComboBox>
+                            <local:DirectoryMatchCheckbox Value="{Binding AcceptDirectoryFlag, Mode=TwoWay}" />
+                        </controls:SettingItem.RightContent>
+                    </controls:SettingItem>
+
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFile}">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF16C;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.RightContent>
+                            <ComboBox
+                                MinWidth="160"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Label"
+                                ItemsSource="{x:Bind _viewModel.FileMatchEnumItems}"
+                                SelectedValue="{Binding AcceptFileFlag, Mode=TwoWay}"
+                                SelectedValuePath="Value" />
                         </controls:SettingItem.RightContent>
                         <controls:SettingItem.BottomContent>
                             <RelativePanel HorizontalAlignment="Stretch">
                                 <TextBox
                                     x:Name="FileAcceptExtsInput"
-                                    Header="File Extensions (* match all)  (.c match .c .cpp)"
+                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionLikeTips}"
                                     PlaceholderText=".txt .zip  or *"
                                     RelativePanel.AlignLeftWithPanel="True"
                                     RelativePanel.AlignRightWithPanel="True"
                                     Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
 
+                                <TextBox
+                                    x:Name="FileAcceptExtsInput2"
+                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionTips}"
+                                    PlaceholderText=".txt|.zip"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=3}" />
+
                                 <HyperlinkButton
                                     Margin="0,8,0,0"
-                                    Content="file extensions"
+                                    Content="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionWiki}"
                                     NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/File%E2%80%90Extensions"
                                     RelativePanel.AlignRightWithPanel="True"
                                     RelativePanel.Below="FileAcceptExtsInput"
                                     Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
 
+                                <HyperlinkButton
+                                    Margin="0,8,0,0"
+                                    Content="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionWiki}"
+                                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/File%E2%80%90Extensions"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    RelativePanel.Below="FileAcceptExtsInput2"
+                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=3}" />
+
+
                                 <TextBox
-                                    Header="Regex for name (.+?\.txt match x.txt)"
+                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFileInputNameRegexTips}"
                                     PlaceholderText="+?\.txt"
                                     RelativePanel.AlignLeftWithPanel="True"
                                     RelativePanel.AlignRightWithPanel="True"
@@ -301,37 +361,39 @@
 
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="Match Multi-File">
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFiles}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8D5;" />
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE9D5;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.Description>
                             <HyperlinkButton
                                 Padding="0"
                                 NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files"
                                 RelativePanel.AlignRightWithPanel="True">
-                                <TextBlock Text="Read wiki!!!" />
+                                <TextBlock Text="{x:Bind _viewModel.AppLang.MenuMatchFilesTips}" />
                             </HyperlinkButton>
                         </controls:SettingItem.Description>
                         <controls:SettingItem.RightContent>
-                            <ComboBox HorizontalAlignment="Stretch" SelectedIndex="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}">
-                                <ComboBoxItem Content="Off" />
-                                <ComboBoxItem Content="Each (execute [exe] on each path)" />
-                                <ComboBoxItem Content="Join (execute [exe] only once)" />
-                            </ComboBox>
+                            <ComboBox
+                                MinWidth="160"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Label"
+                                ItemsSource="{x:Bind _viewModel.FilesMatchFlagEnumItems}"
+                                SelectedValue="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}"
+                                SelectedValuePath="Value" />
                         </controls:SettingItem.RightContent>
 
                         <controls:SettingItem.BottomContent>
                             <StackPanel Orientation="Vertical">
                                 <TextBox
-                                    Header="Path Delimiter"
+                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFilesJoinDelimiterTip}"
                                     PlaceholderText="|"
                                     Text="{Binding PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
                                 <TextBox
                                     Margin="0,8,0,0"
-                                    Header="Param"
+                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFilesJoinParamTip}"
                                     PlaceholderText="{}{path}"
                                     Text="{Binding ParamForMultipleFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
@@ -339,6 +401,22 @@
                             </StackPanel>
                         </controls:SettingItem.BottomContent>
                     </controls:SettingItem>
+
+                    <TextBlock Margin="0,8,0,8" Text="{x:Bind _viewModel.AppLang.MenuFileGroup}" />
+
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuFileFileName}">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8AC;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.ActionContent>
+                            <TextBlock
+                                IsTextSelectionEnabled="True"
+                                Text="{Binding FileName}"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuFileFileNameTip}" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
+
+
                 </StackPanel>
             </ScrollViewer>
 
@@ -346,17 +424,13 @@
                 Grid.Row="1"
                 Grid.Column="2"
                 Padding="0"
+                HorizontalAlignment="Center"
                 Visibility="{Binding SelectedItem, ElementName=CommandList, Converter={StaticResource VisibilityConverter}, ConverterParameter=!}">
-                <RichTextBlock
-                    x:Name="AboutContentBody"
-                    Grid.Row="1"
-                    Margin="0"
+                <Button
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <Paragraph>
-                        <Hyperlink Click="Add_Click">Add Menu</Hyperlink>
-                    </Paragraph>
-                </RichTextBlock>
+                    Background="Transparent"
+                    Click="Add_Click"
+                    Content="{x:Bind _viewModel.AppLang.MenuListAdd}" />
             </Grid>
 
             <CommandBar Grid.Row="2" DefaultLabelPosition="Right">
@@ -365,42 +439,78 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Click="OpenHelp_Click"
-                        Icon="Help"
-                        Label="Help"
-                        ToolTipService.ToolTip="Open wiki" />
+                        Icon="Globe"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandHelp}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandHelpTips}" />
+
                     <AppBarSeparator />
 
                     <AppBarButton
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Click="Save_Click"
-                        Icon="Save"
-                        Label="Save"
-                        ToolTipService.ToolTip="Save menu">
-                        <AppBarButton.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="S" Modifiers="Control" />
-                        </AppBarButton.KeyboardAccelerators>
-                    </AppBarButton>
+                        Click="CopyToClipboard_Click"
+                        Icon="Copy"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandClipboardCopy}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandClipboardCopyTips}" />
 
                     <AppBarButton
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Click="Delete_Click"
-                        Icon="Delete"
-                        Label="Delete"
-                        ToolTipService.ToolTip="Delete menu">
-                        <Button.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="Delete" />
-                        </Button.KeyboardAccelerators>
-                    </AppBarButton>
+                        Click="CopyFromClipboard_Click"
+                        Icon="Paste"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandClipboardPaste}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandClipboardPasteTips}" />
+                    <AppBarSeparator />
 
                     <AppBarButton
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Click="Open_Click"
                         Icon="OpenFile"
-                        Label="Open File"
-                        ToolTipService.ToolTip="Open menu file" />
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandOpen}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandOpenTips}" />
+
+                    <AppBarButton
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="Rename_Click"
+                        Icon="Rename"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandRename}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandRenameTips}" />
+
+                    <AppBarSeparator />
+
+                    <AppBarButton
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="Delete_Click"
+                        Icon="Delete"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandDelete}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandDeleteTips}">
+                        <Button.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="Delete" />
+                        </Button.KeyboardAccelerators>
+                    </AppBarButton>
+
+                    <AppBarButton
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="Save_Click"
+                        Icon="Save"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandSave}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandSaveTips}">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="S" Modifiers="Control" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+
+                    <AppBarButton
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="Refresh_Menu_Click"
+                        Icon="Refresh"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandRefresh}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandRefreshTips}" />
 
                 </CommandBar.PrimaryCommands>
             </CommandBar>

@@ -1,0 +1,34 @@
+﻿<UserControl
+    x:Class="ContextMenuCustomApp.View.Menu.DirectoryMatchCheckbox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <StackPanel Orientation="Horizontal">
+        <CheckBox
+            x:Name="DirectoryCheckbox"
+            MinWidth="0"
+            Margin="0,0,32,0"
+            Click="Checkbox_Click"
+            Content="{x:Bind AppLang.MenuMatchFolderDirectory}"
+            FlowDirection="RightToLeft" />
+        <CheckBox
+            x:Name="BackgroundCheckbox"
+            MinWidth="0"
+            Margin="0,0,32,0"
+            Click="Checkbox_Click"
+            Content="{x:Bind AppLang.MenuMatchFolderBackground}"
+            FlowDirection="RightToLeft" />
+        <CheckBox
+            x:Name="DesktopCheckbox"
+            MinWidth="0"
+            Margin="0,0,0,0"
+            Click="Checkbox_Click"
+            Content="{x:Bind AppLang.MenuMatchFolderDesktop}"
+            FlowDirection="RightToLeft" />
+    </StackPanel>
+</UserControl>

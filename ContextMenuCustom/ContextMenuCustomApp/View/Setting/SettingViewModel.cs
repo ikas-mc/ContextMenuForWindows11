@@ -1,10 +1,13 @@
 ﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Service.Common.Json;
+using ContextMenuCustomApp.Service.Lang;
 using ContextMenuCustomApp.View.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Xaml;
 
@@ -12,10 +15,14 @@ namespace ContextMenuCustomApp.View.Setting
 {
     public class SettingViewModel : BaseViewModel
     {
-        private readonly Settings _settings;
+        public readonly Settings settings;
+        public readonly AppLang AppLang;
+        public readonly LanguageService languageService;
         public SettingViewModel()
         {
-            _settings = Settings.INS;
+            settings = AppContext.Current.AppSetting;
+            AppLang = AppContext.Current.AppLang;
+            languageService = AppContext.Current.GetService<LanguageService>();
         }
 
         public string Version()
@@ -24,60 +31,15 @@ namespace ContextMenuCustomApp.View.Setting
             return $"Version: {version.Major}.{version.Minor}.{version.Build}";
         }
 
-        public string SdkVersion()
-        {
-            var package = Package.Current;
-            var packageId = package.Id;
-            var output = $"Arch: {ArchitectureString(packageId.Architecture)}\n Sdk: 22000";
-            return output;
-        }
-
-        private string ArchitectureString(Windows.System.ProcessorArchitecture architecture)
-        {
-            switch (architecture)
-            {
-                case Windows.System.ProcessorArchitecture.X86:
-                    return "x86";
-                case Windows.System.ProcessorArchitecture.X64:
-                    return "x64";
-                case Windows.System.ProcessorArchitecture.Arm:
-                    return "arm";
-                case Windows.System.ProcessorArchitecture.Arm64:
-                    return "arm64";
-                case Windows.System.ProcessorArchitecture.X86OnArm64:
-                    return "X86OnArm64";
-                case Windows.System.ProcessorArchitecture.Neutral:
-                    return "neutral";
-                case Windows.System.ProcessorArchitecture.Unknown:
-                    return "unknown";
-                default:
-                    return "???";
-            }
-        }
-
-        public string GetCustomMenuName()
-        {
-            var value = SettingHelper.Get<string>("Custom_Menu_Name", "Open With");
-            return value;
-        }
-
-        public async void SetCustomMenuName(string name)
-        {
-            await Task.Run(() =>
-            {
-                SettingHelper.Set("Custom_Menu_Name", name ?? "Open With");
-            });
-        }
-
         public int ThemeType
         {
             get
             {
-                return _settings.ThemeType;
+                return settings.ThemeType;
             }
             set
             {
-                _settings.ThemeType = value;
+                settings.ThemeType = value;
 
                 if (value == 1)
                 {
@@ -99,6 +61,59 @@ namespace ContextMenuCustomApp.View.Setting
             var folder = ApplicationData.Current.LocalFolder;
             _ = await Launcher.LaunchFolderAsync(folder);
         }
+
+        #region language
+
+        private List<LangInfo> _languages;
+
+        public List<LangInfo> Languages
+        {
+            get => _languages;
+            set => SetProperty(ref _languages, value);
+        }
+
+        public async Task LoadLanguages()
+        {
+            Languages = await languageService.QueryLangList();
+        }
+
+        public void UpdateLangSetting(LangInfo langInfo)
+        {
+            languageService.UpdateLangSetting(langInfo);
+        }
+
+        public async Task ExportLang(LangInfo langInfo)
+        {
+            FileSavePicker fileSavePicker = new FileSavePicker
+            {
+                SuggestedStartLocation = PickerLocationId.Desktop,
+                SuggestedFileName = langInfo.FileName
+            };
+
+            fileSavePicker.FileTypeChoices.Add("Json", new List<string>() { ".json" });
+            var file = await fileSavePicker.PickSaveFileAsync();
+            if (file == null)
+            {
+                return;
+            }
+
+            AppLang applang = await languageService.LoadDefualtAsync();
+            await FileIO.WriteTextAsync(file, JsonUtil.Serialize(applang, true));
+        }
+
+        public LangInfo GetCurrentLang()
+        {
+            var langFileName = AppContext.Current.AppSetting.AppLang;
+            return Languages.Find(x => x.FileName == langFileName);
+        }
+
+        public async void OpenLanguagesFolder()
+        {
+            var folder = await languageService.GetCustomLanguagesFolderAsync();
+            await Launcher.LaunchFolderAsync(folder);
+        }
+
+        #endregion
 
     }
 }

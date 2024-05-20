@@ -3,7 +3,6 @@ using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ContextMenuCustomApp.View.Menu;
 using ContextMenuCustomApp.View.Common;
@@ -11,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.System.Threading;
 using System;
 using Windows.ApplicationModel;
+using ContextMenuCustomApp.Common;
 
 namespace ContextMenuCustomApp
 {
@@ -105,6 +105,13 @@ namespace ContextMenuCustomApp
         {
             base.OnNavigatedTo(e);
             ShellFrame.Navigate(typeof(MenuPage));
+
+            var appVersion = AppVersion.Current();
+            if (Settings.Default.AppVersion < appVersion)
+            {
+                var _ = TipDialog.CreateUpldateTipDialog().ShowAsync();
+                Settings.Default.AppVersion = appVersion;
+            }
         }
 
         public void UpdateMessage(bool show, MessageType messageType, string message = "")

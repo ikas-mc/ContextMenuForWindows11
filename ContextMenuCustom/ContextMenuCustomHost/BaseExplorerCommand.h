@@ -2,15 +2,25 @@
 #include <wrl/module.h>
 #include <wrl/implements.h>
 #include <wrl/client.h>
-#include <shobjidl_core.h>
 #include <filesystem>
-#include <wil/Common.h>
-#include <wil/resource.h>
-#include <wil/stl.h>
-#include <wil/filesystem.h>
-#include <wil/com.h>
+
+#define DEBUG_LOG(message, ...) if(m_enable_debug) { \
+	OutputDebugStringW(std::format(message, __VA_ARGS__).c_str());\
+}
 
 using namespace Microsoft::WRL;
+
+enum ThemeType {
+	Light = 0,
+	Dark = 1
+};
+
+enum FileType {
+	File = 0,
+	Directory = 1,
+	Background = 2,
+	Desktop = 3
+};
 
 class BaseExplorerCommand : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IExplorerCommand, IObjectWithSite> {
 public:
@@ -27,4 +37,6 @@ public:
 
 protected:
 	wil::com_ptr_nothrow<IUnknown> m_site;
+	ThemeType m_theme_type{ Light };
+	bool m_enable_debug{ true };
 };

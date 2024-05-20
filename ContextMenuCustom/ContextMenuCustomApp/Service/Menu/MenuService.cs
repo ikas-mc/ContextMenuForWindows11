@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Storage;
+using ContextMenuCustomApp.Service.Common.Json;
+using System.IO;
 
 namespace ContextMenuCustomApp.Service.Menu
 {
     public class MenuService
     {
         private const string MenusFolderName = "custom_commands";
-
-        public static readonly MenuService Ins = new MenuService();
 
         public async Task<List<MenuItem>> QueryAllAsync()
         {
@@ -22,7 +22,7 @@ namespace ContextMenuCustomApp.Service.Menu
                 var content = await FileIO.ReadTextAsync(file);
                 try
                 {
-                    var item = MenuItem.ReadFromJson(content);
+                    var item = ConvertMenuFromJson(content);
                     item.File = file;
                     result.Add(item);
                 }
@@ -30,14 +30,15 @@ namespace ContextMenuCustomApp.Service.Menu
                 {
                     var item = new MenuItem
                     {
-                        Title = "<Error> config",
+                        Title = $"<Error> config file:{file.Name}",
                         File = file
                     };
                     result.Add(item);
                     Debug.WriteLine(e.StackTrace);
                 }
             }
-            result.Sort((l,r)=>l.Index-r.Index);
+
+            result.Sort((l, r) => l.Index - r.Index);
             return result;
         }
 
@@ -49,50 +50,98 @@ namespace ContextMenuCustomApp.Service.Menu
 
         public async Task<StorageFolder> GetMenusFolderAsync()
         {
-            var item = await ApplicationData.Current.LocalFolder.TryGetItemAsync(MenusFolderName);
-            if (item is StorageFile)
+            var storageItem = await ApplicationData.Current.LocalFolder.TryGetItemAsync(MenusFolderName);
+            switch (storageItem)
             {
-                await item.DeleteAsync();
+                case StorageFile _:
+                    throw new Exception($"Menus Folder Error,\"{storageItem.Path}\" is not a folder");
+                case StorageFolder storageFolder:
+                    return storageFolder;
+                default:
+                    return await ApplicationData.Current.LocalFolder.CreateFolderAsync(MenusFolderName, CreationCollisionOption.OpenIfExists);
             }
-            return await ApplicationData.Current.LocalFolder.CreateFolderAsync(MenusFolderName, CreationCollisionOption.OpenIfExists);
         }
 
         public async Task SaveAsync(MenuItem item)
         {
             if (null == item)
             {
-                throw new ArgumentNullException();
+                throw new Exception("Menu is null");
             }
 
-            var (result, message) = MenuItem.Check(item);
+            var (result, message) = CheckMenu(item);
             if (!result)
             {
-                throw new Exception($"{message} is empty");
+                throw new Exception(message);
             }
 
-            if (item.File == null)
+            var menuFile = item.File;
+            if (menuFile == null)
             {
-                var fileName = item.Title + ".json";
-                item.File = await CreateMenuFileAsync(fileName);
+                var fileName = $"{item.Title}.json";
+                menuFile = await CreateMenuFileAsync(fileName);
             }
 
-            var content = MenuItem.WriteToJson(item);
-            await FileIO.WriteTextAsync(item.File, content);
+            var content = ConvertMenuToJson(item);
+            await FileIO.WriteTextAsync(menuFile, content);
+
+            item.File = menuFile;
         }
 
+        public async Task<MenuItem> ReadAsync(StorageFile menuFile)
+        {
+            if (null == menuFile)
+            {
+                throw new Exception("Menu file is null");
+            }
+
+            var content = await FileIO.ReadTextAsync(menuFile);
+            try
+            {
+                var item = ConvertMenuFromJson(content);
+                item.File = menuFile;
+                return item;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Read From Menu file error", e);
+            }
+        }
+
+        public async Task<StorageFile> RenameMenuFile(MenuItem item, string name)
+        {
+            if (null == item)
+            {
+                throw new Exception("Menu is null");
+            }
+
+            var file = (item?.File) ?? throw new Exception("Menu file is null");
+
+            string newName = null;
+            if (!string.IsNullOrEmpty(name))
+            {
+                newName = Path.GetFileName(name);
+            }
+            if (string.IsNullOrEmpty(newName))
+            {
+                throw new Exception("New Name is empty");
+            }
+
+            await file.RenameAsync(newName, NameCollisionOption.GenerateUniqueName);
+            return file;
+        }
 
         public async Task DeleteAsync(MenuItem item)
         {
             if (null == item)
             {
-                throw new ArgumentNullException();
+                throw new Exception("Menu is null");
             }
 
-            if (item.File == null)
-            {
-                return;
+            var menuFile = item.File;
+            if (null != menuFile) {
+                await menuFile.DeleteAsync();
             }
-            await item.File.DeleteAsync();
         }
 
         public async Task BuildToCacheAsync()
@@ -103,7 +152,7 @@ namespace ContextMenuCustomApp.Service.Menu
             var menus = ApplicationData.Current.LocalSettings.CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
             menus.Clear();
 
-            for (int i = 0; i < files.Count; i++)
+            for (var i = 0; i < files.Count; i++)
             {
                 var content = await FileIO.ReadTextAsync(files[i]);
                 menus[i.ToString()] = content;
@@ -116,5 +165,46 @@ namespace ContextMenuCustomApp.Service.Menu
             menus.Clear();
         }
 
+        public MenuItem ConvertMenuFromJson(string content)
+        {
+            var menu = JsonUtil.Deserialize<MenuItem>(content);
+
+            //update from old version v3.6
+            if (menu.AcceptFileFlag == (int)FileMatchFlagEnum.None && menu.AcceptFile)
+            {
+                menu.AcceptFileFlag = (int)FileMatchFlagEnum.Ext;
+            }
+
+            //update from old version v3.8
+            if (menu.AcceptDirectoryFlag == (int)DirectoryMatchFlagEnum.None && menu.AcceptDirectory)
+            {
+                menu.AcceptDirectoryFlag = (int)DirectoryMatchFlagEnum.Directory |
+                                           (int)DirectoryMatchFlagEnum.Background |
+                                           (int)DirectoryMatchFlagEnum.Desktop;
+            }
+
+            return menu;
+        }
+
+        public string ConvertMenuToJson(MenuItem content, bool indented = false)
+        {
+            var json = JsonUtil.Serialize(content, indented);
+            return json;
+        }
+
+        private (bool, string) CheckMenu(MenuItem content)
+        {
+            if (string.IsNullOrEmpty(content.Title))
+            {
+                return (false, "Title is empty");
+            }
+
+            if (string.IsNullOrEmpty(content.Exe))
+            {
+                return (false, "Exe is empty");
+            }
+
+            return (true, string.Empty);
+        }
     }
 }

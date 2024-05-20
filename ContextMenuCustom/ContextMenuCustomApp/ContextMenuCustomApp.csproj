@@ -80,16 +80,31 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AppContext.cs" />
+    <Compile Include="Common\AppDataSettings.cs" />
     <Compile Include="Common\Settings.cs" />
     <Compile Include="Patchs\Patch1.cs" />
     <Compile Include="AppVersion.cs" />
+    <Compile Include="Service\Common\Json\JsonUtil.cs" />
+    <Compile Include="Service\Lang\LangInfo.cs" />
+    <Compile Include="Service\Lang\LanguageService.cs" />
+    <Compile Include="Service\Menu\DirectoryMatchFlagEnum.cs" />
+    <Compile Include="Service\Menu\EnumItem.cs" />
+    <Compile Include="Service\Menu\EnumItemUtil.cs" />
+    <Compile Include="Service\Menu\FileMatchFlagEnum.cs" />
+    <Compile Include="Service\Menu\FilesMatchFlagEnum.cs" />
+    <Compile Include="View\Setting\LanguageOverride.xaml.cs">
+      <DependentUpon>LanguageOverride.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Tip\TipDialog.xaml.cs">
+      <DependentUpon>TipDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Common\Alert.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\BaseModel.cs" />
-    <Compile Include="Common\BaseLang.cs" />
-    <Compile Include="Common\Langs.cs" />
+    <Compile Include="Common\AppLang.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Menu\MenuItem.cs" />
     <Compile Include="Service\Menu\MenuService.cs" />
@@ -97,15 +112,20 @@
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Common\BaseViewModel.cs" />
-    <Compile Include="View\Common\EqualsVisibilityConverter.cs" />
+    <Compile Include="View\Converter\EqualsVisibilityConverter.cs" />
     <Compile Include="View\Common\IMessageSupport.cs" />
     <Compile Include="View\Common\IStatusSupport.cs" />
     <Compile Include="View\Common\MessageHelper.cs" />
     <Compile Include="View\Common\PageMessageExt.cs" />
-    <Compile Include="View\Common\SettingHelper.cs" />
     <Compile Include="View\Common\ThemeHelper.cs" />
-    <Compile Include="View\Common\VisibilityConverter.cs" />
+    <Compile Include="View\Converter\VisibilityConverter.cs" />
     <Compile Include="View\Controls\SettingItem.cs" />
+    <Compile Include="View\Menu\DirectoryMatchCheckbox.xaml.cs">
+      <DependentUpon>DirectoryMatchCheckbox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Menu\MenuFileRenameDialog.xaml.cs">
+      <DependentUpon>MenuFileRenameDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Menu\MenuPage.xaml.cs">
       <DependentUpon>MenuPage.xaml</DependentUpon>
     </Compile>
@@ -133,7 +153,6 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
@@ -153,9 +172,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Setting\LanguageOverride.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Tip\TipDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Controls\SettingItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Menu\DirectoryMatchCheckbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Menu\MenuFileRenameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Menu\MenuPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -171,7 +206,10 @@
       <Version>6.2.14</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.8.5</Version>
+      <Version>2.8.6</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

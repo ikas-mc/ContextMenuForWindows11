@@ -26,11 +26,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 CoCreatableClass(CustomExplorerCommand);
 CoCreatableClassWrlCreatorMapInclude(CustomExplorerCommand);
 
-STDAPI DllGetActivationFactory(_In_ HSTRING activatableClassId, _COM_Outptr_ IActivationFactory **factory)
-{
-	return Module<ModuleType::InProc>::GetModule().GetActivationFactory(activatableClassId, factory);
-}
-
 STDAPI DllCanUnloadNow()
 {
 	return Module<InProc>::GetModule().Terminate() ? S_OK : S_FALSE;
@@ -38,5 +33,9 @@ STDAPI DllCanUnloadNow()
 
 STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR *ppv)
 {
+#if defined(CMC_ANY)
+	return Module<InProc>::GetModule().GetClassObject(__uuidof(CustomExplorerCommand), riid, ppv);
+#else
 	return Module<InProc>::GetModule().GetClassObject(rclsid, riid, ppv);
+#endif
 }

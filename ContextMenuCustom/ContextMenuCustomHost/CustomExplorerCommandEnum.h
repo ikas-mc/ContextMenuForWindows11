@@ -2,7 +2,6 @@
 #include <wrl/module.h>
 #include <wrl/implements.h>
 #include <wrl/client.h>
-#include <shobjidl_core.h>
 #include <vector>
 #include "CustomSubExplorerCommand.h"
 
