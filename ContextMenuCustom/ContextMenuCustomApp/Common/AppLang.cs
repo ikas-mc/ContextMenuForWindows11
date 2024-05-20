@@ -137,11 +137,11 @@
         public string SettingDataButtonTip { get; set; } = "Open Data Folder";
 
         //update tip
-        public string UpdateTipTitle { get; set; } = "Tips";
+        public string UpdateTipTitle { get; set; } = "V5.0 Update";
         public string UpdateTipCloseButton { get; set; } = "Close";
         public string UpdateTip1 { get; set; } = "ChangeLog";
-        public string UpdateTip1Content { get; set; } = "1. Add new feature\n2. Fix some bugs";
+        public string UpdateTip1Content { get; set; } = "1.  Refactor file extension matching\r\n2. Add directory, desktop, and directory background matching\r\n3. Support custom icons (dark or light theme) for menu and default menu\r\n4. Add debug log output (Via DebugView)\r\n5. Support copy formatted menu config JSON to the clipboard and import JSON from clipboard\r\n6. Try to fix the bug the menu is displayed but not working\r\n7. Support rename config file\r\n8. Add a new package (any) to modify and create custom package to support the TOP menu\r\n9. new param {extension} {nameNoExt}\r\n10. Add custom language support\r\n11. Other fix ";
         public string UpdateTip2 { get; set; } = "Tips";
-        public string UpdateTip2Content { get; set; } = "1. Restart explorer after update";
+        public string UpdateTip2Content { get; set; } = "1. Restart explorer after update if no menu";
     }
 }
