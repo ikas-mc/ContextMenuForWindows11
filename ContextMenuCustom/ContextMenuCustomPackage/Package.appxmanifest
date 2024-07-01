@@ -14,7 +14,7 @@
   <Identity
     Name="7061touchwp.CustomContextMenu"
     Publisher="CN=ikas-mc-dev"
-    Version="5.1.1.0" />
+    Version="5.2.1.0" />
 
   <Properties>
     <DisplayName>Custom Context Menu</DisplayName>

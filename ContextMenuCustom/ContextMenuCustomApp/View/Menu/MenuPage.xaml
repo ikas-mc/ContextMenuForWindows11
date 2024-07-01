@@ -436,8 +436,6 @@
             <CommandBar Grid.Row="2" DefaultLabelPosition="Right">
                 <CommandBar.PrimaryCommands>
                     <AppBarButton
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Click="OpenHelp_Click"
                         Icon="Globe"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandHelp}"
@@ -446,16 +444,12 @@
                     <AppBarSeparator />
 
                     <AppBarButton
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Click="CopyToClipboard_Click"
                         Icon="Copy"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandClipboardCopy}"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandClipboardCopyTips}" />
 
                     <AppBarButton
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Click="CopyFromClipboard_Click"
                         Icon="Paste"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandClipboardPaste}"
@@ -463,16 +457,12 @@
                     <AppBarSeparator />
 
                     <AppBarButton
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
                         Click="Open_Click"
                         Icon="OpenFile"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandOpen}"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandOpenTips}" />
 
                     <AppBarButton
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
                         Click="Rename_Click"
                         Icon="Rename"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandRename}"
@@ -481,8 +471,6 @@
                     <AppBarSeparator />
 
                     <AppBarButton
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Click="Delete_Click"
                         Icon="Delete"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandDelete}"
@@ -493,8 +481,6 @@
                     </AppBarButton>
 
                     <AppBarButton
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Click="Save_Click"
                         Icon="Save"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandSave}"
@@ -505,8 +491,6 @@
                     </AppBarButton>
 
                     <AppBarButton
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
                         Click="Refresh_Menu_Click"
                         Icon="Refresh"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandRefresh}"
