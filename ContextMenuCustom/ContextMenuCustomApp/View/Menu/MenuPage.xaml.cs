@@ -115,6 +115,7 @@ namespace ContextMenuCustomApp.View.Menu
                 {
                     SuggestedStartLocation = PickerLocationId.ComputerFolder
                 };
+                fileOpenPicker.FileTypeFilter.Add("*");
                 fileOpenPicker.FileTypeFilter.Add(".com");
                 fileOpenPicker.FileTypeFilter.Add(".exe");
                 fileOpenPicker.FileTypeFilter.Add(".bat");
@@ -144,15 +145,12 @@ namespace ContextMenuCustomApp.View.Menu
                     SuggestedStartLocation = PickerLocationId.ComputerFolder
                 };
 
-                fileOpenPicker.FileTypeFilter.Add(".dll");
-                fileOpenPicker.FileTypeFilter.Add(".exe");
-                fileOpenPicker.FileTypeFilter.Add(".icon");
-                fileOpenPicker.FileTypeFilter.Add(".png");
-                fileOpenPicker.FileTypeFilter.Add(".bmp");
-                fileOpenPicker.FileTypeFilter.Add(".jpeg");
-                fileOpenPicker.FileTypeFilter.Add(".jpg");
-                fileOpenPicker.FileTypeFilter.Add(".heic");
-                fileOpenPicker.FileTypeFilter.Add(".tif");
+                string[] fileTypes = { "*", ".dll", ".exe", ".ico", ".png", ".bmp", ".jpeg", ".jpg", ".heic", ".tif" };
+                foreach (string fileType in fileTypes)
+                {
+                    fileOpenPicker.FileTypeFilter.Add(fileType);
+                }
+
                 var file = await fileOpenPicker.PickSingleFileAsync();
                 if (null != file)
                 {

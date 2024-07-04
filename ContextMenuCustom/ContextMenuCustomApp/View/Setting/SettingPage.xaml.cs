@@ -36,7 +36,7 @@ namespace ContextMenuCustomApp.View.Setting
                     SuggestedStartLocation = PickerLocationId.ComputerFolder
                 };
 
-                string[] fileTypes = { ".dll", ".exe", ".icon", ".png", ".bmp", ".jpeg", ".jpg", ".heic", ".tif" };
+                string[] fileTypes = { ".dll", ".exe", ".ico", ".png", ".bmp", ".jpeg", ".jpg", ".heic", ".tif", "*" };
                 foreach (string fileType in fileTypes)
                 {
                     fileOpenPicker.FileTypeFilter.Add(fileType);
