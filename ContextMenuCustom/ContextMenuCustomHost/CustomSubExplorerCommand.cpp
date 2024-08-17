@@ -8,7 +8,7 @@ using namespace winrt::Windows::Data::Json;
 CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configContent, ThemeType themeType, bool enableDebug)
 {
 	m_theme_type = themeType;
-	m_enable_debug= enableDebug;
+	m_enable_debug = enableDebug;
 	try
 	{
 		const JsonObject result = JsonObject::Parse(configContent);
@@ -30,6 +30,10 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 		_accept_multiple_files_flag = static_cast<int>(result.GetNamedNumber(L"acceptMultipleFilesFlag", 0));
 		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
 		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
+
+		//SW_SHOWNORMAL as default
+		_show_window_flag = static_cast<int>(result.GetNamedNumber(L"showWindowFlag", SW_SHOWNORMAL));
+		_working_directory = result.GetNamedString(L"workingDirectory", L"");
 
 		//
 		if (_accept_file_flag == 0 && _accept_file) {
@@ -189,9 +193,23 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 			}
 
 			PathHelper::replaceAll(param, PARAM_PATH, paths);
+
+			//TODO 
+			std::wstring workingDirectory{ _working_directory };
+			if (workingDirectory.empty()) {
+				workingDirectory = parentPath;
+			}
+			else {
+				//only parent
+				PathHelper::replaceAll(workingDirectory, PARAM_PARENT, parentPath);
+			}
+			const auto workingDirectoryPath = wil::ExpandEnvironmentStringsW(workingDirectory.c_str());
+			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, workingDirectoryPath={}", _title, workingDirectoryPath.get());
+
 			const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exePath={}, param={}", _title, exePath.get(), param);
-			ShellExecute(parent, L"open", exePath.get(), param.c_str(), parentPath.data(), SW_SHOWNORMAL);
+
+			ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag);
 		}
 	}
 	else if (count > 1 && _accept_multiple_files_flag == FILES_EACH) {
@@ -230,7 +248,7 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 		{PARAM_PATH, path}
 	};
 
-	const std::wstring_view paramView { _param };
+	const std::wstring_view paramView{ _param };
 	std::wstring param;
 	for (size_t i = 0; i < paramView.size();) {
 		bool replaced = false;
@@ -248,7 +266,19 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 		}
 	}
 
+	std::wstring workingDirectory{ _working_directory };
+	if (workingDirectory.empty()) {
+		workingDirectory = file.parent_path().wstring();
+	}
+	else {
+		PathHelper::replaceAll(workingDirectory, PARAM_PARENT, replacements[PARAM_PARENT]);
+		PathHelper::replaceAll(workingDirectory, PARAM_PATH, replacements[PARAM_PATH]);
+	}
+	const auto workingDirectoryPath = wil::ExpandEnvironmentStringsW(workingDirectory.c_str());
+	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, workingDirectoryPath={}", _title, workingDirectoryPath.get());
+
 	const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath.get(), param);
-	ShellExecute(parent, L"open", exePath.get(), param.c_str(), file.parent_path().c_str(), SW_SHOWNORMAL);
+
+	ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag);
 }

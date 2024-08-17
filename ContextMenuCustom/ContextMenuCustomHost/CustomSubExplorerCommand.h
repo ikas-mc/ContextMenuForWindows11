@@ -54,6 +54,8 @@ private:
 	std::wstring _accept_file_regex;
 	int _accept_file_flag;
 	int _accept_directory_flag;
+	int _show_window_flag;
+	std::wstring _working_directory;
 
 public:
 	int m_index;
