@@ -21,6 +21,14 @@ namespace ContextMenuCustomApp.Service.Menu
             }
         }
 
+        private bool _enabled;
+        [JsonIgnore]
+        public bool Enabled
+        {
+            get => _enabled;
+            set => SetProperty(ref _enabled, value);
+        }
+
         private string _title;
         private string _exe;
         private string _param;
@@ -39,6 +47,8 @@ namespace ContextMenuCustomApp.Service.Menu
         private string _pathDelimiter;
         private string _paramForMultipleFiles;
         private int _acceptMultipleFilesFlag;
+        private int _showWindowFlag;
+        private string _workingDirectory;
 
         public string Title
         {
@@ -130,7 +140,14 @@ namespace ContextMenuCustomApp.Service.Menu
             set => SetProperty(ref _index, value);
         }
 
+        public int ShowWindowFlag { 
+            get => _showWindowFlag; 
+            set => SetProperty(ref _showWindowFlag, value); 
+        }
 
-
+        public string WorkingDirectory { 
+            get => _workingDirectory; 
+            set => SetProperty(ref _workingDirectory, value); 
+        }
     }
 }

@@ -62,11 +62,23 @@
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock
-                            Text="{Binding Title}"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap"
-                            ToolTipService.ToolTip="{Binding Title}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Text="{Binding Title}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"
+                                ToolTipService.ToolTip="{Binding Title}" />
+
+                            <FontIcon
+                                Grid.Column="1"
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xEDAE;"
+                                Visibility="{Binding Enabled, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=False}" />
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -402,6 +414,34 @@
                         </controls:SettingItem.BottomContent>
                     </controls:SettingItem>
 
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuShowWindowFlag}">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF5ED;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.RightContent>
+                            <ComboBox
+                                MinWidth="160"
+                                HorizontalAlignment="Stretch"
+                                DisplayMemberPath="Label"
+                                ItemsSource="{x:Bind _viewModel.ShowWindowFlagEnumItems}"
+                                SelectedValue="{Binding ShowWindowFlag, Mode=TwoWay}"
+                                SelectedValuePath="Value"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuShowWindowFlagTips}" />
+                        </controls:SettingItem.RightContent>
+                    </controls:SettingItem>
+
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuWorkingDirectory}">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xED25;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.ActionContent>
+                            <TextBox
+                                PlaceholderText=""
+                                Text="{Binding WorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuWorkingDirectoryTips}" />
+                        </controls:SettingItem.ActionContent>
+                    </controls:SettingItem>
+
                     <TextBlock Margin="0,8,0,8" Text="{x:Bind _viewModel.AppLang.MenuFileGroup}" />
 
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuFileFileName}">
@@ -468,6 +508,11 @@
                         Label="{x:Bind _viewModel.AppLang.MenuCommandRename}"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandRenameTips}" />
 
+                    <AppBarButton
+                        Click="Enable_Click"
+                        Icon="Stop"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabled}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabledTips}" />
                     <AppBarSeparator />
 
                     <AppBarButton
@@ -495,7 +540,6 @@
                         Icon="Refresh"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandRefresh}"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandRefreshTips}" />
-
                 </CommandBar.PrimaryCommands>
             </CommandBar>
         </Grid>

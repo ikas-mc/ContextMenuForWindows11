@@ -93,6 +93,7 @@
     <Compile Include="Service\Menu\EnumItemUtil.cs" />
     <Compile Include="Service\Menu\FileMatchFlagEnum.cs" />
     <Compile Include="Service\Menu\FilesMatchFlagEnum.cs" />
+    <Compile Include="Service\Menu\ShowWindowFlagEnum.cs" />
     <Compile Include="View\Setting\LanguageOverride.xaml.cs">
       <DependentUpon>LanguageOverride.xaml</DependentUpon>
     </Compile>

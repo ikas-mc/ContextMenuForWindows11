@@ -270,5 +270,18 @@ namespace ContextMenuCustomApp.View.Menu
             return false;
         }
 
+        private async void Enable_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                var file = menuItem.File;
+                if (file == null)
+                {
+                    this.ShowMessage("Menu is not saved", MessageType.Warnning);
+                    return;
+                }
+                await _viewModel.EnableMenuFile(menuItem, !menuItem.Enabled);
+            }
+        }
     }
 }
