@@ -76,7 +76,8 @@
                             <FontIcon
                                 Grid.Column="1"
                                 FontFamily="Segoe Fluent Icons"
-                                Glyph="&#xEDAE;"
+                                Foreground="Red"
+                                Glyph="&#xF140;"
                                 Visibility="{Binding Enabled, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=False}" />
                         </Grid>
                     </DataTemplate>
@@ -414,6 +415,8 @@
                         </controls:SettingItem.BottomContent>
                     </controls:SettingItem>
 
+                    <TextBlock Margin="0,8,0,8" Text="{x:Bind _viewModel.AppLang.MenuConfigAdvancedGroup}" />
+
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuShowWindowFlag}">
                         <controls:SettingItem.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF5ED;" />
@@ -455,7 +458,6 @@
                                 ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuFileFileNameTip}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
-
 
                 </StackPanel>
             </ScrollViewer>
@@ -510,7 +512,7 @@
 
                     <AppBarButton
                         Click="Enable_Click"
-                        Icon="Stop"
+                        Icon="LikeDislike"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabled}"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabledTips}" />
                     <AppBarSeparator />

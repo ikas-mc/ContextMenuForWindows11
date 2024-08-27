@@ -18,6 +18,7 @@
 
         //menu 
         public string MenuConfigGroup { get; set; } = "Menu Config";
+        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config";
         public string MenuTitle { get; set; } = "Title";
         public string MenuOrder { get; set; } = "Order";
         public string MenuExe { get; set; } = "Exe";
