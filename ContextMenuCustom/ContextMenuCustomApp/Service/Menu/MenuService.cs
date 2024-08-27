@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using ContextMenuCustomApp.Service.Common.Json;
 using System.IO;
+using System.Xml.Linq;
 
 namespace ContextMenuCustomApp.Service.Menu
 {
@@ -19,11 +20,17 @@ namespace ContextMenuCustomApp.Service.Menu
             var result = new List<MenuItem>(files.Count);
             foreach (var file in files)
             {
+                if (!file.Name.EndsWith(".json") && !file.Name.EndsWith(".json.disabled"))
+                {
+                    continue;
+                }
+
                 var content = await FileIO.ReadTextAsync(file);
                 try
                 {
                     var item = ConvertMenuFromJson(content);
                     item.File = file;
+                    item.Enabled = IsEnabled(item);
                     result.Add(item);
                 }
                 catch (Exception e)
@@ -86,6 +93,7 @@ namespace ContextMenuCustomApp.Service.Menu
             await FileIO.WriteTextAsync(menuFile, content);
 
             item.File = menuFile;
+            item.Enabled = true;
         }
 
         public async Task<MenuItem> ReadAsync(StorageFile menuFile)
@@ -139,10 +147,54 @@ namespace ContextMenuCustomApp.Service.Menu
             }
 
             var menuFile = item.File;
-            if (null != menuFile) {
+            if (null != menuFile)
+            {
                 await menuFile.DeleteAsync();
             }
         }
+
+        public bool IsEnabled(MenuItem item)
+        {
+            if (null == item)
+            {
+                throw new Exception("Menu is null");
+            }
+            return item.File?.Name.EndsWith(".json") == true;
+        }
+
+        public async Task<StorageFile> EnableAsync(MenuItem item, bool enabled)
+        {
+            if (null == item)
+            {
+                throw new Exception("Menu is null");
+            }
+
+            var file = (item?.File) ?? throw new Exception("Menu file is null");
+            var fileName = file.Name;
+
+            if (enabled)
+            {
+                if (fileName.EndsWith(".json.disabled"))
+                {
+                    fileName = fileName.Substring(0, fileName.Length - ".disabled".Length);
+                }
+            }
+            else
+            {
+                if (fileName.EndsWith(".json"))
+                {
+                    fileName += ".disabled";
+                }
+            }
+
+            if (file.Name != fileName)
+            {
+                await file.RenameAsync(fileName, NameCollisionOption.FailIfExists);
+            }
+
+            return file;
+        }
+
 
         public async Task BuildToCacheAsync()
         {
@@ -154,7 +206,12 @@ namespace ContextMenuCustomApp.Service.Menu
 
             for (var i = 0; i < files.Count; i++)
             {
-                var content = await FileIO.ReadTextAsync(files[i]);
+                var file = files[i];
+                if (!file.Name.EndsWith(".json"))
+                {
+                    continue;
+                }
+                var content = await FileIO.ReadTextAsync(file);
                 menus[i.ToString()] = content;
             }
         }

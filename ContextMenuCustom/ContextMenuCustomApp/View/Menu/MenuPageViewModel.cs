@@ -17,6 +17,8 @@ namespace ContextMenuCustomApp.View.Menu
         public ObservableCollection<MenuItem> MenuItems { get; }
         public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
         public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
+        public ObservableCollection<EnumItem> ShowWindowFlagEnumItems { get; }
+
         public AppLang AppLang { get; private set; }
 
         public MenuPageViewModel()
@@ -41,6 +43,8 @@ namespace ContextMenuCustomApp.View.Menu
                     new EnumItem() { Label = AppLang.MenuMatchFilesOptionJoin, Value = (int)FilesMatchFlagEnum.Join },
                 }
                 );
+
+            ShowWindowFlagEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<ShowWindowFlagEnum>());
         }
 
         #region menu
@@ -64,7 +68,8 @@ namespace ContextMenuCustomApp.View.Menu
                 AcceptFileFlag = (int)FileMatchFlagEnum.All,
                 AcceptDirectoryFlag = (int)(DirectoryMatchFlagEnum.Directory | DirectoryMatchFlagEnum.Background | DirectoryMatchFlagEnum.Desktop),
                 AcceptMultipleFilesFlag = (int)FilesMatchFlagEnum.Each,
-                Index = 0
+                Index = 0,
+                Enabled = true
             };
             MenuItems.Insert(0, item);
             return item;
@@ -118,8 +123,22 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 var newFile = await _menuService.RenameMenuFile(item, name);
                 item.File = newFile;
-                item.FileName = newFile.Name;
+                item.FileName = newFile.Name;//TODO 
+                item.Enabled = _menuService.IsEnabled(item);//TODO 
                 OnMessage("Rename Successfully");
+            });
+        }
+
+        public async Task EnableMenuFile(MenuItem item, bool enabled)
+        {
+            await RunWith(async () =>
+            {
+                var newFile = await _menuService.EnableAsync(item, enabled);
+                item.File = newFile;
+                item.FileName = newFile.Name;//TODO 
+                item.Enabled = _menuService.IsEnabled(item);//TODO 
+                await UpdateCache();
+                OnMessage($"{(enabled ? "Enable " : "Disable")} Successfully");
             });
         }
 

@@ -11,7 +11,7 @@
     <AssemblyName>ContextMenuCustomApp</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -93,6 +93,7 @@
     <Compile Include="Service\Menu\EnumItemUtil.cs" />
     <Compile Include="Service\Menu\FileMatchFlagEnum.cs" />
     <Compile Include="Service\Menu\FilesMatchFlagEnum.cs" />
+    <Compile Include="Service\Menu\ShowWindowFlagEnum.cs" />
     <Compile Include="View\Setting\LanguageOverride.xaml.cs">
       <DependentUpon>LanguageOverride.xaml</DependentUpon>
     </Compile>
@@ -216,7 +217,7 @@
     <None Include="ContextMenuCustomPackage_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="WindowsDesktop, Version=10.0.22000.0">
+    <SDKReference Include="WindowsDesktop, Version=10.0.22621.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>

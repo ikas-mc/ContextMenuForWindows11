@@ -210,6 +210,11 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 
 				for (auto& file : directory_iterator{ folder }) {
 					DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={}", false, file.path().c_str());
+					
+					if (!file.is_regular_file() || file.path().extension() != ".json") {
+						continue;
+					}
+					
 					try
 					{
 						//std::ifstream fs{ file.path() };

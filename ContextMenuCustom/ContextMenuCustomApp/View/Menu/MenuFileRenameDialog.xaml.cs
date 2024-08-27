@@ -47,6 +47,11 @@ namespace ContextMenuCustomApp.View.Menu
                 return $"{_menuItem.Title}.json";
             }
 
+            if (name.EndsWith(".json.disabled"))
+            {
+                return $"{_menuItem.Title}.json.disabled";
+            }
+
             return $"{_menuItem.Title}{Path.GetExtension(name)}";
         }
 
@@ -59,6 +64,11 @@ namespace ContextMenuCustomApp.View.Menu
             }
 
             var key = Path.GetFileNameWithoutExtension(name);
+            if (name.EndsWith(".json.disabled"))
+            {
+                key = Path.GetFileNameWithoutExtension(key);
+            }
+
             if (string.IsNullOrEmpty(key))
             {
                 return;

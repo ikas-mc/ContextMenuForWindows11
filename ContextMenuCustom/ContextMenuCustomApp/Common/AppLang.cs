@@ -18,6 +18,7 @@
 
         //menu 
         public string MenuConfigGroup { get; set; } = "Menu Config";
+        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config";
         public string MenuTitle { get; set; } = "Title";
         public string MenuOrder { get; set; } = "Order";
         public string MenuExe { get; set; } = "Exe";
@@ -27,6 +28,10 @@
         public string MenuIconLightInputTip { get; set; } = "Icon For Light Theme Or Default";
         public string MenuIconDarkInputTip { get; set; } = "Icon For Dark Theme";
         public string MenuIconOpenTip { get; set; } = "Open";
+        public string MenuShowWindowFlag { get; set; } = "Show Window";
+        public string MenuShowWindowFlagTips { get; set; } = "Show or Hide Window...";
+        public string MenuWorkingDirectory { get; set; } = "Working Dir";
+        public string MenuWorkingDirectoryTips { get; set; } = "Working Directory";
 
         //folder
         public string MenuMatchFolder { get; set; } = "Match Folder";
@@ -78,7 +83,8 @@
         public string MenuCommandClipboardPasteTips { get; set; } = "Paste From Clipboard";
         public string MenuCommandHelp { get; set; } = "Wiki";
         public string MenuCommandHelpTips { get; set; } = "Open Wiki";
-
+        public string MenuCommandToggleEnabled { get; set; } = "Toggle Enabled";
+        public string MenuCommandToggleEnabledTips { get; set; } = "Enable Or Disble Menu";
         //setting
         public string Setting { get; set; } = "Setting";
         public string SettingBackButton { get; set; } = "Back";
