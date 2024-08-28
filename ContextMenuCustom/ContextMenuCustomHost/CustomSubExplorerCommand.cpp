@@ -118,6 +118,11 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, con
 		DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, directory=Desktop", _title);
 		return  (_accept_directory_flag & DIRECTORY_DESKTOP) == DIRECTORY_DESKTOP;
 	}
+	//drive
+	else if (fileType == FileType::Drive) {
+		DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, directory=Drive", _title);
+		return  (_accept_directory_flag & DIRECTORY_DIRECTORY) == DIRECTORY_DIRECTORY;
+	}
 
 	DEBUG_LOG(L"CustomSubExplorerCommand::Accept skip, menu={}", _title);
 	return false;

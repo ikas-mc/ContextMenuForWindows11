@@ -90,17 +90,28 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	const std::optional<uint32_t> appsUseLightTheme = wil::reg::try_get_value_dword(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", L"AppsUseLightTheme");
 	if (appsUseLightTheme.has_value()) {
 		m_theme_type = appsUseLightTheme.value() == 0 ? ThemeType::Dark : ThemeType::Light;
-	}	
+	}
 	DEBUG_LOG(L"CustomExplorerCommand::GetState m_theme_type={}", static_cast<int>(m_theme_type));
 
 	//
 	if (count > 1) {
 		const std::wstring currentPath;
-		ReadCommands(true, false, false, currentPath);
+		ReadCommands(true, false, false, false, currentPath);
 	}
 	else if (count == 1) {
-		const auto currentPath = PathHelper::getPath(selection);
-		ReadCommands(false, false, false, currentPath);
+		winrt::com_ptr<IShellItem> item;
+		if (SUCCEEDED(selection->GetItemAt(0, item.put()))) {
+			wil::unique_cotaskmem_string path;
+			if (SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, path.put()))) {
+				SFGAOF attributes;
+				item->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER | SFGAO_STREAM, &attributes);
+				const bool isDirectory = (SFGAO_FILESYSTEM & attributes) == SFGAO_FILESYSTEM && (SFGAO_FOLDER & attributes) == SFGAO_FOLDER && (SFGAO_STREAM & attributes) != SFGAO_STREAM;
+				const std::wstring currentPath{ path.get() };
+				DEBUG_LOG(L"CustomExplorerCommand::GetState isDirectory={}", isDirectory);
+
+				ReadCommands(false, isDirectory, false, false, currentPath);
+			}
+		}
 	}
 	else {
 		wil::com_ptr_nothrow<IShellItem> psi;
@@ -108,8 +119,9 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 		if (psi) {
 			//check for ( this pc background , zip... folder )
 			SFGAOF attributes;
-			const bool isFileSystemItem = psi && (psi->GetAttributes(SFGAO_FILESYSTEM, &attributes) == S_OK);
-			const bool isCompressed = psi && (psi->GetAttributes(SFGAO_FOLDER | SFGAO_STREAM, &attributes) == S_OK);
+			psi->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER | SFGAO_STREAM, &attributes);
+			const bool isFileSystemItem = (SFGAO_FILESYSTEM & attributes) == SFGAO_FILESYSTEM;
+			const bool isCompressed = (SFGAO_FOLDER & attributes) == SFGAO_FOLDER && (SFGAO_STREAM & attributes) == SFGAO_STREAM;
 			DEBUG_LOG(L"CustomExplorerCommand::GetState isFileSystemItem={} ,isCompressed={}", isFileSystemItem, isCompressed);
 
 			//valid path
@@ -125,7 +137,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 						DEBUG_LOG(L"CustomExplorerCommand::GetState isDesktop={}, path={}", isDesktop, desktopPath);
 					}
 
-					ReadCommands(false, true, isDesktop, currentPath);
+					ReadCommands(false, true, true, isDesktop, currentPath);
 				}
 			}
 		}
@@ -152,28 +164,45 @@ IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnum
 	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
-void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, bool isDesktop, const std::wstring& currentPath) {
+void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, bool isBackground, bool isDesktop, const std::wstring& currentPath) {
 	std::wstring ext;
 	std::wstring name;
-	bool isDirectory = false; // TODO current_path may be empty when right click on desktop.  set directory as default?
-	if (!multipleFiles) {
-		PathHelper::getExt(currentPath, isDirectory, name, ext);
-	}
-
 	FileType fileType;
-	if (isDesktop) {
-		fileType = FileType::Desktop;
-	}
-	else if (isBackground) {
-		fileType = FileType::Background;
+
+	if (multipleFiles) {
+		fileType = FileType::File;
 	}
 	else if (isDirectory) {
-		fileType = FileType::Directory;
+		if (isDesktop) {
+			fileType = FileType::Desktop;
+		}
+		else if (isBackground) {
+			fileType = FileType::Background;
+		}
+		else {
+			const auto pathLength = currentPath.length();
+			//TODO 
+			if (pathLength==2 || pathLength==3 && PathIsRoot(currentPath.data())) {
+				fileType = FileType::Drive;
+			}
+			else {
+				fileType = FileType::Directory;
+			}
+		}
+		name = PathFindFileName(currentPath.data());
 	}
 	else {
 		fileType = FileType::File;
+		name = PathFindFileName(currentPath.data());
+		if (!name.starts_with(L".")) {
+			ext = PathFindExtension(name.data());
+		}
+		if (!ext.empty()) {
+			std::ranges::transform(ext, ext.begin(), towlower); // TODO check
+		}
 	}
-	DEBUG_LOG(L"CustomExplorerCommand::ReadCommands isMultipleFiles={},isBackground={},isDesktop={},fileType={},currentPath={}", multipleFiles, isBackground, isDesktop, static_cast<int>(fileType), currentPath);
+
+	DEBUG_LOG(L"CustomExplorerCommand::ReadCommands isMultipleFiles={},isDirectory={},isBackground={},isDesktop={},fileType={},currentPath={}", multipleFiles, isDirectory, isBackground, isDesktop, static_cast<int>(fileType), currentPath);
 
 	const auto menus = ApplicationData::Current().LocalSettings().CreateContainer(L"menus", ApplicationDataCreateDisposition::Always).Values();
 	if (menus.Size() > 0) {
@@ -210,11 +239,11 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 
 				for (auto& file : directory_iterator{ folder }) {
 					DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={}", false, file.path().c_str());
-					
+
 					if (!file.is_regular_file() || file.path().extension() != ".json") {
 						continue;
 					}
-					
+
 					try
 					{
 						//std::ifstream fs{ file.path() };
@@ -225,7 +254,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isBackground, 
 
 						std::ifstream fs(file.path(), std::ios::binary);
 						if (!fs.is_open()) {
-							DEBUG_LOG(L"CustomExplorerCommand::ReadCommands read file open failed, useCache=false,file={}",file.path().c_str());
+							DEBUG_LOG(L"CustomExplorerCommand::ReadCommands read file open failed, useCache=false,file={}", file.path().c_str());
 							continue;
 						}
 						std::string contentString{ std::istreambuf_iterator<char>{ fs },  std::istreambuf_iterator<char>{} };
