@@ -259,6 +259,23 @@
                             </Button>
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
+                    
+                    <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingOther}" />
+                    
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.RightContent>
+                            <Button
+                                x:Name="RestartAppBtn"
+                                Width="56"
+                                Click="RestartAppBtn_Click"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
+                                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
+                            </Button>
+                        </controls:SettingItem.RightContent>
+                    </controls:SettingItem>
 
                 </StackPanel>
             </ScrollViewer>

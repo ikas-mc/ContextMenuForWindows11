@@ -142,6 +142,10 @@
         public string SettingDataTitle { get; set; } = "App Data";
         public string SettingDataButton { get; set; } = "Open Data Folder";
         public string SettingDataButtonTip { get; set; } = "Open Data Folder";
+        
+        //setting app
+        public string SettingOther { get; set; } = "Other";
+        public string SettingOtherRestart { get; set; } = "Restart App";
 
         //update tip
         public string UpdateTipTitle { get; set; } = "V5.0 Update";
