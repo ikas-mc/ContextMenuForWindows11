@@ -28,12 +28,14 @@ namespace ContextMenuCustomApp.View.Menu
                 self.DirectoryCheckbox.IsChecked = (value & (int)DirectoryMatchFlagEnum.Directory) == (int)DirectoryMatchFlagEnum.Directory;
                 self.BackgroundCheckbox.IsChecked = (value & (int)DirectoryMatchFlagEnum.Background) == (int)DirectoryMatchFlagEnum.Background;
                 self.DesktopCheckbox.IsChecked = (value & (int)DirectoryMatchFlagEnum.Desktop) == (int)DirectoryMatchFlagEnum.Desktop;
+                self.DriveCheckbox.IsChecked = (value & (int)DirectoryMatchFlagEnum.Drive) == (int)DirectoryMatchFlagEnum.Drive;
             }
             else
             {
                 self.DirectoryCheckbox.IsChecked = false;
                 self.BackgroundCheckbox.IsChecked = false;
                 self.DesktopCheckbox.IsChecked = false;
+                self.DriveCheckbox.IsChecked = false;
             }
         }));
 
@@ -41,7 +43,8 @@ namespace ContextMenuCustomApp.View.Menu
         {
             this.Value = (DirectoryCheckbox.IsChecked == true ? (int)DirectoryMatchFlagEnum.Directory : 0)
                 | (BackgroundCheckbox.IsChecked == true ? (int)DirectoryMatchFlagEnum.Background : 0)
-                | (DesktopCheckbox.IsChecked == true ? (int)DirectoryMatchFlagEnum.Desktop : 0);
+                | (DesktopCheckbox.IsChecked == true ? (int)DirectoryMatchFlagEnum.Desktop : 0)
+                | (DriveCheckbox.IsChecked == true ? (int)DirectoryMatchFlagEnum.Drive : 0);
         }
     }
 }

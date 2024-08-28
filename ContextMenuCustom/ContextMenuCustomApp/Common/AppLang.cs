@@ -38,6 +38,7 @@
         public string MenuMatchFolderDirectory { get; set; } = "Directory";
         public string MenuMatchFolderBackground { get; set; } = "Background";
         public string MenuMatchFolderDesktop { get; set; } = "Desktop";
+        public string MenuMatchFolderDrive { get; set; } = "Drive";
 
         //file
         public string MenuMatchFile { get; set; } = "Match File";

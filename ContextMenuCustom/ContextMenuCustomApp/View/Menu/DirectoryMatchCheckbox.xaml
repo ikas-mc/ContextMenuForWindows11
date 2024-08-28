@@ -26,9 +26,17 @@
         <CheckBox
             x:Name="DesktopCheckbox"
             MinWidth="0"
-            Margin="0,0,0,0"
+            Margin="0,0,32,0"
             Click="Checkbox_Click"
             Content="{x:Bind AppLang.MenuMatchFolderDesktop}"
+            FlowDirection="RightToLeft" />
+
+        <CheckBox
+            x:Name="DriveCheckbox"
+            MinWidth="0"
+            Margin="0,0,0,0"
+            Click="Checkbox_Click"
+            Content="{x:Bind AppLang.MenuMatchFolderDrive}"
             FlowDirection="RightToLeft" />
     </StackPanel>
 </UserControl>
