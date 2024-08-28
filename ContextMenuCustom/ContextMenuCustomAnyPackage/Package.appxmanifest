@@ -15,7 +15,7 @@
 	<Identity
 	  Name="852637cb-5c5e-4695-93cd-d2b0ca79f6de"
 	  Publisher="CN=ikas-mc-dev"
-	  Version="5.3.0.0" />
+	  Version="5.5.0.0" />
 
 	<Properties>
 		<DisplayName>Custom Context Menu (Any)</DisplayName>
