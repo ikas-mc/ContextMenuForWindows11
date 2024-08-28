@@ -13,7 +13,7 @@ namespace ContextMenuCustomApp.Service.Lang
     {
         private const string LanguagesFolderName = "languages";
 
-        private readonly List<string> DefaultLanguages = new List<string>() { "en-US" };
+        private readonly List<string> _defaultLanguages = new List<string>() { "en-US" };
 
         public async Task<AppLang> LoadAsync()
         {
@@ -56,7 +56,7 @@ namespace ContextMenuCustomApp.Service.Lang
             return await Task.Run(async () =>
             {
                 var langInfoList = new List<LangInfo>();
-                DefaultLanguages.ForEach(name => langInfoList.Add(LangInfo.Create(name, name, true)));
+                _defaultLanguages.ForEach(name => langInfoList.Add(LangInfo.Create(name, name, true)));
 
                 var langsFolder = await GetCustomLanguagesFolderAsync();
                 var langFiles = await langsFolder.GetFilesAsync();

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using ContextMenuCustomApp.Service.Common.Json;
 using System.IO;
-using System.Xml.Linq;
 
 namespace ContextMenuCustomApp.Service.Menu
 {

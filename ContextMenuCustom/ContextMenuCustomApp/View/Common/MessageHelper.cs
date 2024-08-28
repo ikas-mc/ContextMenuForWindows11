@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace ContextMenuCustomApp.View.Common
 {
-    public class MessageHelper
+    public static class MessageHelper
     {
         private static void UpdateStatus(bool busy)
         {

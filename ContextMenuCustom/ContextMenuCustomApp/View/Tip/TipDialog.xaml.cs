@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
-namespace ContextMenuCustomApp
+namespace ContextMenuCustomApp.View.Tip
 {
     public sealed partial class TipDialog : UserControl
     {
@@ -27,7 +27,7 @@ namespace ContextMenuCustomApp
             await dialog.ShowAsync();
         }
 
-        public static TipDialog CreateUpldateTipDialog()
+        public static TipDialog CreateUpdateTipDialog()
         {
             var appLang=AppContext.Current.AppLang;
             return new TipDialog

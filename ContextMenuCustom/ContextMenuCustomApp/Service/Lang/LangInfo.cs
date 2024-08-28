@@ -9,14 +9,14 @@ namespace ContextMenuCustomApp.Service.Lang
         public bool IsDefault { get; set; }
         public string DisplayName { get; set; }
 
-        public static LangInfo Create(string Name, string FileName, bool IsDefault)
+        public static LangInfo Create(string name, string fileName, bool isDefault)
         {
-            var language = new Language(Name);
+            var language = new Language(name);
             var langInfo = new LangInfo()
             {
-                Name = Name,
-                FileName = FileName,
-                IsDefault = IsDefault,
+                Name = name,
+                FileName = fileName,
+                IsDefault = isDefault,
                 DisplayName = language.DisplayName
             };
             return langInfo;

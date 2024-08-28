@@ -15,14 +15,14 @@ namespace ContextMenuCustomApp.View.Setting
 {
     public class SettingViewModel : BaseViewModel
     {
-        public readonly Settings settings;
+        public readonly Settings Settings;
         public readonly AppLang AppLang;
-        public readonly LanguageService languageService;
+        private readonly LanguageService _languageService;
         public SettingViewModel()
         {
-            settings = AppContext.Current.AppSetting;
+            Settings = AppContext.Current.AppSetting;
             AppLang = AppContext.Current.AppLang;
-            languageService = AppContext.Current.GetService<LanguageService>();
+            _languageService = AppContext.Current.GetService<LanguageService>();
         }
 
         public string Version()
@@ -35,11 +35,11 @@ namespace ContextMenuCustomApp.View.Setting
         {
             get
             {
-                return settings.ThemeType;
+                return Settings.ThemeType;
             }
             set
             {
-                settings.ThemeType = value;
+                Settings.ThemeType = value;
 
                 if (value == 1)
                 {
@@ -74,12 +74,12 @@ namespace ContextMenuCustomApp.View.Setting
 
         public async Task LoadLanguages()
         {
-            Languages = await languageService.QueryLangList();
+            Languages = await _languageService.QueryLangList();
         }
 
         public void UpdateLangSetting(LangInfo langInfo)
         {
-            languageService.UpdateLangSetting(langInfo);
+            _languageService.UpdateLangSetting(langInfo);
         }
 
         public async Task ExportLang(LangInfo langInfo)
@@ -97,7 +97,7 @@ namespace ContextMenuCustomApp.View.Setting
                 return;
             }
 
-            AppLang applang = await languageService.LoadDefualtAsync();
+            AppLang applang = await _languageService.LoadDefualtAsync();
             await FileIO.WriteTextAsync(file, JsonUtil.Serialize(applang, true));
         }
 
@@ -109,7 +109,7 @@ namespace ContextMenuCustomApp.View.Setting
 
         public async void OpenLanguagesFolder()
         {
-            var folder = await languageService.GetCustomLanguagesFolderAsync();
+            var folder = await _languageService.GetCustomLanguagesFolderAsync();
             await Launcher.LaunchFolderAsync(folder);
         }
 

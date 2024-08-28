@@ -5,7 +5,7 @@
         //Common
         public string CommonOk { get; set; } = "Ok";
         public string CommonCancel { get; set; } = "Cancel";
-        public string CommonWarnning{ get; set; } = "Warnning";
+        public string CommonWarning{ get; set; } = "Warning";
         public string CommonError{ get; set; } = "Error";
 
         //menu list
