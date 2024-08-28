@@ -5,12 +5,12 @@ namespace ContextMenuCustomApp.Service.Menu
     public enum ShowWindowFlagEnum
     {
         [DescriptionAttribute("Hide")]
-        Hide = 0,
+        Hide = -1,
         [DescriptionAttribute("Show Normal")]
-        ShowNormal = 1,
+        ShowNormal = 0,
         [DescriptionAttribute("Show Minimized")]
-        ShowMinimized = 2,
+        ShowMinimized = 1,
         [DescriptionAttribute("Show Maximized")]
-        ShowMaximized = 3,
+        ShowMaximized = 2,
     }
 }
