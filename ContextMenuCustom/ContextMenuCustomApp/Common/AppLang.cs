@@ -18,7 +18,7 @@
 
         //menu 
         public string MenuConfigGroup { get; set; } = "Menu Config";
-        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config";
+        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config (Empty as default)";
         public string MenuTitle { get; set; } = "Title";
         public string MenuOrder { get; set; } = "Order";
         public string MenuExe { get; set; } = "Exe";
@@ -79,9 +79,9 @@
         public string MenuCommandRename { get; set; } = "Rename";
         public string MenuCommandRenameTips { get; set; } = "Rename Menu Config File";
         public string MenuCommandClipboardCopy { get; set; } = "Copy";
-        public string MenuCommandClipboardCopyTips { get; set; } = "Copy To Clipboard";
+        public string MenuCommandClipboardCopyTips { get; set; } = "Copy To Clipboard (JSON text)";
         public string MenuCommandClipboardPaste { get; set; } = "Paste";
-        public string MenuCommandClipboardPasteTips { get; set; } = "Paste From Clipboard";
+        public string MenuCommandClipboardPasteTips { get; set; } = "Paste From Clipboard (JSON text)";
         public string MenuCommandHelp { get; set; } = "Wiki";
         public string MenuCommandHelpTips { get; set; } = "Open Wiki";
         public string MenuCommandToggleEnabled { get; set; } = "Toggle Enabled";
@@ -96,7 +96,7 @@
         public string SettingCacheTips { get; set; } = "Open Cache Settings";
         public string SettingCacheContent { get; set; } = "Caching Menus to Optimize Loading Speed";
         public string SettingCacheTime { get; set; } = "Cache Time:";
-        public string SettingCacheButtonOk { get; set; } = "Got it !";
+        public string SettingCacheButtonOk { get; set; } = "Ok";
 
         //setting about
         public string SettingAbout { get; set; } = "About";
