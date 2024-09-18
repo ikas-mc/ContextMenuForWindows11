@@ -14,8 +14,12 @@ using namespace std::filesystem;
 CustomExplorerCommand::CustomExplorerCommand() = default;
 
 IFACEMETHODIMP CustomExplorerCommand::GetFlags(_Out_ EXPCMDFLAGS* flags) {
-	*flags = ECF_HASSUBCOMMANDS;
-
+	if (m_commands.size() > 1) {
+		*flags = ECF_HASSUBCOMMANDS;
+	}
+	else {
+		*flags = ECF_DEFAULT;
+	}
 	return S_OK;
 }
 
@@ -286,7 +290,10 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 }
 
 IFACEMETHODIMP CustomExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx* ctx) noexcept try {
-	if (m_commands.size() == 1) {
+	if (m_commands.size() == 1){
+		if (m_site) {
+			m_commands.at(0)->SetSite(m_site.get());
+		}
 		return m_commands.at(0)->Invoke(selection, ctx);
 	}
 
