@@ -5,16 +5,17 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
   xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
+  xmlns:desktop10="http://schemas.microsoft.com/appx/manifest/desktop/windows10/10"
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
-  IgnorableNamespaces="uap uap3 desktop desktop4 desktop5 com rescap">
+  IgnorableNamespaces="uap uap3 desktop desktop4 desktop5 desktop10 com rescap">
 
   <Identity
     Name="7061touchwp.CustomContextMenu"
     Publisher="CN=ikas-mc-dev"
-    Version="5.3.0.0" />
+    Version="5.5.1.0" />
 
   <Properties>
     <DisplayName>Custom Context Menu</DisplayName>
@@ -56,6 +57,9 @@
             <desktop5:ItemType Type="Directory\Background">
               <desktop5:Verb Id="CustomMenu" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
             </desktop5:ItemType>
+			  <desktop10:ItemType Type="Drive">
+				  <desktop10:Verb Id="CustomMenu" Clsid="46F650E5-9959-48D6-AC13-A9637C5B3787" />
+			  </desktop10:ItemType>
           </desktop4:FileExplorerContextMenus>
         </desktop4:Extension>
         <com:Extension Category="windows.comServer">
