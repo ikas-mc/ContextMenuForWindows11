@@ -17,12 +17,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4
       with:
         ref: dev-2024
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.3.1
+      uses: microsoft/setup-msbuild@v2
       
     - name: Decode Cert
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -66,7 +66,7 @@ jobs:
 
 
     - name: Upload Packages
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4
       with:
         name: ContextMenuCustom-${{ matrix.package }}-${{ matrix.platform }}
         path: |
