@@ -5,7 +5,7 @@
         //Common
         public string CommonOk { get; set; } = "Ok";
         public string CommonCancel { get; set; } = "Cancel";
-        public string CommonWarnning{ get; set; } = "Warnning";
+        public string CommonWarning{ get; set; } = "Warning";
         public string CommonError{ get; set; } = "Error";
 
         //menu list
@@ -18,7 +18,7 @@
 
         //menu 
         public string MenuConfigGroup { get; set; } = "Menu Config";
-        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config";
+        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config (Empty as default)";
         public string MenuTitle { get; set; } = "Title";
         public string MenuOrder { get; set; } = "Order";
         public string MenuExe { get; set; } = "Exe";
@@ -38,6 +38,7 @@
         public string MenuMatchFolderDirectory { get; set; } = "Directory";
         public string MenuMatchFolderBackground { get; set; } = "Background";
         public string MenuMatchFolderDesktop { get; set; } = "Desktop";
+        public string MenuMatchFolderDrive { get; set; } = "Drive";
 
         //file
         public string MenuMatchFile { get; set; } = "Match File";
@@ -78,13 +79,13 @@
         public string MenuCommandRename { get; set; } = "Rename";
         public string MenuCommandRenameTips { get; set; } = "Rename Menu Config File";
         public string MenuCommandClipboardCopy { get; set; } = "Copy";
-        public string MenuCommandClipboardCopyTips { get; set; } = "Copy To Clipboard";
+        public string MenuCommandClipboardCopyTips { get; set; } = "Copy To Clipboard (JSON text)";
         public string MenuCommandClipboardPaste { get; set; } = "Paste";
-        public string MenuCommandClipboardPasteTips { get; set; } = "Paste From Clipboard";
+        public string MenuCommandClipboardPasteTips { get; set; } = "Paste From Clipboard (JSON text)";
         public string MenuCommandHelp { get; set; } = "Wiki";
         public string MenuCommandHelpTips { get; set; } = "Open Wiki";
         public string MenuCommandToggleEnabled { get; set; } = "Toggle Enabled";
-        public string MenuCommandToggleEnabledTips { get; set; } = "Enable Or Disble Menu";
+        public string MenuCommandToggleEnabledTips { get; set; } = "Enable Or Disable Menu";
         //setting
         public string Setting { get; set; } = "Setting";
         public string SettingBackButton { get; set; } = "Back";
@@ -95,7 +96,7 @@
         public string SettingCacheTips { get; set; } = "Open Cache Settings";
         public string SettingCacheContent { get; set; } = "Caching Menus to Optimize Loading Speed";
         public string SettingCacheTime { get; set; } = "Cache Time:";
-        public string SettingCacheButtonOk { get; set; } = "Got it !";
+        public string SettingCacheButtonOk { get; set; } = "Ok";
 
         //setting about
         public string SettingAbout { get; set; } = "About";
@@ -122,8 +123,8 @@
         //setting icon
         public string SettingMenuIcon { get; set; } = "Menu Icon";
         public string SettingMenuIconPathOpenTip { get; set; } = "Open";
-        public string SettingMenuIconLightInputTip { get; set; } = "Icon path,Light theme";
-        public string SettingMenuIconDarkInputTip { get; set; } = "Icon path,Dark theme";
+        public string SettingMenuIconLightInputTip { get; set; } = "Icon path For Light theme";
+        public string SettingMenuIconDarkInputTip { get; set; } = "Icon path For Dark theme";
 
         //setting language
         public string SettingLanguagesGroup { get; set; } = "Languages";
@@ -136,17 +137,21 @@
         //setting data
         public string SettingDataGroup { get; set; } = "Data";
         public string SettingEnableDebug { get; set; } = "Enable Debug";
-        public string SettingEnableDebugTip { get; set; } = "Enable debug,use DebugView to view logs";
+        public string SettingEnableDebugTip { get; set; } = "Enable debug log, use DebugView to view logs";
         public string SettingEnableDebugHelp { get; set; } = "Wiki";
         public string SettingDataTitle { get; set; } = "App Data";
         public string SettingDataButton { get; set; } = "Open Data Folder";
         public string SettingDataButtonTip { get; set; } = "Open Data Folder";
+        
+        //setting app
+        public string SettingOther { get; set; } = "Other";
+        public string SettingOtherRestart { get; set; } = "Restart App";
 
         //update tip
-        public string UpdateTipTitle { get; set; } = "V5.0 Update";
+        public string UpdateTipTitle { get; set; } = "V5.5";
         public string UpdateTipCloseButton { get; set; } = "Close";
         public string UpdateTip1 { get; set; } = "ChangeLog";
-        public string UpdateTip1Content { get; set; } = "1.  Refactor file extension matching\r\n2. Add directory, desktop, and directory background matching\r\n3. Support custom icons (dark or light theme) for menu and default menu\r\n4. Add debug log output (Via DebugView)\r\n5. Support copy formatted menu config JSON to the clipboard and import JSON from clipboard\r\n6. Try to fix the bug the menu is displayed but not working\r\n7. Support rename config file\r\n8. Add a new package (any) to modify and create custom package to support the TOP menu\r\n9. new param {extension} {nameNoExt}\r\n10. Add custom language support\r\n11. Other fix ";
+        public string UpdateTip1Content { get; set; } = "1. Github ";
         public string UpdateTip2 { get; set; } = "Tips";
         public string UpdateTip2Content { get; set; } = "1. Restart explorer after update if no menu";
     }

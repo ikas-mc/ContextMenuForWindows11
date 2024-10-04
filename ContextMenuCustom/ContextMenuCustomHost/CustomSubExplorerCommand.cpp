@@ -31,8 +31,8 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
 		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
 
-		//SW_SHOWNORMAL as default
-		_show_window_flag = static_cast<int>(result.GetNamedNumber(L"showWindowFlag", SW_SHOWNORMAL));
+		//
+		_show_window_flag = static_cast<int>(result.GetNamedNumber(L"showWindowFlag", 0));
 		_working_directory = result.GetNamedString(L"workingDirectory", L"");
 
 		//
@@ -117,6 +117,11 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, con
 	else if (fileType == FileType::Desktop) {
 		DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, directory=Desktop", _title);
 		return  (_accept_directory_flag & DIRECTORY_DESKTOP) == DIRECTORY_DESKTOP;
+	}
+	//drive
+	else if (fileType == FileType::Drive) {
+		DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, directory=Drive", _title);
+		return  (_accept_directory_flag & DIRECTORY_DRIVE) == DIRECTORY_DRIVE;
 	}
 
 	DEBUG_LOG(L"CustomSubExplorerCommand::Accept skip, menu={}", _title);
@@ -209,7 +214,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 			const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exePath={}, param={}", _title, exePath.get(), param);
 
-			ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag);
+			ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag + 1);
 		}
 	}
 	else if (count > 1 && _accept_multiple_files_flag == FILES_EACH) {
@@ -280,5 +285,5 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 	const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath.get(), param);
 
-	ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag);
+	ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag + 1);
 }

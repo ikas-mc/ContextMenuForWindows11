@@ -5,11 +5,11 @@ namespace ContextMenuCustomApp.View.Common
 {
     public abstract class BaseViewModel : BaseModel
     {
-        private bool busy;
-        public bool IsBusy { get => busy; set => SetProperty(ref busy, value); }
+        private bool _busy;
+        public bool IsBusy { get => _busy; set => SetProperty(ref _busy, value); }
 
-        private string message;
-        public string Message { get => message; set => SetProperty(ref message, value); }
+        private string _message;
+        public string Message { get => _message; set => SetProperty(ref _message, value); }
 
         public delegate void MessageEventHandler(string message, Exception exception);
         public event MessageEventHandler Handler;

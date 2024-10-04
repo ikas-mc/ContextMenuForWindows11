@@ -1,7 +1,6 @@
 ﻿using ContextMenuCustomApp.View.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Windows.Data.Json;
 using Windows.Storage;
 
 namespace ContextMenuCustomApp.Service.Menu

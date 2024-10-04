@@ -172,7 +172,10 @@ namespace ContextMenuCustomApp.View.Menu
                        return false;
                    }
 
+                   //TODO 
                    newMenuItem.File = menuItem.File;
+                   newMenuItem.Enabled = menuItem.Enabled;
+
                    ReplaceMenu(menuItem, newMenuItem);
                    return true;
                });

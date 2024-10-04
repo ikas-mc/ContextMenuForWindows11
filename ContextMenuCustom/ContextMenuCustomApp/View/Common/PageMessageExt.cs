@@ -5,25 +5,25 @@ namespace ContextMenuCustomApp.View.Common
 {
     public class WeakEventHandler
     {
-        private readonly WeakReference<Page> weakReference;
-        private readonly BaseViewModel viewModel;
+        private readonly WeakReference<Page> _weakReference;
+        private readonly BaseViewModel _viewModel;
 
         public WeakEventHandler(BaseViewModel viewModel, Page page)
         {
-            this.viewModel = viewModel;
-            this.weakReference = new WeakReference<Page>(page);
-            this.viewModel.Handler += OnEvent;
+            this._viewModel = viewModel;
+            this._weakReference = new WeakReference<Page>(page);
+            this._viewModel.Handler += OnEvent;
         }
 
         public void OnEvent(string message, Exception e)
         {
-            if (weakReference.TryGetTarget(out var page))
+            if (_weakReference.TryGetTarget(out var page))
             {
                 page.ShowMessage(message ?? e.Message, e == null ? MessageType.Success : MessageType.Error);
             }
             else
             {
-                this.viewModel.Handler -= OnEvent;
+                this._viewModel.Handler -= OnEvent;
             }
         }
     }

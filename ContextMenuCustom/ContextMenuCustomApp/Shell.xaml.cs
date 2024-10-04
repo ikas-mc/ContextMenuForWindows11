@@ -11,6 +11,7 @@ using Windows.System.Threading;
 using System;
 using Windows.ApplicationModel;
 using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.View.Tip;
 
 namespace ContextMenuCustomApp
 {
@@ -109,7 +110,7 @@ namespace ContextMenuCustomApp
             var appVersion = AppVersion.Current();
             if (Settings.Default.AppVersion < appVersion)
             {
-                var _ = TipDialog.CreateUpldateTipDialog().ShowAsync();
+                var _ = TipDialog.CreateUpdateTipDialog().ShowAsync();
                 Settings.Default.AppVersion = appVersion;
             }
         }
@@ -124,7 +125,7 @@ namespace ContextMenuCustomApp
                 case MessageType.Success:
                     this.AppInfoBar.Severity = InfoBarSeverity.Success;
                     break;
-                case MessageType.Warnning:
+                case MessageType.Warning:
                     this.AppInfoBar.Severity = InfoBarSeverity.Warning;
                     break;
                 case MessageType.Error:

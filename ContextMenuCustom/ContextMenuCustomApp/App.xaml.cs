@@ -61,7 +61,7 @@ namespace ContextMenuCustomApp
             deferral.Complete();
         }
 
-        protected async override void OnActivated(IActivatedEventArgs args)
+        protected override async void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
             if (args.Kind == ActivationKind.CommandLineLaunch)

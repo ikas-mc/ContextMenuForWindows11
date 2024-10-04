@@ -171,7 +171,7 @@
                     MinHeight="40"
                     VerticalAlignment="Center"
                     IsOn="{x:Bind _viewModel.CacheEnabled, Mode=TwoWay}"
-                    Style="{ThemeResource ToggleSwitchContentLelft}" />
+                    Style="{ThemeResource ToggleSwitchContentLeft}" />
             </Grid>
 
         </Grid>

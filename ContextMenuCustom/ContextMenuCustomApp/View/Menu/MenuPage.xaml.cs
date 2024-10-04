@@ -66,7 +66,7 @@ namespace ContextMenuCustomApp.View.Menu
             if (GetSeletedMenu(true, out MenuItem menuItem))
             {
                 var appLang = _viewModel.AppLang;
-                var result = await Alert.ChooseAsync("Delete Menu ?", appLang.CommonWarnning, appLang.CommonOk, appLang.CommonCancel);
+                var result = await Alert.ChooseAsync("Delete Menu ?", appLang.CommonWarning, appLang.CommonOk, appLang.CommonCancel);
                 if (result)
                 {
                     await _viewModel.DeleteAsync(menuItem);
@@ -94,7 +94,7 @@ namespace ContextMenuCustomApp.View.Menu
                 var file = menuItem.File;
                 if (file == null)
                 {
-                    this.ShowMessage("Menu is not saved", MessageType.Warnning);
+                    this.ShowMessage("Menu is not saved", MessageType.Warning);
                     return;
                 }
 
@@ -241,7 +241,7 @@ namespace ContextMenuCustomApp.View.Menu
 
                 if (string.IsNullOrEmpty(json))
                 {
-                    this.ShowMessage("Clipboard text is empty", MessageType.Warnning);
+                    this.ShowMessage("Clipboard text is empty", MessageType.Warning);
                     return;
                 }
 
@@ -263,7 +263,7 @@ namespace ContextMenuCustomApp.View.Menu
 
             if (showWarnning)
             {
-                this.ShowMessage("No selected menu", MessageType.Warnning);
+                this.ShowMessage("No selected menu", MessageType.Warning);
             }
 
             selectedMenuItem = null;
@@ -277,7 +277,7 @@ namespace ContextMenuCustomApp.View.Menu
                 var file = menuItem.File;
                 if (file == null)
                 {
-                    this.ShowMessage("Menu is not saved", MessageType.Warnning);
+                    this.ShowMessage("Menu is not saved", MessageType.Warning);
                     return;
                 }
                 await _viewModel.EnableMenuFile(menuItem, !menuItem.Enabled);

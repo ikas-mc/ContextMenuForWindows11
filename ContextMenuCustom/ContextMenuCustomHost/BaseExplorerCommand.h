@@ -19,7 +19,8 @@ enum FileType {
 	File = 0,
 	Directory = 1,
 	Background = 2,
-	Desktop = 3
+	Desktop = 3,
+	Drive = 4,
 };
 
 class BaseExplorerCommand : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IExplorerCommand, IObjectWithSite> {

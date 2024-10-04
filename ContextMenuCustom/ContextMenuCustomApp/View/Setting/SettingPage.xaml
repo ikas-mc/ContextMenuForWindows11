@@ -136,7 +136,7 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEDE3;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox Text="{x:Bind _viewModel.settings.MenuName, Mode=TwoWay}" />
+                            <TextBox Text="{x:Bind _viewModel.Settings.MenuName, Mode=TwoWay}" />
                         </controls:SettingItem.ActionContent>
 
                     </controls:SettingItem>
@@ -151,13 +151,13 @@
                                     x:Name="MenuLightIconPath"
                                     Margin="0,0,0,8"
                                     PlaceholderText="{x:Bind _viewModel.AppLang.SettingMenuIconLightInputTip}"
-                                    Text="{x:Bind _viewModel.settings.MenuLightIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Text="{x:Bind _viewModel.Settings.MenuLightIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingMenuIconLightInputTip}" />
                                 <TextBox
                                     x:Name="MenuDarkIconPath"
                                     Margin="0,0,0,8"
                                     PlaceholderText="{x:Bind _viewModel.AppLang.SettingMenuIconDarkInputTip}"
-                                    Text="{x:Bind _viewModel.settings.MenuDarkIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Text="{x:Bind _viewModel.Settings.MenuDarkIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingMenuIconDarkInputTip}" />
                             </StackPanel>
                         </controls:SettingItem.ActionContent>
@@ -225,8 +225,8 @@
                         <controls:SettingItem.RightContent>
                             <ToggleSwitch
                                 Margin="0,4"
-                                IsOn="{x:Bind _viewModel.settings.EnableDebug, Mode=TwoWay}"
-                                Style="{ThemeResource ToggleSwitchContentLelft}" />
+                                IsOn="{x:Bind _viewModel.Settings.EnableDebug, Mode=TwoWay}"
+                                Style="{ThemeResource ToggleSwitchContentLeft}" />
 
                         </controls:SettingItem.RightContent>
                         <controls:SettingItem.ActionContent>
@@ -256,6 +256,23 @@
                                 Click="{x:Bind _viewModel.OpenDataFolder}"
                                 ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingDataButtonTip}">
                                 <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE838;" />
+                            </Button>
+                        </controls:SettingItem.RightContent>
+                    </controls:SettingItem>
+                    
+                    <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingOther}" />
+                    
+                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
+                        <controls:SettingItem.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.RightContent>
+                            <Button
+                                x:Name="RestartAppBtn"
+                                Width="56"
+                                Click="RestartAppBtn_Click"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
+                                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
                             </Button>
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>

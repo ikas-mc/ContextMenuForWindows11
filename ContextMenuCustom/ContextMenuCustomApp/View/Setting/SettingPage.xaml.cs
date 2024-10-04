@@ -1,5 +1,6 @@
 ﻿using ContextMenuCustomApp.View.Common;
 using System;
+using Windows.ApplicationModel.Core;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -67,5 +68,9 @@ namespace ContextMenuCustomApp.View.Setting
             }
         }
 
+        private async void RestartAppBtn_Click(object sender, RoutedEventArgs e)
+        {
+            await CoreApplication.RequestRestartAsync(string.Empty);
+        }
     }
 }
