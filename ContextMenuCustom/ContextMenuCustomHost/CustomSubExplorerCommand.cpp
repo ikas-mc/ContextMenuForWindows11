@@ -277,7 +277,6 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 	}
 	else {
 		PathHelper::replaceAll(workingDirectory, PARAM_PARENT, replacements[PARAM_PARENT]);
-		PathHelper::replaceAll(workingDirectory, PARAM_PATH, replacements[PARAM_PATH]);
 	}
 	const auto workingDirectoryPath = wil::ExpandEnvironmentStringsW(workingDirectory.c_str());
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, workingDirectoryPath={}", _title, workingDirectoryPath.get());
