@@ -18,20 +18,23 @@
 
         //menu 
         public string MenuConfigGroup { get; set; } = "Menu Config";
-        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config (Empty as default)";
         public string MenuTitle { get; set; } = "Title";
         public string MenuOrder { get; set; } = "Order";
         public string MenuExe { get; set; } = "Exe";
         public string MenuExeOpenTips { get; set; } = "Open";
         public string MenuParam { get; set; } = "Param";
+        public string MenuParamTips { get; set; } = "supported variables: {path},{name},{parent},{extension},{nameNoExt}";
         public string MenuIcon { get; set; } = "Icon";
         public string MenuIconLightInputTip { get; set; } = "Icon For Light Theme Or Default";
         public string MenuIconDarkInputTip { get; set; } = "Icon For Dark Theme";
         public string MenuIconOpenTip { get; set; } = "Open";
+
+        //Advanced
+        public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config";
         public string MenuShowWindowFlag { get; set; } = "Show Window";
         public string MenuShowWindowFlagTips { get; set; } = "Show or Hide Window...";
-        public string MenuWorkingDirectory { get; set; } = "Working Dir";
-        public string MenuWorkingDirectoryTips { get; set; } = "Working Directory";
+        public string MenuWorkingDirectory { get; set; } = "Working Directory";
+        public string MenuWorkingDirectoryTips { get; set; } = "empty as default, supported variables: {parent}";
 
         //folder
         public string MenuMatchFolder { get; set; } = "Match Folder";
@@ -129,9 +132,10 @@
         //setting language
         public string SettingLanguagesGroup { get; set; } = "Languages";
         public string SettingLanguages { get; set; } = "App Language";
-        public string SettingLanguagesHelp { get; set; } = "Wiki";
+        public string SettingLanguagesHelp { get; set; } = "How To Add Custom Languages";
+        public string SettingLanguagesShare { get; set; } = "Share or Download Languages";
         public string SettingLanguagesReloadTip { get; set; } = "Reload Custom Languages";
-        public string SettingLanguagesExportTip { get; set; } = "Export Currrent Language";
+        public string SettingLanguagesExportTip { get; set; } = "Export Default Language";
         public string SettingLanguagesFolderOpenTip { get; set; } = "Open Languages Folder";
 
         //setting data

@@ -255,7 +255,7 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEA86;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;{path}&quot;" Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox PlaceholderText="{x:Bind _viewModel.AppLang.MenuParamTips}" Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
 
                     </controls:SettingItem>
@@ -438,10 +438,7 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xED25;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox
-                                PlaceholderText=""
-                                Text="{Binding WorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuWorkingDirectoryTips}" />
+                            <TextBox PlaceholderText="{x:Bind _viewModel.AppLang.MenuWorkingDirectoryTips}" Text="{Binding WorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 

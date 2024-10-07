@@ -196,13 +196,31 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <local:LanguageOverride Grid.Column="0" HorizontalAlignment="Stretch" />
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <local:LanguageOverride
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalAlignment="Stretch" />
                                 <HyperlinkButton
-                                    Grid.Column="1"
-                                    Margin="4,0,0,0"
-                                    Background="Transparent"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,4,0,4"
+                                    Padding="4"
+                                    HorizontalAlignment="Right"
                                     Content="{x:Bind _viewModel.AppLang.SettingLanguagesHelp}"
                                     NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Languages" />
+                                <HyperlinkButton
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="0,4,0,4"
+                                    Padding="4,4,0,4"
+                                    HorizontalAlignment="Right"
+                                    Content="{x:Bind _viewModel.AppLang.SettingLanguagesShare}"
+                                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/discussions/categories/languages" />
                             </Grid>
                         </controls:SettingItem.ActionContent>
                         <controls:SettingItem.RightContent>
@@ -259,9 +277,9 @@
                             </Button>
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
-                    
+
                     <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingOther}" />
-                    
+
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
                         <controls:SettingItem.Icon>
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
