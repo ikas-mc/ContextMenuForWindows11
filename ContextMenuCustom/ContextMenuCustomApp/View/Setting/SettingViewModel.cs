@@ -4,6 +4,7 @@ using ContextMenuCustomApp.Service.Lang;
 using ContextMenuCustomApp.View.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -82,29 +83,50 @@ namespace ContextMenuCustomApp.View.Setting
             _languageService.UpdateLangSetting(langInfo);
         }
 
-        public async Task ExportLang(LangInfo langInfo)
+        public async Task ExportLang()
         {
-            FileSavePicker fileSavePicker = new FileSavePicker
+            await _languageService.ExportLanguageToFileAsync(async (string suggestedFileName) =>
+             {
+                 FileSavePicker fileSavePicker = new FileSavePicker
+                 {
+                     SuggestedStartLocation = PickerLocationId.Desktop,
+                     SuggestedFileName = suggestedFileName ?? ""
+                 };
+
+                 fileSavePicker.FileTypeChoices.Add("Json", new List<string>() { ".json" });
+                 var file = await fileSavePicker.PickSaveFileAsync();
+                 return file;
+             });
+        }
+
+        public async Task ImportLang()
+        {
+            var fileOpenPicker = new FileOpenPicker
             {
                 SuggestedStartLocation = PickerLocationId.Desktop,
-                SuggestedFileName = langInfo.FileName
             };
 
-            fileSavePicker.FileTypeChoices.Add("Json", new List<string>() { ".json" });
-            var file = await fileSavePicker.PickSaveFileAsync();
+            fileOpenPicker.FileTypeFilter.Add(".json");
+            var file = await fileOpenPicker.PickSingleFileAsync();
             if (file == null)
             {
                 return;
             }
 
-            AppLang applang = await _languageService.LoadDefualtAsync();
-            await FileIO.WriteTextAsync(file, JsonUtil.Serialize(applang, true));
+            await _languageService.AddCustomLanguageFileAsync(file, true);
+
+            await LoadLanguages();
         }
 
         public LangInfo GetCurrentLang()
         {
             var langFileName = AppContext.Current.AppSetting.AppLang;
-            return Languages.Find(x => x.FileName == langFileName);
+            var langInfo = Languages.Find(x => x.FileName == langFileName);
+            if (null == langInfo)
+            {
+                langInfo = Languages.FirstOrDefault();
+            }
+            return langInfo;
         }
 
         public async void OpenLanguagesFolder()

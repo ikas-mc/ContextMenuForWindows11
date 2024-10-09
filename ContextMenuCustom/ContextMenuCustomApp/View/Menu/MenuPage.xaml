@@ -124,54 +124,26 @@
 
             <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="144" />
                 </Grid.ColumnDefinitions>
                 <AppBarButton
                     Width="40"
+                    HorizontalAlignment="Left"
                     Click="OpenSetting_Click"
                     Icon="Setting"
                     Label="Setting"
                     LabelPosition="Collapsed"
-                    ToolTipService.ToolTip="Open Setting" />
-                <muxc:TeachingTip
-                    x:Name="CacheTip"
-                    Title=""
-                    CloseButtonContent="{x:Bind _viewModel.AppLang.SettingCacheButtonOk}"
-                    IsLightDismissEnabled="True"
-                    PlacementMargin="4"
-                    PreferredPlacement="Auto"
-                    Target="{x:Bind BuildCacheTipButton}">
-                    <muxc:TeachingTip.Content>
-                        <TextBlock>
-                            <Run Text="{x:Bind _viewModel.AppLang.SettingCacheContent}" />
-                            <LineBreak />
-                            <LineBreak />
-                            <Run Text="{x:Bind _viewModel.AppLang.SettingCacheTime}" />
-                            <LineBreak />
-                            <Run Text="{Binding CacheTime}" />
-                        </TextBlock>
-                    </muxc:TeachingTip.Content>
+                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingOpenButtonTips}" />
 
-                </muxc:TeachingTip>
-                <AppBarButton
-                    x:Name="BuildCacheTipButton"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Background="{x:Null}"
-                    BorderThickness="0"
-                    Click="BuildCacheTipButton_Click"
-                    Content="{x:Bind _viewModel.AppLang.SettingCache}"
-                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheTips}" />
                 <ToggleSwitch
-                    Grid.Column="3"
+                    Grid.Column="1"
                     MinWidth="0"
                     MinHeight="40"
-                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
                     IsOn="{x:Bind _viewModel.CacheEnabled, Mode=TwoWay}"
-                    Style="{ThemeResource ToggleSwitchContentLeft}" />
+                    Style="{ThemeResource ToggleSwitchContentLeft}"
+                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheContent}" />
             </Grid>
 
         </Grid>

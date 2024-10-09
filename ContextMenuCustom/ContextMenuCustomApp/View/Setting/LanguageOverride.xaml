@@ -44,15 +44,5 @@
             ToolTipService.ToolTip="{x:Bind AppLang.SettingLanguagesReloadTip}">
             <SymbolIcon Symbol="Refresh" />
         </Button>
-
-        <Button
-            Grid.Column="2"
-            Width="56"
-            Margin="4,0,0,0"
-            Click="ExportButton_Click"
-            ToolTipService.ToolTip="{x:Bind AppLang.SettingLanguagesExportTip}"
-            Visibility="{Binding SelectedValue.IsDefault, ElementName=LanguageOverrideComboBox, Converter={StaticResource VisibilityConverter}}">
-            <SymbolIcon Symbol="Download" />
-        </Button>
     </Grid>
 </UserControl>

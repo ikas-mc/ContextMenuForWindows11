@@ -176,12 +176,6 @@ namespace ContextMenuCustomApp.View.Menu
             }
         }
 
-        private void BuildCacheTipButton_Click(object sender, RoutedEventArgs e)
-        {
-            _viewModel.UpdateCacheTime();
-            CacheTip.IsOpen = true;
-        }
-
         private void CommandList_DragItemsCompleted(Windows.UI.Xaml.Controls.ListViewBase sender, Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs args)
         {
 

@@ -38,6 +38,7 @@ namespace ContextMenuCustomApp
                 }
                 Window.Current.Content = rootFrame;
                 SetTheme();
+                SetFlowDirection(rootFrame);
             }
 
             if (e.PrelaunchActivated == false)
@@ -101,7 +102,12 @@ namespace ContextMenuCustomApp
             {
                 ThemeHelper.RootTheme = ElementTheme.Default;
             }
+        }
 
+        public void SetFlowDirection(Frame rootFrame)
+        {
+            var enabldRTL = Settings.Default.RTLEnablded;
+            rootFrame.FlowDirection= enabldRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
 
     }

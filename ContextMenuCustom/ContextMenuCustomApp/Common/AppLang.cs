@@ -91,6 +91,7 @@
         public string MenuCommandToggleEnabledTips { get; set; } = "Enable Or Disable Menu";
         //setting
         public string Setting { get; set; } = "Setting";
+        public string SettingOpenButtonTips { get; set; } = "Open Setting";
         public string SettingBackButton { get; set; } = "Back";
         public string SettingBackButtonTips { get; set; } = "Go Back";
 
@@ -135,8 +136,10 @@
         public string SettingLanguagesHelp { get; set; } = "How To Add Custom Languages";
         public string SettingLanguagesShare { get; set; } = "Share or Download Languages";
         public string SettingLanguagesReloadTip { get; set; } = "Reload Custom Languages";
-        public string SettingLanguagesExportTip { get; set; } = "Export Default Language";
+        public string SettingLanguagesExportTip { get; set; } = "Export Current Language";
+        public string SettingLanguagesImportTip { get; set; } = "Import Language";
         public string SettingLanguagesFolderOpenTip { get; set; } = "Open Languages Folder";
+        public string SettingLanguagesEnableRtl { get; set; } = "Enable RTL";
 
         //setting data
         public string SettingDataGroup { get; set; } = "Data";

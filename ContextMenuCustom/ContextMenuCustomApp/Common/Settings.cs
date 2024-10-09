@@ -43,6 +43,12 @@
             set => MainSettingDao.SetValue(nameof(ThemeType), value);
         }
 
+        public bool RTLEnablded
+        {
+            get => MainSettingDao.GetValue(nameof(RTLEnablded), false);
+            set => MainSettingDao.SetValue(nameof(RTLEnablded), value);
+        }
+
         public string MenuName
         {
             get => DllSettingDao.GetValue("Custom_Menu_Name", "Open With");

@@ -60,6 +60,16 @@ namespace ContextMenuCustomApp.View.Setting
             }
         }
 
+        private async void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            await _viewModel.ImportLang();
+        }
+
+        private async void ExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            await _viewModel.ExportLang();
+        }
+
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             if (Frame.CanGoBack)

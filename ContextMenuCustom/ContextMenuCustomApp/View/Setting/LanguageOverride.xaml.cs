@@ -27,20 +27,12 @@ namespace ContextMenuCustomApp.View.Setting
             LanguageOverrideComboBox.SelectionChanged += LanguageOverrideComboBox_SelectionChanged;
         }
 
-        private async void LanguageOverrideComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LanguageOverrideComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var comboBox = sender as ComboBox;
             if (comboBox?.SelectedItem is LangInfo langInfo)
             {
                 _settingViewModel.UpdateLangSetting(langInfo);
-            }
-        }
-
-        private async void ExportButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (LanguageOverrideComboBox?.SelectedItem is LangInfo langInfo)
-            {
-                await _settingViewModel.ExportLang(langInfo);
             }
         }
     }
