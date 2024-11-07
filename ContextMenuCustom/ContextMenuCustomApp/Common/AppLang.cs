@@ -5,8 +5,8 @@
         //Common
         public string CommonOk { get; set; } = "Ok";
         public string CommonCancel { get; set; } = "Cancel";
-        public string CommonWarning{ get; set; } = "Warning";
-        public string CommonError{ get; set; } = "Error";
+        public string CommonWarning { get; set; } = "Warning";
+        public string CommonError { get; set; } = "Error";
 
         //menu list
         public string MenuListAdd { get; set; } = "Add";
@@ -149,7 +149,7 @@
         public string SettingDataTitle { get; set; } = "App Data";
         public string SettingDataButton { get; set; } = "Open Data Folder";
         public string SettingDataButtonTip { get; set; } = "Open Data Folder";
-        
+
         //setting app
         public string SettingOther { get; set; } = "Other";
         public string SettingOtherRestart { get; set; } = "Restart App";
@@ -158,7 +158,7 @@
         public string UpdateTipTitle { get; set; } = "V5.5";
         public string UpdateTipCloseButton { get; set; } = "Close";
         public string UpdateTip1 { get; set; } = "ChangeLog";
-        public string UpdateTip1Content { get; set; } = "1. Github ";
+        public string UpdateTip1Content { get; set; } = "1. Add ARM64 support \r\n2. Add menu config: working directory\r\n3. Add menu config: show or hide window\r\n4. Add menu config: disable or enable menu\r\n5. Add drive menu support (windows 11 22621+)\r\n6. Optimize language import and add RTL support\r\n7. Optimize UI\r\n8 . Other fix ";
         public string UpdateTip2 { get; set; } = "Tips";
         public string UpdateTip2Content { get; set; } = "1. Restart explorer after update if no menu";
     }

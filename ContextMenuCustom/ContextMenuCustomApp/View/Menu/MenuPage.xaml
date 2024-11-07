@@ -76,7 +76,6 @@
                             <FontIcon
                                 Grid.Column="1"
                                 FontFamily="Segoe Fluent Icons"
-                                Foreground="Red"
                                 Glyph="&#xF140;"
                                 Visibility="{Binding Enabled, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=False}" />
                         </Grid>
@@ -481,10 +480,12 @@
 
                     <AppBarButton
                         Click="Enable_Click"
-                        Icon="LikeDislike"
                         Label="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabled}"
-                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabledTips}" />
-                    <AppBarSeparator />
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabledTips}">
+                        <AppBarButton.Icon>
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE733;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
 
                     <AppBarButton
                         Click="Delete_Click"

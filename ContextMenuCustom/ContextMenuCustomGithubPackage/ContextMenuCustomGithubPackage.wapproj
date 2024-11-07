@@ -53,7 +53,7 @@
     <ProjectGuid>9d1e21a1-543c-470a-b411-761ac33f150e</ProjectGuid>
     <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
-    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <NoWarn>$(NoWarn);NU1702</NoWarn>
     <EntryPointProjectUniqueName>..\ContextMenuCustomApp\ContextMenuCustomApp.csproj</EntryPointProjectUniqueName>
