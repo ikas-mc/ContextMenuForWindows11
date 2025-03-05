@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ContextMenuCustomHost", "ContextMenuCustomHost\ContextMenuCustomHost.vcxproj", "{D1E66555-FE87-448F-A748-3A54DD7EAB9B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContextMenuCustomApp", "ContextMenuCustomApp\ContextMenuCustomApp.csproj", "{DCBA3FBF-3A4F-427E-BDC9-42FD0D7A27F1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D1E66555-FE87-448F-A748-3A54DD7EAB9B} = {D1E66555-FE87-448F-A748-3A54DD7EAB9B}
+	EndProjectSection
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ContextMenuCustomPackage", "ContextMenuCustomPackage\ContextMenuCustomPackage.wapproj", "{0D0E2A13-5161-4315-932F-D24400934867}"
 EndProject
