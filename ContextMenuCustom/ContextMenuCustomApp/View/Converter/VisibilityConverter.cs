@@ -8,14 +8,14 @@ namespace ContextMenuCustomApp.View.Converter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            bool visible = true;
-            if (value is Visibility)
+            bool visible;
+            if (value is bool v)
             {
-                return value;
+                visible = v;
             }
-            if (value is bool)
+            else if (value is Visibility visibility)
             {
-                visible = (bool)value;
+                visible = Visibility.Visible == visibility;
             }
             else if (value is int || value is short || value is long)
             {
@@ -25,15 +25,15 @@ namespace ContextMenuCustomApp.View.Converter
             {
                 visible = 0.0 != (double)value;
             }
-            else if (value is string && string.IsNullOrEmpty((string)value))
+            else if (value is string str)
             {
-                visible = false;
+                visible = !string.IsNullOrEmpty(str);
             }
-            else if (value == null)
-            {
-                visible = false;
+            else {
+                visible = value != null;
             }
-            if ((string)parameter == "!")
+
+            if (parameter is string p && p == "!")
             {
                 visible = !visible;
             }

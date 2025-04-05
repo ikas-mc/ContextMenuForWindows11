@@ -8,7 +8,8 @@ namespace ContextMenuCustomApp.Service.Menu
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     public class MenuItem : BaseModel
     {
-        [JsonIgnore] public StorageFile File { get; set; }
+        [JsonIgnore]
+        public StorageFile File { get; set; }
 
         [JsonIgnore]
         public string FileName
@@ -139,14 +140,16 @@ namespace ContextMenuCustomApp.Service.Menu
             set => SetProperty(ref _index, value);
         }
 
-        public int ShowWindowFlag { 
-            get => _showWindowFlag; 
-            set => SetProperty(ref _showWindowFlag, value); 
+        public int ShowWindowFlag
+        {
+            get => _showWindowFlag;
+            set => SetProperty(ref _showWindowFlag, value);
         }
 
-        public string WorkingDirectory { 
-            get => _workingDirectory; 
-            set => SetProperty(ref _workingDirectory, value); 
+        public string WorkingDirectory
+        {
+            get => _workingDirectory;
+            set => SetProperty(ref _workingDirectory, value);
         }
     }
 }

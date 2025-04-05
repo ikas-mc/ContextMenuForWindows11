@@ -26,6 +26,7 @@ namespace ContextMenuCustomApp.View.Common
                 {
                     rootElement.RequestedTheme = value;
                 }
+
                 UpdateSystemCaptionButtonColors();
             }
         }
