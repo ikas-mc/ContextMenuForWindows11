@@ -33,6 +33,10 @@
         public string MenuConfigAdvancedGroup { get; set; } = "Menu Advanced Config";
         public string MenuShowWindowFlag { get; set; } = "Show Window";
         public string MenuShowWindowFlagTips { get; set; } = "Show or Hide Window...";
+        public string MenuShowWindowOptionHide { get; set; } = "Hide";
+        public string MenuShowWindowOptionNormal { get; set; } = "Normal";
+        public string MenuShowWindowOptionMin { get; set; } = "Minimized";
+        public string MenuShowWindowOptionMax { get; set; } = "Maximized";
         public string MenuWorkingDirectory { get; set; } = "Working Directory";
         public string MenuWorkingDirectoryTips { get; set; } = "empty as default, supported variables: {parent}";
 

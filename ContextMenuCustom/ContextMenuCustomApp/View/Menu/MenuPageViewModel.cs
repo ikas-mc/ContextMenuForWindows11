@@ -44,7 +44,14 @@ namespace ContextMenuCustomApp.View.Menu
                 }
                 );
 
-            ShowWindowFlagEnumItems = new ObservableCollection<EnumItem>(EnumItemUtil.GetEnumItems<ShowWindowFlagEnum>());
+            ShowWindowFlagEnumItems = new ObservableCollection<EnumItem>(
+                 new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = AppLang.MenuShowWindowOptionHide, Value = (int)ShowWindowFlagEnum.Hide },
+                    new EnumItem() { Label = AppLang.MenuShowWindowOptionNormal, Value = (int)ShowWindowFlagEnum.ShowNormal },
+                    new EnumItem() { Label = AppLang.MenuShowWindowOptionMin, Value = (int)ShowWindowFlagEnum.ShowMinimized },
+                    new EnumItem() { Label = AppLang.MenuShowWindowOptionMax, Value = (int)ShowWindowFlagEnum.ShowMaximized },
+               }
+               );
         }
 
         #region menu
