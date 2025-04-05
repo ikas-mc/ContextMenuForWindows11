@@ -6,7 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Windows.ApplicationModel;
+using Windows.Globalization;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -75,45 +77,58 @@ namespace ContextMenuCustomApp.View.Setting
 
         public async Task LoadLanguages()
         {
-            Languages = await _languageService.QueryLangList();
+            var languages = await RunWith(async () =>
+            {
+                return await _languageService.QueryLangList();
+            });
+            Languages = languages ?? new List<LangInfo>();
         }
 
         public void UpdateLangSetting(LangInfo langInfo)
         {
-            _languageService.UpdateLangSetting(langInfo);
+            RunWith(() =>
+            {
+                _languageService.UpdateLangSetting(langInfo);
+            });
         }
 
         public async Task ExportLang()
         {
-            await _languageService.ExportLanguageToFileAsync(async (string suggestedFileName) =>
-             {
-                 FileSavePicker fileSavePicker = new FileSavePicker
-                 {
-                     SuggestedStartLocation = PickerLocationId.Desktop,
-                     SuggestedFileName = suggestedFileName ?? ""
-                 };
+            await RunWith(() =>
+            {
+                return _languageService.ExportLanguageToFileAsync(async (string suggestedFileName) =>
+                {
+                    FileSavePicker fileSavePicker = new FileSavePicker
+                    {
+                        SuggestedStartLocation = PickerLocationId.Desktop,
+                        SuggestedFileName = suggestedFileName ?? ""
+                    };
 
-                 fileSavePicker.FileTypeChoices.Add("Json", new List<string>() { ".json" });
-                 var file = await fileSavePicker.PickSaveFileAsync();
-                 return file;
-             });
+                    fileSavePicker.FileTypeChoices.Add("Json", new List<string>() { ".json" });
+                    var file = await fileSavePicker.PickSaveFileAsync();
+                    return file;
+                });
+            });
         }
 
         public async Task ImportLang()
         {
-            var fileOpenPicker = new FileOpenPicker
+            await RunWith(async () =>
             {
-                SuggestedStartLocation = PickerLocationId.Desktop,
-            };
+                var fileOpenPicker = new FileOpenPicker
+                {
+                    SuggestedStartLocation = PickerLocationId.Desktop,
+                };
 
-            fileOpenPicker.FileTypeFilter.Add(".json");
-            var file = await fileOpenPicker.PickSingleFileAsync();
-            if (file == null)
-            {
-                return;
-            }
+                fileOpenPicker.FileTypeFilter.Add(".json");
+                var file = await fileOpenPicker.PickSingleFileAsync();
+                if (file == null)
+                {
+                    return;
+                }
 
-            await _languageService.AddCustomLanguageFileAsync(file, true);
+                await _languageService.AddCustomLanguageFileAsync(file, true);
+            });
 
             await LoadLanguages();
         }
@@ -131,8 +146,11 @@ namespace ContextMenuCustomApp.View.Setting
 
         public async void OpenLanguagesFolder()
         {
-            var folder = await _languageService.GetCustomLanguagesFolderAsync();
-            await Launcher.LaunchFolderAsync(folder);
+            await RunWith(async () =>
+            {
+                var folder = await _languageService.GetCustomLanguagesFolderAsync();
+                await Launcher.LaunchFolderAsync(folder);
+            });
         }
 
         #endregion

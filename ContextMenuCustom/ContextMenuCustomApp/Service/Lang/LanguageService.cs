@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.Globalization;
-using Windows.Media.Protection;
 using Windows.Storage;
 
 namespace ContextMenuCustomApp.Service.Lang
@@ -59,24 +58,37 @@ namespace ContextMenuCustomApp.Service.Lang
             return await Task.Run(async () =>
             {
                 var langInfoList = new List<LangInfo>();
-                _defaultLanguages.ForEach(name => langInfoList.Add(LangInfo.Create(name, name, true)));
+                _defaultLanguages.ForEach(name =>
+                {
+                    var language = tryParseLanguageTag(name);
+                    if (null != language)
+                    {
+                        var langInfo = LangInfo.Create(name, name, language.DisplayName, true);
+                        langInfoList.Add(langInfo);
+                    }
+                });
 
                 var langsFolder = await GetCustomLanguagesFolderAsync();
                 var langFiles = await langsFolder.GetFilesAsync();
+
                 foreach (var file in langFiles)
                 {
                     var fileName = file.Name;
                     if (fileName.EndsWith(".json"))
                     {
                         var name = Path.GetFileNameWithoutExtension(fileName);
-                        LangInfo langInfo = LangInfo.Create(name, fileName, false);
-                        langInfoList.Add(langInfo);
+                        var language = tryParseLanguageTag(name);
+                        if (null != language)
+                        {
+                            LangInfo langInfo = LangInfo.Create(name, fileName, language.DisplayName, false);
+                            langInfoList.Add(langInfo);
+                        }
                     }
                 }
                 return langInfoList;
             });
         }
-      
+
 
         public async Task<StorageFolder> GetCustomLanguagesFolderAsync()
         {
@@ -131,18 +143,19 @@ namespace ContextMenuCustomApp.Service.Lang
             await file.CopyAsync(langsFolder, fileName, NameCollisionOption.ReplaceExisting);
         }
 
-        public async Task ExportLanguageToFileAsync(Func<string,Task<StorageFile>> fileFunc)
+        public async Task ExportLanguageToFileAsync(Func<string, Task<StorageFile>> fileFunc)
         {
             string fileName = Settings.Default.AppLang;
-        
+
             //default lang
             if (string.IsNullOrEmpty(fileName) || !fileName.EndsWith(".json"))
             {
-                fileName = _defaultLanguages.First()+ ".json";
+                fileName = _defaultLanguages.First() + ".json";
             }
 
-            var file=await fileFunc(fileName);
-            if (null == file) {
+            var file = await fileFunc(fileName);
+            if (null == file)
+            {
                 return;
             }
 
@@ -157,5 +170,16 @@ namespace ContextMenuCustomApp.Service.Lang
             ApplicationLanguages.PrimaryLanguageOverride = langInfo.Name;
         }
 
+        public Language tryParseLanguageTag(string name)
+        {
+            try
+            {
+                return new Language(name);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

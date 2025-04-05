@@ -31,6 +31,25 @@ namespace ContextMenuCustomApp.View.Common
             Message = message ?? string.Empty;
         }
 
+        public void RunWith(Action action)
+        {
+            Busy(true);
+            Message = string.Empty;
+            try
+            {
+                action();
+            }
+            catch (Exception e)
+            {
+                Message = e.Message;
+                Handler?.Invoke(Message, e);
+            }
+            finally
+            {
+                Busy(false);
+            }
+        }
+
         public async Task RunWith(Func<Task> action)
         {
             Busy(true);

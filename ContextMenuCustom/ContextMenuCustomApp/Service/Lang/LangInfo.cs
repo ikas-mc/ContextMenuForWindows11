@@ -1,23 +1,23 @@
-﻿using Windows.Globalization;
-
-namespace ContextMenuCustomApp.Service.Lang
+﻿namespace ContextMenuCustomApp.Service.Lang
 {
     public class LangInfo
     {
+        //language tag (fileName without ext)
         public string Name { get; set; }
+        //fileName with ext
         public string FileName { get; set; }
         public bool IsDefault { get; set; }
+        //language name
         public string DisplayName { get; set; }
 
-        public static LangInfo Create(string name, string fileName, bool isDefault)
+        public static LangInfo Create(string name, string fileName, string displayName, bool isDefault)
         {
-            var language = new Language(name);
             var langInfo = new LangInfo()
             {
                 Name = name,
                 FileName = fileName,
                 IsDefault = isDefault,
-                DisplayName = language.DisplayName
+                DisplayName = displayName
             };
             return langInfo;
         }
