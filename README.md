@@ -11,7 +11,7 @@
 
 Windows store|Github release|Github Action
 ------------ | ------------- | -------------
-<a href="https://apps.microsoft.com/detail/9PC7BZZ28G0X">Windows store</a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release </a> | Github Action
+<a href="https://apps.microsoft.com/detail/9pc7bzz28g0x?referrer=appbadge&mode=direct"><img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/></a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release </a> | Github Action
 free , no limit , buy = coffee | use self-signed certificate |  test only
 store package | github package , dev package | github package, dev package
 
