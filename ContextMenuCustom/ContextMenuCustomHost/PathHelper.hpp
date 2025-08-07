@@ -96,7 +96,7 @@ public:
 	}
 
 	static void replaceAll(std::wstring& src, const std::wstring_view& from, const std::wstring& to) {
-		if (src.length() == 0) {
+		if (src.empty ()) {
 			return;
 		}
 
@@ -109,5 +109,33 @@ public:
 		for (auto pos = src.find(from); pos != std::string::npos; pos = src.find(from, pos + toLength)) {
 			src.replace(pos, fromLength, to);
 		}
+	}
+
+	static std::wstring simpleFormat (const std::wstring_view& src, const std::unordered_map<std::wstring_view, std::wstring>& replacements) {
+		std::wstring to;
+
+		if (src.empty()) {
+			return to;
+		}
+		if (replacements.empty ()) {
+			return to;
+		}
+
+		for (size_t i = 0; i < src.size ();) {
+			bool replaced = false;
+			for (const auto& [key, value] : replacements) {
+				if (src.substr (i, key.size ()) == key) {
+					to += value;
+					i += key.size ();
+					replaced = true;
+					break;
+				}
+			}
+			if (!replaced) {
+				to += src[i];
+				++i;
+			}
+		}
+		return to;
 	}
 };

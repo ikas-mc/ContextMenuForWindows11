@@ -177,27 +177,27 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 	if (selection) {
 		selection->GetCount(&count);
 	}
-
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke  menu={}, selection size={}", _title, count);
 
 	if (count > 1 && _accept_multiple_files_flag == FILES_JOIN) {
 		if (const auto paths = PathHelper::getPaths(selection, _path_delimiter); !paths.empty()) {
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, join, paths={}", _title, paths);
 
-			auto param = _param_for_multiple_files.empty() ? std::wstring{ _param } : std::wstring{ _param_for_multiple_files };
-			// get parent from first path
-
+			const std::wstring_view paramView{ _param_for_multiple_files.empty () ? _param : _param_for_multiple_files };
+			std::unordered_map<std::wstring_view, std::wstring> replacements (5);
 			std::wstring parentPath;
 			if (const auto firstPath = PathHelper::getPath(selection); !firstPath.empty()) {
 				const std::filesystem::path file(firstPath);
 				parentPath = file.parent_path().wstring();
+				replacements.emplace (PARAM_PARENT, parentPath);
+				replacements.emplace (PARAM_PATH, paths);
+				//TODO
+				replacements.emplace (PARAM_PATH0, firstPath);
+				replacements.emplace (PARAM_NAME0, file.filename().wstring());
+				replacements.emplace (PARAM_EXT0, file.extension().wstring());
+				replacements.emplace (PARAM_NAME_NO_EXT0, file.stem().wstring());
 			}
-
-			if (param.find(PARAM_PARENT) != std::wstring::npos) {
-				PathHelper::replaceAll(param, PARAM_PARENT, parentPath);
-			}
-
-			PathHelper::replaceAll(param, PARAM_PATH, paths);
+			std::wstring param =PathHelper::simpleFormat(paramView, replacements);
 
 			//TODO 
 			std::wstring workingDirectory{ _working_directory };
@@ -205,15 +205,14 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 				workingDirectory = parentPath;
 			}
 			else {
-				//only parent
-				PathHelper::replaceAll(workingDirectory, PARAM_PARENT, parentPath);
+				PathHelper::replaceAll(workingDirectory, PARAM_PARENT, replacements[PARAM_PARENT]);
+				PathHelper::replaceAll(workingDirectory, PARAM_PATH0, replacements[PARAM_PATH0]);
 			}
+
 			const auto workingDirectoryPath = wil::ExpandEnvironmentStringsW(workingDirectory.c_str());
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, workingDirectoryPath={}", _title, workingDirectoryPath.get());
-
 			const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exePath={}, param={}", _title, exePath.get(), param);
-
 			ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag + 1);
 		}
 	}
@@ -246,44 +245,29 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 
 	const std::filesystem::path file(path);
 	std::unordered_map<std::wstring_view, std::wstring> replacements = {
+		{PARAM_PATH, path},
 		{PARAM_PARENT, file.parent_path().wstring()},
 		{PARAM_NAME, file.filename().wstring()},
 		{PARAM_EXT, file.extension().wstring()},
 		{PARAM_NAME_NO_EXT, file.stem().wstring()},
-		{PARAM_PATH, path}
 	};
+	std::wstring param = PathHelper::simpleFormat(_param, replacements);
 
-	const std::wstring_view paramView{ _param };
-	std::wstring param;
-	for (size_t i = 0; i < paramView.size();) {
-		bool replaced = false;
-		for (const auto& [key, value] : replacements) {
-			if (paramView.substr(i, key.size()) == key) {
-				param += value;
-				i += key.size();
-				replaced = true;
-				break;
-			}
-		}
-		if (!replaced) {
-			param += paramView[i];
-			++i;
-		}
-	}
-
+	// TODO
 	std::wstring workingDirectory{ _working_directory };
 	if (workingDirectory.empty()) {
 		workingDirectory = file.parent_path().wstring();
 	}
 	else {
 		PathHelper::replaceAll(workingDirectory, PARAM_PARENT, replacements[PARAM_PARENT]);
+		// TODO
 		PathHelper::replaceAll(workingDirectory, PARAM_PATH, replacements[PARAM_PATH]);
+		PathHelper::replaceAll(workingDirectory, PARAM_PATH0, replacements[PARAM_PATH]);
 	}
+
 	const auto workingDirectoryPath = wil::ExpandEnvironmentStringsW(workingDirectory.c_str());
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, workingDirectoryPath={}", _title, workingDirectoryPath.get());
-
 	const auto exePath = wil::ExpandEnvironmentStringsW(_exe.c_str());
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath.get(), param);
-
 	ShellExecute(parent, L"open", exePath.get(), param.c_str(), workingDirectoryPath.get(), _show_window_flag + 1);
 }

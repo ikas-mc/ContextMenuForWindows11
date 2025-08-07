@@ -226,7 +226,17 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEA86;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="{x:Bind _viewModel.AppLang.MenuParamTips}" Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <TextBox
+                                    Grid.Row="0"
+                                    PlaceholderText="{x:Bind _viewModel.AppLang.MenuParamTips}"
+                                    Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Grid.Row="1" FontStyle="Italic" IsTextSelectionEnabled="True">{path} {name} {nameNoExt} {parent} {extension} </TextBlock>
+                            </Grid>
                         </controls:SettingItem.ActionContent>
 
                     </controls:SettingItem>
@@ -368,21 +378,31 @@
                         </controls:SettingItem.RightContent>
 
                         <controls:SettingItem.BottomContent>
-                            <StackPanel Orientation="Vertical">
+
+
+                            <Grid Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
                                 <TextBox
+                                    Grid.Row="0"
                                     Header="{x:Bind _viewModel.AppLang.MenuMatchFilesJoinDelimiterTip}"
                                     PlaceholderText="|"
-                                    Text="{Binding PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+                                    Text="{Binding PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <TextBox
+                                    Grid.Row="1"
                                     Margin="0,8,0,0"
                                     Header="{x:Bind _viewModel.AppLang.MenuMatchFilesJoinParamTip}"
                                     PlaceholderText="{}{path}"
                                     Text="{Binding ParamForMultipleFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
 
-                            </StackPanel>
+                                <TextBlock Grid.Row="2" FontStyle="Italic" IsTextSelectionEnabled="True"> {path} {parent} {path0} {name0} {nameNoExt0} {extension0}</TextBlock>
+                            </Grid>
+
                         </controls:SettingItem.BottomContent>
                     </controls:SettingItem>
 
@@ -409,7 +429,14 @@
                             <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xED25;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="{x:Bind _viewModel.AppLang.MenuWorkingDirectoryTips}" Text="{Binding WorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <TextBox PlaceholderText="{x:Bind _viewModel.AppLang.MenuWorkingDirectoryTips}" Text="{Binding WorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Grid.Row="1" FontStyle="Italic" IsTextSelectionEnabled="True">{parent} {path0}</TextBlock>
+                            </Grid>
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
