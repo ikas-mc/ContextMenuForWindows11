@@ -88,7 +88,7 @@ namespace ContextMenuCustomApp.Service.Menu
                 menuFile = await CreateMenuFileAsync(fileName);
             }
 
-            var content = ConvertMenuToJson(item);
+            var content = ConvertMenuToJson(item,true);
             await FileIO.WriteTextAsync(menuFile, content);
 
             item.File = menuFile;
