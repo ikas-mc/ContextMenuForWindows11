@@ -214,7 +214,6 @@ namespace ContextMenuCustomApp.Service.Menu
             return file;
         }
 
-
         public async Task BuildToCacheAsync()
         {
             var configFolder = await GetMenusFolderAsync();
