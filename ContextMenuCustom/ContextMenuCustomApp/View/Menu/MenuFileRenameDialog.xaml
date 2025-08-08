@@ -18,12 +18,11 @@
             x:Name="FileNameTextBox"
             Grid.Row="0"
             Margin="0,8"
-            Header="Menu File Name" />
+            Header="{x:Bind _appLang.MenuFileRenameInputTips}" />
         <Button
             Grid.Row="1"
             HorizontalAlignment="Right"
-            Click="Button_Click">
-            Sync From Title
+            Click="Button_Click" Content="{x:Bind _appLang.MenuFileRenameSyncName}">
         </Button>
     </Grid>
 </UserControl>

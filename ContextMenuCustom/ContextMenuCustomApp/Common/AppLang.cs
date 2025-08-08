@@ -93,6 +93,12 @@
         public string MenuCommandHelpTips { get; set; } = "Open Wiki";
         public string MenuCommandToggleEnabled { get; set; } = "Toggle Enabled";
         public string MenuCommandToggleEnabledTips { get; set; } = "Enable Or Disable Menu";
+
+        //
+        public string MenuFileRenameTitle { get; set; } = "Rename Menu File";
+        public string MenuFileRenameInputTips { get; set; } = "Menu File Name";
+        public string MenuFileRenameSyncName { get; set; } = "Sync From Title";
+
         //setting
         public string Setting { get; set; } = "Setting";
         public string SettingOpenButtonTips { get; set; } = "Open Setting";

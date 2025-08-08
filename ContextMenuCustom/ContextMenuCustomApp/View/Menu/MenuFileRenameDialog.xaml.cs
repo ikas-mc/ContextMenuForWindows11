@@ -1,4 +1,5 @@
-﻿using ContextMenuCustomApp.Service.Menu;
+﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Service.Menu;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,9 +11,12 @@ namespace ContextMenuCustomApp.View.Menu
     public sealed partial class MenuFileRenameDialog : UserControl
     {
         private readonly MenuItem _menuItem;
+
+        private AppLang _appLang;
         public MenuFileRenameDialog(MenuItem menuItem)
         {
             this._menuItem = menuItem;
+            _appLang = AppContext.Current.AppLang;
             this.InitializeComponent();
         }
 
@@ -23,9 +27,9 @@ namespace ContextMenuCustomApp.View.Menu
 
             var dialog = new ContentDialog
             {
-                Title = "Rename Menu File",
-                PrimaryButtonText = "Save",
-                CloseButtonText = "Cancel",
+                Title = _appLang.MenuFileRenameTitle,
+                PrimaryButtonText= _appLang.CommonOk,
+                CloseButtonText = _appLang.CommonCancel,
                 DefaultButton = ContentDialogButton.Primary,
                 Content = this
             };
