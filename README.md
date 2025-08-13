@@ -23,17 +23,20 @@ store package | github package , dev package | github package, dev package
 
 
 ##  Guides
+### wiki
 https://github.com/ikas-mc/ContextMenuForWindows11/wiki
-
+### create menus using AI
+https://github.com/ikas-mc/ContextMenuForWindows11/discussions/220
 
 ## Samples
-https://github.com/ikas-mc/ContextMenuForWindows11/tree/main/menuSample
+### new   
+https://github.com/ikas-mc/ContextMenuForWindows11/discussions/categories/menus
 
+### old   
+https://github.com/ikas-mc/ContextMenuForWindows11/tree/main/menuSample
 
 <img src="https://raw.githubusercontent.com/ikas-mc/ContextMenuForWindows11/main/screenshots/samples.png" width=500 >
 
-1. download file and copy to menu folder 
-2. toggle cache when cache is on
 
 ```
     Compress By 7z.json
