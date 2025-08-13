@@ -48,7 +48,7 @@
     "pathDelimiter": {
       "type": "string",
       "description": "Delimiter for multiple file paths in Join mode. Each path is automatically quoted. For example, ',' → \"path1\",\"path2\", ':' → \"path1\":\"path2\", \"','\" → \"path1\"','\"path2\".",
-      "default": ","
+      "default": " "
     },
     "paramForMultipleFiles": {
       "type": "string",
