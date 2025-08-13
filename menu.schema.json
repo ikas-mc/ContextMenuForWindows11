@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MenuItem",
+  "type": "object",
+  "properties": {
+    "title": { "type": "string", "description": "Menu title." },
+    "exe": {
+      "type": "string",
+      "description": "Path to the executable, batch script, supports environment variables (e.g. %LocalAppData%), Store App format (shell:AppsFolder\\...), or URI protocol (e.g. quick-look://)."
+    },
+    "param": {
+      "type": "string",
+      "description": "Parameter template passed to exe. Supports variables: {path} (file absolute path), {parent} (parent directory path), {name} (file name, single file), {nameNoExt} (file name without extension, single file, v5.0+), {extension} (file extension, single file, v5.0+), {path0} (first file path, v5.6+), {name0} (first file name, v5.6+), {nameNoExt0} (first file name without extension, v5.6+), {extension0} (first file extension, v5.6+)."
+    },
+    "icon": {
+      "type": "string",
+      "description": "Menu icon path. Can be .ico file or EXE/DLL file with index,no supports environment variables (e.g. C:\\Program Files\\7-Zip\\7zFM.exe,0 or C:\\WINDOWS\\System32\\SHELL32.dll,196)."
+    },
+    "iconDark": { "type": "string", "description": "Menu icon path for dark mode." },
+    "acceptDirectory": {
+      "type": "boolean",
+      "description": "(Deprecated; not recommended, kept for compatibility) Whether to accept directories. Use acceptDirectoryFlag instead."
+    },
+    "acceptDirectoryFlag": {
+      "type": "number",
+      "description": "Directory matching mode, bitwise combination: 0=None, 1=Directory, 2=Background, 4=Desktop, 8=Drive. Multiple types can be added, e.g. 3 means Directory and Background, max value is 15.",
+      "minimum": 0,
+      "maximum": 15,
+      "default": 15
+    },
+    "acceptFile": { "type": "boolean", "description": "Whether to accept files." },
+    "acceptFileFlag": {
+      "type": "integer",
+      "description": "(Deprecated; not recommended, kept for compatibility) File matching mode, 0=None, 1=Ext (extension fuzzy match), 2=Regex (filename regex), 3=ExtList (exact extension list, v5.0+, separated by '|'), 4=All (all files).",
+      "enum": [0, 1, 2, 3, 4],
+      "default": 4
+    },
+    "acceptExts": {
+      "type": "string",
+      "description": "Accepted file extensions. For ExtList mode use '|' as delimiter, e.g. .apkx|.apk. For Ext mode use space or comma, e.g. .apkx .mapk or .apkx,.mapk."
+    },
+    "acceptFileRegex": { "type": "string", "description": "Regex for filename matching. Supports standard regex syntax." },
+    "acceptMultipleFilesFlag": {
+      "type": "integer",
+      "description": "Multiple file match mode: 0=None (not supported), 1=Each (execute for each file), 2=Join (merge parameters, execute once for all paths).",
+      "enum": [0, 1, 2]
+    },
+    "pathDelimiter": {
+      "type": "string",
+      "description": "Delimiter for multiple file paths in Join mode. Each path is automatically quoted. For example, ',' → \"path1\",\"path2\", ':' → \"path1\":\"path2\", \"','\" → \"path1\"','\"path2\".",
+      "default": ","
+    },
+    "paramForMultipleFiles": {
+      "type": "string",
+      "description": "Parameter template for multiple files in Join mode. Supports variables: {path} (all merged paths), {path0} (first file path, v5.6+), {name0} (first file name, v5.6+), {nameNoExt0} (first file name without extension, v5.6+), {extension0} (first file extension, v5.6+)."
+    },
+    "index": { "type": "integer", "description": "Menu order." },
+    "showWindowFlag": {
+      "type": "integer",
+      "description": "Window display mode: -1=Hide, 0=ShowNormal, 1=ShowMinimized, 2=ShowMaximized.",
+      "enum": [-1, 0, 1, 2],
+      "default": 0
+    },
+    "workingDirectory": {
+      "type": "string",
+      "description": "Working directory. Supports variables: {parent} (file parent path), {path0} (first file path, v5.6+)."
+    }
+  },
+  "required": ["title", "exe"],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "acceptFileFlag": { "const": 1 } } },
+      "then": { "required": ["acceptExts"] }
+    },
+    {
+      "if": { "properties": { "acceptFileFlag": { "const": 2 } } },
+      "then": { "required": ["acceptFileRegex"] }
+    },
+    {
+      "if": { "properties": { "acceptFileFlag": { "const": 3 } } },
+      "then": {
+        "required": ["acceptExts"],
+        "properties": {
+          "acceptExts": {
+            "type": "string",
+            "pattern": "^\\.[a-zA-Z0-9]+(\\|\\.[a-zA-Z0-9]+)*$",
+            "description": "Extension list (e.g. .txt|.doc|.pdf), must start with a dot and use '|' as delimiter."
+          }
+        }
+      }
+    }
+  ]
+}
