@@ -168,7 +168,7 @@
         public string UpdateTipTitle { get; set; } = "V5.7";
         public string UpdateTipCloseButton { get; set; } = "Close";
         public string UpdateTip1 { get; set; } = "ChangeLog";
-        public string UpdateTip1Content { get; set; } = "1. Add ARM64 package for Win Store\r\n2. Add more PARAM for multiple files\r\n3. Optimize UI \r\n4. Optimize language\r\n5. Optimize menu json format\r\n6. Other fix";
+        public string UpdateTip1Content { get; set; } = "1. Add environment variable support for icon path\r\n2. Fix file extension list matching bug\r\n3. Update sdk and other fix";
         public string UpdateTip2 { get; set; } = "Tips";
         public string UpdateTip2Content { get; set; } = "1. Restart explorer after update if no menu";
     }
