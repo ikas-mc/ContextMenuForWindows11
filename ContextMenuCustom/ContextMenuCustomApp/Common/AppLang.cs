@@ -106,8 +106,8 @@
         public string SettingBackButtonTips { get; set; } = "Go Back";
 
         //setting cache
-        public string SettingCache { get; set; } = "Cache:";
-        public string SettingCacheTips { get; set; } = "Open Cache Settings";
+        public string SettingCache { get; set; } = "Enable Cache";
+        public string SettingCacheTips { get; set; } = "Enabling caching can improve menu speed. However, menus will no longer be loaded directly from the menu JSON files";
         public string SettingCacheContent { get; set; } = "Caching Menus to Optimize Loading Speed";
         public string SettingCacheTime { get; set; } = "Cache Time:";
         public string SettingCacheButtonOk { get; set; } = "Ok";
