@@ -12,7 +12,7 @@
 
   <Identity
     Name="7061touchwp.CustomContextMenu"
-    Publisher="CN=ikas-mc"
+    Publisher="CN=ikas-mc-dev"
     Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="a6cb77ab-4892-4cdd-9bee-8716defefa2e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
