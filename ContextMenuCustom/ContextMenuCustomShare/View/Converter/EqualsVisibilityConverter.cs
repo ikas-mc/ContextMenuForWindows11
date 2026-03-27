@@ -1,0 +1,28 @@
+using System;
+#if WINUI3
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+#else
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+#endif
+
+namespace ContextMenuCustomApp.View.Converter
+{
+    public class EqualsVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (null == value || parameter == null)
+            {
+                return Visibility.Collapsed;
+            }
+            return object.Equals(value.ToString(), parameter) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
