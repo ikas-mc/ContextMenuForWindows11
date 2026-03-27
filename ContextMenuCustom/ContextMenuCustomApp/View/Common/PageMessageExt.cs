@@ -1,6 +1,9 @@
-﻿using System;
+using System;
+#if WINUI3
+using Microsoft.UI.Xaml.Controls;
+#else
 using Windows.UI.Xaml.Controls;
-
+#endif
 namespace ContextMenuCustomApp.View.Common
 {
     public class WeakEventHandler
@@ -37,17 +40,32 @@ namespace ContextMenuCustomApp.View.Common
 
         public static void ShowMessage(this Page page, string message, MessageType messageType)
         {
+#if WINUI3
+            if (page.DispatcherQueue.HasThreadAccess)
+            {
+                DoShowMessage(page, message, messageType);
+            }
+            else
+            {
+                _ = page.DispatcherQueue.TryEnqueue(() =>
+                {
+                    DoShowMessage(page, message, messageType);
+                });
+            }
+#else
             if (page.Dispatcher.HasThreadAccess)
             {
                 DoShowMessage(page, message, messageType);
             }
             else
             {
-                _ = page.Dispatcher.TryRunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                _ = page.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     DoShowMessage(page, message, messageType);
                 });
             }
+#endif
+
         }
 
         private static void DoShowMessage(Page page, string message, MessageType messageType)

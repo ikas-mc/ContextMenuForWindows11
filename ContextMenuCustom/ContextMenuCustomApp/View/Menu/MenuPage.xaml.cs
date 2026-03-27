@@ -1,15 +1,14 @@
-﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Navigation;
 using ContextMenuCustomApp.Service.Menu;
-using System.Linq;
-using Windows.Storage.Pickers;
 using ContextMenuCustomApp.View.Common;
-using Windows.System;
 using ContextMenuCustomApp.View.Setting;
-using Windows.UI.Xaml.Controls;
+using System;
+using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.System;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -21,7 +20,7 @@ namespace ContextMenuCustomApp.View.Menu
         {
             NavigationCacheMode = NavigationCacheMode.Required;
             InitializeComponent();
-            _viewModel = new MenuPageViewModel();
+            _viewModel = new MenuPageViewModel(AppContext.GetService<MenuService>(), false);
             this.RegisterMessageHandler(_viewModel);
         }
 
@@ -107,74 +106,7 @@ namespace ContextMenuCustomApp.View.Menu
             }
         }
 
-        private async void OpenExeButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (GetSeletedMenu(true, out MenuItem menuItem))
-            {
-                var fileOpenPicker = new FileOpenPicker
-                {
-                    SuggestedStartLocation = PickerLocationId.ComputerFolder
-                };
-                fileOpenPicker.FileTypeFilter.Add("*");
-                fileOpenPicker.FileTypeFilter.Add(".com");
-                fileOpenPicker.FileTypeFilter.Add(".exe");
-                fileOpenPicker.FileTypeFilter.Add(".bat");
-                fileOpenPicker.FileTypeFilter.Add(".cmd");
-                fileOpenPicker.FileTypeFilter.Add(".vbs");
-                fileOpenPicker.FileTypeFilter.Add(".vbe");
-                fileOpenPicker.FileTypeFilter.Add(".js");
-                fileOpenPicker.FileTypeFilter.Add(".jse");
-                var file = await fileOpenPicker.PickSingleFileAsync();
-                if (null != file)
-                {
-                    menuItem.Exe = $"\"{file.Path}\"";
-                    if (string.IsNullOrEmpty(menuItem.Icon))
-                    {
-                        menuItem.Icon = $"\"{file.Path}\",0";
-                    }
-                }
-            }
-        }
 
-        private async void OpenIconButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && GetSeletedMenu(true, out MenuItem menuItem))
-            {
-                var fileOpenPicker = new FileOpenPicker
-                {
-                    SuggestedStartLocation = PickerLocationId.ComputerFolder
-                };
-
-                string[] fileTypes = { "*", ".dll", ".exe", ".ico", ".png", ".bmp", ".jpeg", ".jpg", ".heic", ".tif" };
-                foreach (string fileType in fileTypes)
-                {
-                    fileOpenPicker.FileTypeFilter.Add(fileType);
-                }
-
-                var file = await fileOpenPicker.PickSingleFileAsync();
-                if (null != file)
-                {
-                    string iconPath;
-                    if (file.Name.EndsWith(".dll") || file.Name.EndsWith(".exe"))
-                    {
-                        iconPath = $"\"{file.Path}\",0";
-                    }
-                    else
-                    {
-                        iconPath = $"\"{file.Path}\"";
-                    }
-
-                    if (button.Tag is string tag && tag == "Dark")
-                    {
-                        menuItem.IconDark = iconPath;
-                    }
-                    else
-                    {
-                        menuItem.Icon = iconPath;
-                    }
-                }
-            }
-        }
 
         private void CommandList_DragItemsCompleted(Windows.UI.Xaml.Controls.ListViewBase sender, Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs args)
         {
@@ -240,7 +172,7 @@ namespace ContextMenuCustomApp.View.Menu
                 }
 
                 //bad
-                if (await _viewModel.SetMenu(menuItem, json))
+                if (await _viewModel.UpdateMenuFromJson(menuItem, json))
                 {
                     this.ShowMessage("Copy From Clipboard Successfully", MessageType.Success);
                 }

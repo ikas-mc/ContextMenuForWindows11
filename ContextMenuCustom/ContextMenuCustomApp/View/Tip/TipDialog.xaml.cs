@@ -19,8 +19,8 @@ namespace ContextMenuCustomApp.View.Tip
         {
             var dialog = new ContentDialog
             {
-                Title = AppContext.Current.AppLang.UpdateTipTitle,
-                CloseButtonText = AppContext.Current.AppLang.UpdateTipCloseButton,
+                Title = AppContext.AppLang.UpdateTipTitle,
+                CloseButtonText = AppContext.AppLang.UpdateTipCloseButton,
                 DefaultButton = ContentDialogButton.Close,
                 Content = this
             };
@@ -29,7 +29,7 @@ namespace ContextMenuCustomApp.View.Tip
 
         public static TipDialog CreateUpdateTipDialog()
         {
-            var appLang=AppContext.Current.AppLang;
+            var appLang=AppContext.AppLang;
             return new TipDialog
             {
                 Tip1 = appLang.UpdateTip1,
