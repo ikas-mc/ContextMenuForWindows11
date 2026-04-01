@@ -46,6 +46,7 @@ public:
 
 private:
 	void Execute(HWND parent, const std::wstring& path);
+	void ExecuteShell(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory);
 	std::wstring _exe;
 	std::wstring _param;
 	bool _accept_directory;
@@ -62,6 +63,8 @@ private:
 	int _accept_directory_flag;
 	int _show_window_flag;
 	std::wstring _working_directory;
+	bool _launch_as_admin = false;
+	bool _admin_only_with_shift = false;
 	std::unordered_set<std::wstring_view> _accept_exts_set;
 
 public:

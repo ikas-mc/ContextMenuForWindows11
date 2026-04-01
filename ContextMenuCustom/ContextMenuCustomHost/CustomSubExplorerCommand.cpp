@@ -34,6 +34,8 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 		//
 		_show_window_flag = static_cast<int>(result.GetNamedNumber(L"showWindowFlag", 0));
 		_working_directory = result.GetNamedString(L"workingDirectory", L"");
+		_launch_as_admin = result.GetNamedBoolean(L"launchAsAdmin", false);
+		_admin_only_with_shift = result.GetNamedBoolean(L"adminOnlyWithShift", false);
 
 		//TODO remove next version
 		if (_accept_file_flag == 0 && _accept_file) {
@@ -222,7 +224,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 			const std::wstring exePath{ _exe.find(L"%") == std::string::npos ? _exe : wil::ExpandEnvironmentStringsW(_exe.c_str()).get() };
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exePath={}, param={}", _title, exePath, param);
 
-			ShellExecute(parent, L"open", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
+			ExecuteShell(parent, exePath, param, workingDirectory);
 		}
 	}
 	else if (count > 1 && _accept_multiple_files_flag == FILES_EACH) {
@@ -277,5 +279,16 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 	const std::wstring exePath{ _exe.find(L"%") == std::string::npos ? _exe : wil::ExpandEnvironmentStringsW(_exe.c_str()).get() };
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath, param);
 
-	ShellExecute(parent, L"open", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
+	ExecuteShell(parent, exePath, param, workingDirectory);
+}
+
+void CustomSubExplorerCommand::ExecuteShell(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory) {
+	const bool isShiftPressed = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
+	const bool shouldLaunchAsAdmin = _launch_as_admin && (!_admin_only_with_shift || isShiftPressed);
+	const wchar_t* verb = shouldLaunchAsAdmin ? L"runas" : L"open";
+	if (shouldLaunchAsAdmin) {
+		DEBUG_LOG(L"CustomSubExplorerCommand::ExecuteShell menu={}, launch-as-admin enabled", _title);
+	}
+
+	ShellExecute(parent, verb, exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
 }

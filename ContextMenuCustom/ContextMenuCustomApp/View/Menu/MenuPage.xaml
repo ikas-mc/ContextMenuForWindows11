@@ -440,7 +440,22 @@
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-                    <TextBlock Margin="0,8,0,8" Text="{x:Bind _viewModel.AppLang.MenuFileGroup}" />
+					<controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuLaunchAsAdmin}">
+						<controls:SettingItem.Icon>
+							<FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE7EF;" />
+						</controls:SettingItem.Icon>
+						<controls:SettingItem.RightContent>
+							<StackPanel>
+								<ToggleSwitch IsOn="{Binding LaunchAsAdmin, Mode=TwoWay}" HorizontalAlignment="Right" />
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+									<TextBlock Text="{x:Bind _viewModel.AppLang.MenuAdminOnlyWithShift}" VerticalAlignment="Center" Margin="0,0,16,0" />
+									<ToggleSwitch IsEnabled="{Binding LaunchAsAdmin}" IsOn="{Binding AdminOnlyWithShift, Mode=TwoWay}" />
+								</StackPanel>
+							</StackPanel>
+						</controls:SettingItem.RightContent>
+					</controls:SettingItem>
+
+					<TextBlock Margin="0,8,0,8" Text="{x:Bind _viewModel.AppLang.MenuFileGroup}" />
 
                     <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuFileFileName}">
                         <controls:SettingItem.Icon>
