@@ -51,6 +51,8 @@ namespace ContextMenuCustomApp.Service.Menu
 
         private int _showWindowFlag;
         private string _workingDirectory;
+        private bool _launchAsAdmin;
+        private bool _adminOnlyWithShift;
 
         [JsonProperty(Order = 0)]
         public string Title
@@ -173,6 +175,20 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             get => _workingDirectory;
             set => SetProperty(ref _workingDirectory, value);
+        }
+
+        [JsonProperty(Order = 54)]
+        public bool LaunchAsAdmin
+        {
+            get => _launchAsAdmin;
+            set => SetProperty(ref _launchAsAdmin, value);
+        }
+
+        [JsonProperty(Order = 56)]
+        public bool AdminOnlyWithShift
+        {
+            get => _adminOnlyWithShift;
+            set => SetProperty(ref _adminOnlyWithShift, value);
         }
     }
 }

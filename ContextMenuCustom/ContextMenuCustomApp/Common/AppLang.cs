@@ -39,6 +39,8 @@
         public string MenuShowWindowOptionMax { get; set; } = "Maximized";
         public string MenuWorkingDirectory { get; set; } = "Working Directory";
         public string MenuWorkingDirectoryTips { get; set; } = "empty as default, supported variables: {parent}";
+        public string MenuLaunchAsAdmin { get; set; } = "Launch as admin";
+        public string MenuAdminOnlyWithShift { get; set; } = "Only while holding shift";
 
         //folder
         public string MenuMatchFolder { get; set; } = "Match Folder";
