@@ -61,6 +61,12 @@
       "enum": [-1, 0, 1, 2],
       "default": 0
     },
+    "runAsFlag": {
+      "type": "integer",
+      "description": "Run as flag: 0=Default, 1=Admin",
+      "enum": [0, 1],
+      "default": 0
+    },
     "workingDirectory": {
       "type": "string",
       "description": "Working directory. Supports variables: {parent} (file parent path), {path0} (first file path, v5.6+)."
