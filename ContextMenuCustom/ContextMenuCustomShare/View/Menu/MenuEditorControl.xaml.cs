@@ -44,6 +44,7 @@ namespace ContextMenuCustomApp.View.Menu
         public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
         public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
         public ObservableCollection<EnumItem> ShowWindowFlagEnumItems { get; }
+        public ObservableCollection<EnumItem> RunAsFlagEnumItems { get; }
         public MenuEditorControl()
         {
             _settings = AppContext.AppSettings;
@@ -73,6 +74,14 @@ namespace ContextMenuCustomApp.View.Menu
                     new EnumItem() { Label = _appLang.MenuShowWindowOptionMax, Value = (int)ShowWindowFlagEnum.ShowMaximized },
                }
                );
+
+            RunAsFlagEnumItems = new ObservableCollection<EnumItem>(
+               new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = _appLang.MenuRunAsOptionDefault, Value = (int)RunAsFlagEnum.Default },
+                    new EnumItem() { Label = _appLang.MenuRunAsOptionAdmin, Value = (int)RunAsFlagEnum.RunAsAdmin },
+                    //TODO other
+               }
+             );
             this.InitializeComponent();
         }
 

@@ -25,6 +25,12 @@ enum DirectoryMatchFlagEnum {
 	DIRECTORY_DRIVE = 0b1000
 };
 
+enum RunAsFlagEnum {
+	Default = 0,
+	RunAsAdmin = 1,
+	RunAsOther = 2,
+};
+
 constexpr std::wstring_view PARAM_PATH = L"{path}";
 constexpr std::wstring_view PARAM_PATH0 = L"{path0}";
 constexpr std::wstring_view PARAM_NAME = L"{name}";
@@ -45,7 +51,8 @@ public:
 	virtual bool Accept(bool multipleFiles, FileType fileType, const std::wstring& name, const std::wstring& ext);
 
 private:
-	void Execute(HWND parent, const std::wstring& path);
+	void DoInvoke(HWND parent, const std::wstring& path);
+	void Execute(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory);
 	std::wstring _exe;
 	std::wstring _param;
 	bool _accept_directory;
@@ -63,6 +70,7 @@ private:
 	int _show_window_flag;
 	std::wstring _working_directory;
 	std::unordered_set<std::wstring_view> _accept_exts_set;
+	int _run_as_flag;
 
 public:
 	int m_index;

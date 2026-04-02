@@ -37,6 +37,11 @@ namespace ContextMenuCustomApp.Common
         public string MenuShowWindowOptionNormal { get; set; } = "Normal";
         public string MenuShowWindowOptionMin { get; set; } = "Minimized";
         public string MenuShowWindowOptionMax { get; set; } = "Maximized";
+        public string MenuRunAsFlag { get; set; } = "Run As";
+        public string MenuRunAsFlagTips { get; set; } = "Run as with other user";
+        public string MenuRunAsOptionDefault { get; set; } = "Default";
+        public string MenuRunAsOptionAdmin { get; set; } = "Admin";
+        public string MenuRunAsOptionOther { get; set; } = "Custom user";
         public string MenuWorkingDirectory { get; set; } = "Working Directory";
         public string MenuWorkingDirectoryTips { get; set; } = "empty as default, supported variables: {parent}";
 

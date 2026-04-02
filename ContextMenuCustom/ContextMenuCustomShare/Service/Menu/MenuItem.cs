@@ -50,6 +50,7 @@ namespace ContextMenuCustomApp.Service.Menu
 
         private int _showWindowFlag;
         private string _workingDirectory;
+        private int _runAsFlag;
 
         [JsonPropertyOrder(0)]
         public string Title
@@ -169,6 +170,13 @@ namespace ContextMenuCustomApp.Service.Menu
             set => SetProperty(ref _showWindowFlag, value);
         }
 
+        [JsonPropertyOrder(51)]
+        public int RunAsFlag
+        {
+            get => _runAsFlag;
+            set => SetProperty(ref _runAsFlag, value);
+        }
+
         [JsonPropertyOrder(52)]
         public string WorkingDirectory
         {
@@ -197,6 +205,7 @@ namespace ContextMenuCustomApp.Service.Menu
             ParamForMultipleFiles = other.ParamForMultipleFiles;
             ShowWindowFlag = other.ShowWindowFlag;
             WorkingDirectory = other.WorkingDirectory;
+            RunAsFlag = other.RunAsFlag;
         }
     }
 }

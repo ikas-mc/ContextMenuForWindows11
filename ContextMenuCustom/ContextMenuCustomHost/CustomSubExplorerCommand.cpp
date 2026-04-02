@@ -33,6 +33,7 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 
 		//
 		_show_window_flag = static_cast<int>(result.GetNamedNumber(L"showWindowFlag", 0));
+		_run_as_flag = static_cast<int>(result.GetNamedNumber(L"runAsFlag", 0));
 		_working_directory = result.GetNamedString(L"workingDirectory", L"");
 
 		//TODO remove next version
@@ -47,12 +48,12 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 		if (_accept_file_flag == FileMatchFlagEnum::FILE_EXT2 && !_accept_exts.empty()) {
 			std::wstring_view acceptExtsView{ _accept_exts };
 
-			for (std::size_t start = 0; start <= acceptExtsView.size ();)
+			for (std::size_t start = 0; start <= acceptExtsView.size();)
 			{
 				const auto pos = acceptExtsView.find(L'|', start);
 				const auto last = pos == std::wstring_view::npos;
 				std::wstring_view token = last ? acceptExtsView.substr(start) : acceptExtsView.substr(start, pos - start);
-				if (!token.empty ()) {
+				if (!token.empty()) {
 					_accept_exts_set.emplace(token);
 				}
 				if (last) {
@@ -145,14 +146,14 @@ IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items
 		wil::unique_cotaskmem_string path{};
 		if (S_OK == wil::ExpandEnvironmentStringsW(iconPath.data(), path))
 		{
-			*icon=path.release();
+			*icon = path.release();
 			return S_OK;
 		}
 	}
-	else if(!iconPath.empty())
+	else if (!iconPath.empty())
 	{
 		auto path{ wil::make_cotaskmem_string(iconPath.data(), iconPath.size()) };
-		*icon=path.release();
+		*icon = path.release();
 		return S_OK;
 	}
 
@@ -193,21 +194,21 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 		if (const auto paths = PathHelper::getPaths(selection, _path_delimiter); !paths.empty()) {
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, join, paths={}", _title, paths);
 
-			const std::wstring_view paramView{ _param_for_multiple_files.empty () ? _param : _param_for_multiple_files };
-			std::unordered_map<std::wstring_view, std::wstring> replacements (5);
+			const std::wstring_view paramView{ _param_for_multiple_files.empty() ? _param : _param_for_multiple_files };
+			std::unordered_map<std::wstring_view, std::wstring> replacements(5);
 			std::wstring parentPath;
 			if (const auto firstPath = PathHelper::getPath(selection); !firstPath.empty()) {
 				const std::filesystem::path file(firstPath);
 				parentPath = file.parent_path().wstring();
-				replacements.emplace (PARAM_PARENT, parentPath);
-				replacements.emplace (PARAM_PATH, paths);
+				replacements.emplace(PARAM_PARENT, parentPath);
+				replacements.emplace(PARAM_PATH, paths);
 				//TODO
-				replacements.emplace (PARAM_PATH0, firstPath);
-				replacements.emplace (PARAM_NAME0, file.filename().wstring());
-				replacements.emplace (PARAM_EXT0, file.extension().wstring());
-				replacements.emplace (PARAM_NAME_NO_EXT0, file.stem().wstring());
+				replacements.emplace(PARAM_PATH0, firstPath);
+				replacements.emplace(PARAM_NAME0, file.filename().wstring());
+				replacements.emplace(PARAM_EXT0, file.extension().wstring());
+				replacements.emplace(PARAM_NAME_NO_EXT0, file.stem().wstring());
 			}
-			std::wstring param =PathHelper::simpleFormat(paramView, replacements);
+			std::wstring param = PathHelper::simpleFormat(paramView, replacements);
 
 			std::wstring workingDirectory{ _working_directory.find(L"%") == std::string::npos ? _working_directory : wil::ExpandEnvironmentStringsW(_working_directory.c_str()).get() };
 			if (workingDirectory.empty()) {
@@ -222,7 +223,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 			const std::wstring exePath{ _exe.find(L"%") == std::string::npos ? _exe : wil::ExpandEnvironmentStringsW(_exe.c_str()).get() };
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exePath={}, param={}", _title, exePath, param);
 
-			ShellExecute(parent, L"open", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
+			Execute(parent, exePath, param, workingDirectory);
 		}
 	}
 	else if (count > 1 && _accept_multiple_files_flag == FILES_EACH) {
@@ -233,19 +234,19 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 				if (path.empty()) {
 					continue;
 				}
-				Execute(parent, path);
+				DoInvoke(parent, path);
 			}
 		}
 	}
 	else if (count > 0) {
 		const auto path = PathHelper::getPath(selection);
-		Execute(parent, path);
+		DoInvoke(parent, path);
 	}
 
 	return S_OK;
 }CATCH_RETURN();
 
-void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
+void CustomSubExplorerCommand::DoInvoke(HWND parent, const std::wstring& path) {
 	DEBUG_LOG(L"CustomSubExplorerCommand::Execute menu={}, path={}", _title, path);
 
 	if (path.empty()) {
@@ -277,5 +278,17 @@ void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& path) {
 	const std::wstring exePath{ _exe.find(L"%") == std::string::npos ? _exe : wil::ExpandEnvironmentStringsW(_exe.c_str()).get() };
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, exe={}, param={}", _title, exePath, param);
 
-	ShellExecute(parent, L"open", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
+	Execute(parent, exePath, param, workingDirectory);
+}
+
+void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory) {
+	if (_run_as_flag == RunAsFlagEnum::Default) {
+		ShellExecute(parent, L"open", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
+	}
+	else if (_run_as_flag == RunAsFlagEnum::RunAsAdmin) {
+		ShellExecute(parent, L"runas", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
+	}
+	else if (_run_as_flag == RunAsFlagEnum::RunAsOther) {
+		//TODO
+	}
 }

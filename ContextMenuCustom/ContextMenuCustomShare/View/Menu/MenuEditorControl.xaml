@@ -334,6 +334,25 @@
 
             <controls:SettingItem
                 Margin="0,0,0,8"
+                Header="{x:Bind _appLang.MenuRunAsFlag, Mode=OneWay}">
+                <controls:SettingItem.Icon>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE748;" />
+                </controls:SettingItem.Icon>
+                <controls:SettingItem.RightContent>
+                    <ComboBox
+                        MinWidth="160"
+                        HorizontalAlignment="Stretch"
+                        ItemTemplate="{StaticResource EnumComboxItem}"
+                        ItemsSource="{x:Bind RunAsFlagEnumItems, Mode=OneWay}"
+                        SelectedIndex="{x:Bind MenuItem.RunAsFlag, Mode=TwoWay}"
+                        ToolTipService.ToolTip="{x:Bind _appLang.MenuRunAsFlagTips, Mode=OneWay}" />
+                </controls:SettingItem.RightContent>
+            </controls:SettingItem>
+
+            <controls:SettingItem
+                Margin="0,0,0,8"
                 Header="{x:Bind _appLang.MenuWorkingDirectory, Mode=OneWay}">
                 <controls:SettingItem.Icon>
                     <FontIcon
