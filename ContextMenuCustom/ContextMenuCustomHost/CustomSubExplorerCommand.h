@@ -28,7 +28,7 @@ enum DirectoryMatchFlagEnum {
 enum RunAsFlagEnum {
 	Default = 0,
 	RunAsAdmin = 1,
-	RunAsOther = 2,
+	RunAsOther = 99,//TODO
 };
 
 constexpr std::wstring_view PARAM_PATH = L"{path}";

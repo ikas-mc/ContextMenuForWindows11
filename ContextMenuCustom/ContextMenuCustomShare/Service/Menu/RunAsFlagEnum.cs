@@ -4,6 +4,6 @@ namespace ContextMenuCustomApp.Service.Menu
     {
         Default,
         RunAsAdmin,
-        RunAsOther,
+        RunAsOther=99,//TODO 
     }
 }
