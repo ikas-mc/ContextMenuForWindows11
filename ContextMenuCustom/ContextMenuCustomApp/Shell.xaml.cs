@@ -1,17 +1,18 @@
-﻿using Windows.ApplicationModel.Core;
+using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.View.Common;
+using ContextMenuCustomApp.View.Menu;
+using ContextMenuCustomApp.View.Tip;
+using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Linq;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
+using Windows.System.Threading;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
-using ContextMenuCustomApp.View.Menu;
-using ContextMenuCustomApp.View.Common;
-using Microsoft.UI.Xaml.Controls;
-using Windows.System.Threading;
-using System;
-using Windows.ApplicationModel;
-using ContextMenuCustomApp.Common;
-using ContextMenuCustomApp.View.Tip;
 
 namespace ContextMenuCustomApp
 {
@@ -25,6 +26,11 @@ namespace ContextMenuCustomApp
 
         public string AppName()
         {
+            var entries = Package.Current.GetAppListEntries();
+            if (entries.FirstOrDefault() is AppListEntry entry)
+            {
+                return entry.DisplayInfo.DisplayName;
+            }
             return Package.Current.DisplayName;
         }
 

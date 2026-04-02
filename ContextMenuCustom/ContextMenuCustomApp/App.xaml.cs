@@ -1,4 +1,4 @@
-﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.View.Common;
 using System;
 using Windows.ApplicationModel;
@@ -16,7 +16,7 @@ namespace ContextMenuCustomApp
     {
         public App()
         {
-            AppContext.Current.Init();
+            AppContext.Init();
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             Patchs.Patch1.Run();
@@ -24,7 +24,7 @@ namespace ContextMenuCustomApp
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            AppContext.Current.WaitAll();
+            AppContext.WaitAll();
 
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
 

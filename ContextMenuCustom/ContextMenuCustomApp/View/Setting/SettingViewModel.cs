@@ -1,14 +1,11 @@
-﻿using ContextMenuCustomApp.Common;
-using ContextMenuCustomApp.Service.Common.Json;
+using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.Service.Lang;
 using ContextMenuCustomApp.View.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Windows.ApplicationModel;
-using Windows.Globalization;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -23,9 +20,9 @@ namespace ContextMenuCustomApp.View.Setting
         private readonly LanguageService _languageService;
         public SettingViewModel()
         {
-            Settings = AppContext.Current.AppSetting;
-            AppLang = AppContext.Current.AppLang;
-            _languageService = AppContext.Current.GetService<LanguageService>();
+            Settings = AppContext.AppSetting;
+            AppLang = AppContext.AppLang;
+            _languageService = AppContext.GetService<LanguageService>();
         }
 
         public string Version()
@@ -135,7 +132,7 @@ namespace ContextMenuCustomApp.View.Setting
 
         public LangInfo GetCurrentLang()
         {
-            var langFileName = AppContext.Current.AppSetting.AppLang;
+            var langFileName = AppContext.AppSetting.AppLang;
             var langInfo = Languages.Find(x => x.FileName == langFileName);
             if (null == langInfo)
             {

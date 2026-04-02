@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>ac7748f6-0c0d-4983-ad86-daab06226275</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ContextMenuCustomShare</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\AppDataSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\AppLang.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\DirectoryMatchFlagEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\EnumItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\EnumItemUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\RunAsFlagEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FileMatchFlagEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FilesMatchFlagEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\MenuItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\MenuService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\ShowWindowFlagEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View\Common\BaseModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View\Common\BaseViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View\Controls\SettingItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View\Converter\EqualsVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View\Converter\VisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)View\Menu\DirectoryMatchCheckbox.xaml.cs">
+      <DependentUpon>DirectoryMatchCheckbox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)View\Menu\MenuEditorControl.xaml.cs">
+      <DependentUpon>MenuEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)View\Menu\MenuFileRenameDialog.xaml.cs">
+      <DependentUpon>MenuFileRenameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)View\Menu\MenuPageViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)View\Controls\SettingItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)View\Menu\DirectoryMatchCheckbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)View\Menu\MenuEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)View\Menu\MenuFileRenameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

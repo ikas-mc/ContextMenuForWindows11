@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="ContextMenuCustomApp.View.Setting.SettingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -47,9 +47,13 @@
                 Margin="8,0,0,8"
                 Text="{x:Bind _viewModel.AppLang.SettingAbout}" />
 
-            <StackPanel Grid.Row="1" Margin="8,0,0,8">
+            <StackPanel
+                Grid.Row="1"
+                Margin="8,0,0,8">
                 <TextBlock Text="{x:Bind _viewModel.Version()}" />
-                <TextBlock Margin="0,4,0,0" Text="{x:Bind _viewModel.AppLang.SettingAboutAuthor}" />
+                <TextBlock
+                    Margin="0,4,0,0"
+                    Text="{x:Bind _viewModel.AppLang.SettingAboutAuthor}" />
                 <HyperlinkButton
                     Margin="0,16,0,0"
                     Padding="0,0"
@@ -79,7 +83,9 @@
                 LabelPosition="Collapsed"
                 ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingBackButtonTips}">
                 <AppBarButton.Icon>
-                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE830;" />
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE830;" />
                 </AppBarButton.Icon>
             </AppBarButton>
         </Grid>
@@ -101,10 +107,16 @@
                 Text="{x:Bind _viewModel.AppLang.Setting}" />
             <ScrollViewer Grid.Row="1">
                 <StackPanel>
-                    <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingStyleGroup}" />
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingStyleTheme}">
+                    <TextBlock
+                        Margin="0,8,0,4"
+                        Text="{x:Bind _viewModel.AppLang.SettingStyleGroup}" />
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingStyleTheme}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE790;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE790;" />
                         </controls:SettingItem.Icon>
 
                         <controls:SettingItem.ActionContent>
@@ -130,11 +142,17 @@
                     </controls:SettingItem>
 
 
-                    <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingMenuGroup}" />
+                    <TextBlock
+                        Margin="0,8,0,4"
+                        Text="{x:Bind _viewModel.AppLang.SettingMenuGroup}" />
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingMenuTitle}">
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingMenuTitle}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEDE3;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xEDE3;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <TextBox Text="{x:Bind _viewModel.Settings.MenuName, Mode=TwoWay}" />
@@ -142,9 +160,13 @@
 
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingMenuIcon}">
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingMenuIcon}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B9;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE8B9;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
                             <StackPanel>
@@ -185,14 +207,22 @@
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-                    <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingLanguagesGroup}" />
+                    <TextBlock
+                        Margin="0,8,0,4"
+                        Text="{x:Bind _viewModel.AppLang.SettingLanguagesGroup}" />
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingLanguages}">
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingLanguages}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF2B7;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xF2B7;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.ActionContent>
-                            <Grid Margin="0,0,4,0" HorizontalAlignment="Stretch">
+                            <Grid
+                                Margin="0,0,4,0"
+                                HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
@@ -272,9 +302,13 @@
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingLanguagesEnableRtl}">
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingLanguagesEnableRtl}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF2B7;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xF2B7;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
                             <ToggleSwitch
@@ -284,11 +318,17 @@
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-                    <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingDataGroup}" />
+                    <TextBlock
+                        Margin="0,8,0,4"
+                        Text="{x:Bind _viewModel.AppLang.SettingDataGroup}" />
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingEnableDebug}">
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingEnableDebug}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE946;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE946;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
                             <ToggleSwitch
@@ -313,9 +353,13 @@
                         </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingDataTitle}">
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingDataTitle}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE96A;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE96A;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
                             <Button
@@ -323,16 +367,24 @@
                                 Width="56"
                                 Click="{x:Bind _viewModel.OpenDataFolder}"
                                 ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingDataButtonTip}">
-                                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE838;" />
+                                <FontIcon
+                                    FontFamily="Segoe Fluent Icons"
+                                    Glyph="&#xE838;" />
                             </Button>
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>
 
-                    <TextBlock Margin="0,8,0,4" Text="{x:Bind _viewModel.AppLang.SettingOther}" />
+                    <TextBlock
+                        Margin="0,8,0,4"
+                        Text="{x:Bind _viewModel.AppLang.SettingOther}" />
 
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
                         <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xF83E;" />
                         </controls:SettingItem.Icon>
                         <controls:SettingItem.RightContent>
                             <Button
@@ -340,7 +392,9 @@
                                 Width="56"
                                 Click="RestartAppBtn_Click"
                                 ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
-                                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
+                                <FontIcon
+                                    FontFamily="Segoe Fluent Icons"
+                                    Glyph="&#xF83E;" />
                             </Button>
                         </controls:SettingItem.RightContent>
                     </controls:SettingItem>

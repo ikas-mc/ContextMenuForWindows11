@@ -1,10 +1,20 @@
-﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.Service.Menu;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+#if WINUI3
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+#else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+#endif
+#if WINUI3
+using AppContext = ContextMenuBuilder.AppContext;
+#else
+using AppContext= ContextMenuCustomApp.AppContext;
+#endif
 
 namespace ContextMenuCustomApp.View.Menu
 {
@@ -16,7 +26,7 @@ namespace ContextMenuCustomApp.View.Menu
         public MenuFileRenameDialog(MenuItem menuItem)
         {
             this._menuItem = menuItem;
-            _appLang = AppContext.Current.AppLang;
+            _appLang = AppContext.AppLang;
             this.InitializeComponent();
         }
 
@@ -28,7 +38,7 @@ namespace ContextMenuCustomApp.View.Menu
             var dialog = new ContentDialog
             {
                 Title = _appLang.MenuFileRenameTitle,
-                PrimaryButtonText= _appLang.CommonOk,
+                PrimaryButtonText = _appLang.CommonOk,
                 CloseButtonText = _appLang.CommonCancel,
                 DefaultButton = ContentDialogButton.Primary,
                 Content = this

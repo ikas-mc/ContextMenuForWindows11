@@ -1,4 +1,4 @@
-﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.Service.Lang;
 using ContextMenuCustomApp.Service.Menu;
 using System;
@@ -9,24 +9,26 @@ namespace ContextMenuCustomApp
 {
     public sealed class AppContext
     {
-        private Task _task;
-        public AppLang AppLang { get; private set; }
-        public Settings AppSetting { get; } = Settings.Default;
-        public Dictionary<Type, object> Services { get; private set; } = new Dictionary<Type, object>();
+        private static Task _task;
+        public static AppLang AppLang { get; private set; }
+        public static Settings AppSetting { get; } = Settings.Default;
+        public static Settings AppSettings { get; } = Settings.Default;
+        public static Dictionary<Type, object> Services { get; private set; } = new Dictionary<Type, object>();
 
-        public void Init()
+        public static void Init()
         {
             _task = Task.Run(async () =>
             {
                 var languageService = new LanguageService();
                 Services.Add(typeof(LanguageService), languageService);
-                Services.Add(typeof(MenuService), new MenuService());
+                var menusFolder = await MenuService.CreateDefualtMenusFolderAsync();
+                Services.Add(typeof(MenuService), new MenuService(menusFolder));
 
                 AppLang = await languageService.LoadAsync().ConfigureAwait(false);
             });
         }
 
-        public void WaitAll()
+        public static void WaitAll()
         {
             if (_task?.IsCompleted == false)
             {
@@ -35,17 +37,9 @@ namespace ContextMenuCustomApp
             _task = null;
         }
 
-        public T GetService<T>()
+        public static T GetService<T>()
         {
             return (T)Services[typeof(T)];
         }
-
-        #region singleton
-        public static readonly AppContext Current;
-        static AppContext()
-        {
-            Current = new AppContext();
-        }
-        #endregion
     }
 }

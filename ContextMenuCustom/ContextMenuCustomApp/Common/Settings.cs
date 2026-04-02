@@ -1,6 +1,6 @@
-﻿namespace ContextMenuCustomApp.Common
+namespace ContextMenuCustomApp.Common
 {
-    public class Settings
+    public partial class Settings
     {
         private static readonly AppDataSettings MainSettingDao;
         private static readonly AppDataSettings DllSettingDao;
@@ -13,11 +13,7 @@
             Default = new Settings();
         }
 
-        public bool CacheEnabled
-        {
-            get => MainSettingDao.GetValue(nameof(CacheEnabled), false);
-            set => MainSettingDao.SetValue(nameof(CacheEnabled), value);
-        }
+
 
         public int PatchVersion
         {

@@ -1,8 +1,17 @@
-﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.Service.Menu;
+#if WINUI3
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+#else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+#endif
+#if WINUI3
+using AppContext = ContextMenuBuilder.AppContext;
+#else
+using AppContext= ContextMenuCustomApp.AppContext;
+#endif
 namespace ContextMenuCustomApp.View.Menu
 {
     public sealed partial class DirectoryMatchCheckbox : UserControl
@@ -10,7 +19,7 @@ namespace ContextMenuCustomApp.View.Menu
         public AppLang AppLang { get; private set; }
         public DirectoryMatchCheckbox()
         {
-            AppLang = AppContext.Current.AppLang;
+            AppLang = AppContext.AppLang;
             this.InitializeComponent();
         }
 

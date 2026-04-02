@@ -1,5 +1,10 @@
-﻿using Windows.UI.Xaml;
+#if WINUI3
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+#else
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+#endif
 
 namespace ContextMenuCustomApp.View.Controls
 {
@@ -8,7 +13,7 @@ namespace ContextMenuCustomApp.View.Controls
     [TemplatePart(Name = RightContentPresenter, Type = typeof(ContentPresenter))]
     [TemplatePart(Name = ActionContentPresenter, Type = typeof(ContentPresenter))]
     [TemplatePart(Name = BottomContentPresenter, Type = typeof(ContentPresenter))]
-    public class SettingItem : Control
+    public partial class SettingItem : Control
     {
         private const string PartIconPresenter = "IconPresenter";
         private const string PartDescriptionPresenter = "DescriptionPresenter";

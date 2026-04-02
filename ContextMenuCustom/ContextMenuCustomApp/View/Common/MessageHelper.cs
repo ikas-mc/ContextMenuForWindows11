@@ -1,4 +1,4 @@
-﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace ContextMenuCustomApp.View.Common

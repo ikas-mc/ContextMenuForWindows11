@@ -1,57 +1,34 @@
-﻿using System;
+using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Service.Menu;
+using ContextMenuCustomApp.View.Common;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.System;
-using ContextMenuCustomApp.Service.Menu;
-using ContextMenuCustomApp.View.Common;
-using ContextMenuCustomApp.Common;
-using System.Reflection;
-
+#if WINUI3
+using AppContext = ContextMenuBuilder.AppContext;
+#else
+#endif
 namespace ContextMenuCustomApp.View.Menu
 {
-    public class MenuPageViewModel : BaseViewModel
+    public partial class MenuPageViewModel : BaseViewModel
     {
         private readonly MenuService _menuService;
         public ObservableCollection<MenuItem> MenuItems { get; }
-        public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
-        public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
-        public ObservableCollection<EnumItem> ShowWindowFlagEnumItems { get; }
-
         public AppLang AppLang { get; private set; }
+        public Settings AppSetting { get; private set; }
 
-        public MenuPageViewModel()
+        private readonly bool _ignoredCache;
+
+        public MenuPageViewModel(MenuService menuService, bool ignoreCache = false)
         {
-            AppLang = AppContext.Current.AppLang;
-            _menuService = AppContext.Current.GetService<MenuService>();
-
+            this._ignoredCache = ignoreCache;
+            AppLang = AppContext.AppLang;
+            AppSetting = AppContext.AppSettings;
             MenuItems = new ObservableCollection<MenuItem>();
-            FileMatchEnumItems = new ObservableCollection<EnumItem>(
-                new System.Collections.Generic.List<EnumItem>() {
-                    new EnumItem() { Label = AppLang.MenuMatchFileOptionOff, Value = (int)FileMatchFlagEnum.None },
-                    new EnumItem() { Label = AppLang.MenuMatchFileOptionExtentionLike, Value = (int)FileMatchFlagEnum.Ext },
-                    new EnumItem() { Label = AppLang.MenuMatchFileOptionNameRegex, Value = (int)FileMatchFlagEnum.Regex },
-                    new EnumItem() { Label = AppLang.MenuMatchFileOptionExtention, Value = (int)FileMatchFlagEnum.ExtList },
-                    new EnumItem() { Label = AppLang.MenuMatchFileOptionAll, Value = (int)FileMatchFlagEnum.All },
-                }
-                );
-            FilesMatchFlagEnumItems = new ObservableCollection<EnumItem>(
-                  new System.Collections.Generic.List<EnumItem>() {
-                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionOff, Value = (int)FilesMatchFlagEnum.None },
-                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionEach, Value = (int)FilesMatchFlagEnum.Each },
-                    new EnumItem() { Label = AppLang.MenuMatchFilesOptionJoin, Value = (int)FilesMatchFlagEnum.Join },
-                }
-                );
-
-            ShowWindowFlagEnumItems = new ObservableCollection<EnumItem>(
-                 new System.Collections.Generic.List<EnumItem>() {
-                    new EnumItem() { Label = AppLang.MenuShowWindowOptionHide, Value = (int)ShowWindowFlagEnum.Hide },
-                    new EnumItem() { Label = AppLang.MenuShowWindowOptionNormal, Value = (int)ShowWindowFlagEnum.ShowNormal },
-                    new EnumItem() { Label = AppLang.MenuShowWindowOptionMin, Value = (int)ShowWindowFlagEnum.ShowMinimized },
-                    new EnumItem() { Label = AppLang.MenuShowWindowOptionMax, Value = (int)ShowWindowFlagEnum.ShowMaximized },
-               }
-               );
+            _menuService = menuService;
         }
 
         #region menu
@@ -64,6 +41,11 @@ namespace ContextMenuCustomApp.View.Menu
                 var menus = await _menuService.QueryAllAsync();
                 menus.ForEach(MenuItems.Add);
             });
+        }
+
+        public void Clear()
+        {
+            MenuItems.Clear();
         }
 
         public MenuItem CreateMenu()
@@ -104,12 +86,7 @@ namespace ContextMenuCustomApp.View.Menu
 
         public void ReplaceMenu(MenuItem menuItem, MenuItem newMenuItem)
         {
-            PropertyInfo[] propsSource = typeof(MenuItem).GetProperties();
-            foreach (PropertyInfo infoSource in propsSource)
-            {
-                object value = infoSource.GetValue(newMenuItem, null);
-                infoSource.SetValue(menuItem, value, null);
-            }
+            menuItem.CopyMenuFrom(newMenuItem);
         }
 
         public async Task DeleteAsync(MenuItem item)
@@ -151,7 +128,7 @@ namespace ContextMenuCustomApp.View.Menu
 
         public async Task OpenMenusFolderAsync()
         {
-            var folder = await _menuService.GetMenusFolderAsync();
+            var folder = _menuService.GetMenusFolder();
             _ = await Launcher.LaunchFolderAsync(folder);
         }
 
@@ -165,7 +142,7 @@ namespace ContextMenuCustomApp.View.Menu
             _ = await Launcher.LaunchFileAsync(item.File);
         }
 
-        public async Task<bool> SetMenu(MenuItem menuItem, String json)
+        public async Task<bool> UpdateMenuFromJson(MenuItem menuItem, String json)
         {
             return await RunWith(async () =>
                {
@@ -203,27 +180,13 @@ namespace ContextMenuCustomApp.View.Menu
 
 
         #region menu cache
-
-        public string CacheTime
-        {
-            get
-            {
-                var value = ApplicationData.Current.LocalSettings.Values["Cache_Time"];
-                return (value as string) ?? "No Cache";
-            }
-        }
-
-        public void UpdateCacheTime()
-        {
-            OnPropertyChanged(nameof(CacheTime));
-        }
-
+        // move to MenuService 
         public bool CacheEnabled
         {
-            get { return Settings.Default.CacheEnabled; }
+            get { return AppSetting.CacheEnabled; }
             set
             {
-                Settings.Default.CacheEnabled = value;
+                AppSetting.CacheEnabled = value;
                 OnPropertyChanged(nameof(CacheEnabled));
                 _ = UpdateCache();
             }
@@ -231,7 +194,12 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async Task UpdateCache()
         {
-            if (Settings.Default.CacheEnabled)
+            if (_ignoredCache)
+            {
+                return;
+            }
+
+            if (AppSetting.CacheEnabled)
             {
                 await BuildCache();
             }
@@ -244,6 +212,11 @@ namespace ContextMenuCustomApp.View.Menu
 
         public async Task BuildCache()
         {
+            if (_ignoredCache)
+            {
+                return;
+            }
+
             await RunWith(async () =>
             {
                 await _menuService.BuildToCacheAsync();
@@ -254,6 +227,11 @@ namespace ContextMenuCustomApp.View.Menu
 
         public async Task ClearCache()
         {
+            if (_ignoredCache)
+            {
+                return;
+            }
+
             await RunWith(() =>
             {
                 return Task.Run(() =>

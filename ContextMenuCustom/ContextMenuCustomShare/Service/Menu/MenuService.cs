@@ -1,21 +1,42 @@
-﻿using System;
+using ContextMenuCustomApp.Service.Common.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
-using ContextMenuCustomApp.Service.Common.Json;
-using System.IO;
 
 namespace ContextMenuCustomApp.Service.Menu
 {
     public class MenuService
     {
-        private const string MenusFolderName = "custom_commands";
+        private readonly StorageFolder _menusFolder;
+
+        public static async Task<StorageFolder> CreateDefualtMenusFolderAsync()
+        {
+            var menusFolderName = "custom_commands";
+            var storageItem = await ApplicationData.Current.LocalFolder.TryGetItemAsync(menusFolderName);
+            if (storageItem is StorageFolder storageFolder)
+            {
+                return storageFolder;
+            }
+
+            if (storageItem is StorageFile storageFile)
+            {
+                await storageFile.RenameAsync(storageFile.Name, NameCollisionOption.GenerateUniqueName);
+            }
+
+            return await ApplicationData.Current.LocalFolder.CreateFolderAsync(menusFolderName, CreationCollisionOption.OpenIfExists);
+        }
+
+        public MenuService(StorageFolder menusFolder)
+        {
+            _menusFolder = menusFolder;
+        }
 
         public async Task<List<MenuItem>> QueryAllAsync()
         {
-            var configFolder = await GetMenusFolderAsync();
-            var files = await configFolder.GetFilesAsync();
+            var files = await _menusFolder.GetFilesAsync();
             var result = new List<MenuItem>(files.Count);
             foreach (var file in files)
             {
@@ -50,23 +71,10 @@ namespace ContextMenuCustomApp.Service.Menu
 
         private async Task<StorageFile> CreateMenuFileAsync(string name)
         {
-            var folder = await GetMenusFolderAsync();
-            return await folder.CreateFileAsync(name, CreationCollisionOption.GenerateUniqueName);
+            return await _menusFolder.CreateFileAsync(name, CreationCollisionOption.GenerateUniqueName);
         }
 
-        public async Task<StorageFolder> GetMenusFolderAsync()
-        {
-            var storageItem = await ApplicationData.Current.LocalFolder.TryGetItemAsync(MenusFolderName);
-            switch (storageItem)
-            {
-                case StorageFile _:
-                    throw new Exception($"Menus Folder Error,\"{storageItem.Path}\" is not a folder");
-                case StorageFolder storageFolder:
-                    return storageFolder;
-                default:
-                    return await ApplicationData.Current.LocalFolder.CreateFolderAsync(MenusFolderName, CreationCollisionOption.OpenIfExists);
-            }
-        }
+
 
         public async Task SaveAsync(MenuItem item)
         {
@@ -88,7 +96,7 @@ namespace ContextMenuCustomApp.Service.Menu
                 menuFile = await CreateMenuFileAsync(fileName);
             }
 
-            var content = ConvertMenuToJson(item,true);
+            var content = ConvertMenuToJson(item, true);
             await FileIO.WriteTextAsync(menuFile, content);
 
             item.File = menuFile;
@@ -216,8 +224,7 @@ namespace ContextMenuCustomApp.Service.Menu
 
         public async Task BuildToCacheAsync()
         {
-            var configFolder = await GetMenusFolderAsync();
-            var files = await configFolder.GetFilesAsync();
+            var files = await _menusFolder.GetFilesAsync();
 
             var menus = ApplicationData.Current.LocalSettings.CreateContainer("menus", ApplicationDataCreateDisposition.Always).Values;
             menus.Clear();
@@ -280,6 +287,11 @@ namespace ContextMenuCustomApp.Service.Menu
             }
 
             return (true, string.Empty);
+        }
+
+        public IStorageFolder GetMenusFolder()
+        {
+            return _menusFolder;
         }
     }
 }

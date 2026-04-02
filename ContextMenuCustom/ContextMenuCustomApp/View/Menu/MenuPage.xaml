@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="ContextMenuCustomApp.View.Menu.MenuPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -47,7 +47,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="48" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="48" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <ListView
@@ -58,26 +58,26 @@
                 CanDragItems="False"
                 CanReorderItems="False"
                 DragItemsCompleted="CommandList_DragItemsCompleted"
-                ItemsSource="{Binding MenuItems}"
+                ItemsSource="{x:Bind _viewModel.MenuItems, Mode=OneWay}"
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="menu:MenuItem">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock
-                                Text="{Binding Title}"
+                                Text="{x:Bind Title, Mode=OneWay}"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="NoWrap"
-                                ToolTipService.ToolTip="{Binding Title}" />
+                                ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}" />
 
                             <FontIcon
                                 Grid.Column="1"
                                 FontFamily="Segoe Fluent Icons"
                                 Glyph="&#xF140;"
-                                Visibility="{Binding Enabled, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=False}" />
+                                Visibility="{x:Bind Enabled, Mode=OneWay, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=False}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -94,7 +94,9 @@
                         LabelPosition="Collapsed"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListAddTis}">
                         <AppBarButton.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE109;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE109;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
                     <AppBarButton
@@ -103,7 +105,9 @@
                         LabelPosition="Collapsed"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListRefreshTips}">
                         <AppBarButton.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE72C;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE72C;" />
                         </AppBarButton.Icon>
                         <AppBarButton.KeyboardAccelerators>
                             <KeyboardAccelerator Key="F5" />
@@ -115,18 +119,28 @@
                         LabelPosition="Collapsed"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListOpenFolderTips}">
                         <AppBarButton.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE838;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE838;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
                 </CommandBar.PrimaryCommands>
             </CommandBar>
 
-            <Grid Grid.Row="2" Grid.Column="0">
+            <Grid
+                Grid.Row="2"
+                Grid.Column="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40" />
-                    <ColumnDefinition Width="144" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <AppBarButton
+                    Grid.Row="1"
+                    Grid.Column="0"
                     Width="40"
                     HorizontalAlignment="Left"
                     Click="OpenSetting_Click"
@@ -134,15 +148,22 @@
                     Label="Setting"
                     LabelPosition="Collapsed"
                     ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingOpenButtonTips}" />
-
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Right"
+                    Text="{x:Bind _viewModel.AppLang.SettingCache}"
+                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheTips}" />
                 <ToggleSwitch
+                    Grid.Row="1"
                     Grid.Column="1"
                     MinWidth="0"
                     MinHeight="40"
                     HorizontalAlignment="Right"
                     IsOn="{x:Bind _viewModel.CacheEnabled, Mode=TwoWay}"
                     Style="{ThemeResource ToggleSwitchContentLeft}"
-                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheContent}" />
+                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheTips}" />
             </Grid>
 
         </Grid>
@@ -166,296 +187,13 @@
                 Text="Menu"
                 Visibility="Collapsed" />
 
-            <ScrollViewer
+            <local:MenuEditorControl
                 Grid.Row="1"
                 Grid.Column="2"
                 Margin="0"
                 Padding="4,4,16,4"
-                DataContext="{Binding SelectedItem, ElementName=CommandList}"
-                Visibility="{Binding SelectedItem, ElementName=CommandList, Converter={StaticResource VisibilityConverter}}">
-                <StackPanel Padding="0" Orientation="Vertical">
-                    <TextBlock Margin="0,0,0,8" Text="{x:Bind _viewModel.AppLang.MenuConfigGroup}" />
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuTitle}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF683;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="open with notepad" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </controls:SettingItem.ActionContent>
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuOrder}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8CB;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.ActionContent>
-                            <muxc:NumberBox
-                                LargeChange="10"
-                                Maximum="999999"
-                                Minimum="-999999"
-                                PlaceholderText="0"
-                                SmallChange="1"
-                                SpinButtonPlacementMode="Inline"
-                                Value="{Binding Index, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </controls:SettingItem.ActionContent>
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuExe}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xECAA;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.ActionContent>
-                            <TextBox PlaceholderText="&quot;C:\Windows\notepad.exe&quot;" Text="{Binding Exe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </controls:SettingItem.ActionContent>
-
-                        <controls:SettingItem.RightContent>
-                            <Button
-                                x:Name="OpenExeButton"
-                                Width="56"
-                                Margin="8,0,0,-1"
-                                Click="OpenExeButton_OnClick"
-                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuExeOpenTips}">
-                                <SymbolIcon Symbol="OpenFile" />
-                            </Button>
-                        </controls:SettingItem.RightContent>
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuParam}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEA86;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.ActionContent>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <TextBox
-                                    Grid.Row="0"
-                                    PlaceholderText="{x:Bind _viewModel.AppLang.MenuParamTips}"
-                                    Text="{Binding Param, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Grid.Row="1" FontStyle="Italic" IsTextSelectionEnabled="True">{path} {name} {nameNoExt} {parent} {extension} </TextBlock>
-                            </Grid>
-                        </controls:SettingItem.ActionContent>
-
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuIcon}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8B9;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.ActionContent>
-                            <StackPanel>
-                                <TextBox
-                                    Margin="0,0,0,8"
-                                    PlaceholderText="{x:Bind _viewModel.AppLang.MenuIconLightInputTip}"
-                                    Text="{Binding Icon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconLightInputTip}" />
-                                <TextBox
-                                    Margin="0,0,0,8"
-                                    PlaceholderText="{x:Bind _viewModel.AppLang.MenuIconDarkInputTip}"
-                                    Text="{Binding IconDark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconDarkInputTip}" />
-                            </StackPanel>
-                        </controls:SettingItem.ActionContent>
-                        <controls:SettingItem.RightContent>
-                            <StackPanel>
-                                <Button
-                                    Width="56"
-                                    Margin="8,1,0,8"
-                                    Click="OpenIconButton_OnClick"
-                                    Tag="Light"
-                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconOpenTip}">
-                                    <SymbolIcon Symbol="OpenFile" />
-                                </Button>
-                                <Button
-                                    Width="56"
-                                    Margin="8,-1,0,8"
-                                    Click="OpenIconButton_OnClick"
-                                    Tag="Dark"
-                                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuIconOpenTip}">
-                                    <SymbolIcon Symbol="OpenFile" />
-                                </Button>
-                            </StackPanel>
-
-                        </controls:SettingItem.RightContent>
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFolder}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF89A;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.RightContent>
-                            <local:DirectoryMatchCheckbox Value="{Binding AcceptDirectoryFlag, Mode=TwoWay}" />
-                        </controls:SettingItem.RightContent>
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFile}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF16C;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.RightContent>
-                            <ComboBox
-                                MinWidth="160"
-                                HorizontalAlignment="Stretch"
-                                DisplayMemberPath="Label"
-                                ItemsSource="{x:Bind _viewModel.FileMatchEnumItems}"
-                                SelectedValue="{Binding AcceptFileFlag, Mode=TwoWay}"
-                                SelectedValuePath="Value" />
-                        </controls:SettingItem.RightContent>
-                        <controls:SettingItem.BottomContent>
-                            <RelativePanel HorizontalAlignment="Stretch">
-                                <TextBox
-                                    x:Name="FileAcceptExtsInput"
-                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionLikeTips}"
-                                    PlaceholderText=".txt .zip  or *"
-                                    RelativePanel.AlignLeftWithPanel="True"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
-
-                                <TextBox
-                                    x:Name="FileAcceptExtsInput2"
-                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionTips}"
-                                    PlaceholderText=".txt|.zip"
-                                    RelativePanel.AlignLeftWithPanel="True"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    Text="{Binding AcceptExts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=3}" />
-
-                                <HyperlinkButton
-                                    Margin="0,8,0,0"
-                                    Content="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionWiki}"
-                                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/File%E2%80%90Extensions"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    RelativePanel.Below="FileAcceptExtsInput"
-                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=1}" />
-
-                                <HyperlinkButton
-                                    Margin="0,8,0,0"
-                                    Content="{x:Bind _viewModel.AppLang.MenuMatchFileInputExtentionWiki}"
-                                    NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/File%E2%80%90Extensions"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    RelativePanel.Below="FileAcceptExtsInput2"
-                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=3}" />
-
-
-                                <TextBox
-                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFileInputNameRegexTips}"
-                                    PlaceholderText="+?\.txt"
-                                    RelativePanel.AlignLeftWithPanel="True"
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    Text="{Binding AcceptFileRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Visibility="{Binding AcceptFileFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
-
-                            </RelativePanel>
-
-                        </controls:SettingItem.BottomContent>
-
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuMatchFiles}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE9D5;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.Description>
-                            <HyperlinkButton
-                                Padding="0"
-                                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Help#multiple-files"
-                                RelativePanel.AlignRightWithPanel="True">
-                                <TextBlock Text="{x:Bind _viewModel.AppLang.MenuMatchFilesTips}" />
-                            </HyperlinkButton>
-                        </controls:SettingItem.Description>
-                        <controls:SettingItem.RightContent>
-                            <ComboBox
-                                MinWidth="160"
-                                HorizontalAlignment="Stretch"
-                                DisplayMemberPath="Label"
-                                ItemsSource="{x:Bind _viewModel.FilesMatchFlagEnumItems}"
-                                SelectedValue="{Binding AcceptMultipleFilesFlag, Mode=TwoWay}"
-                                SelectedValuePath="Value" />
-                        </controls:SettingItem.RightContent>
-
-                        <controls:SettingItem.BottomContent>
-
-
-                            <Grid Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <TextBox
-                                    Grid.Row="0"
-                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFilesJoinDelimiterTip}"
-                                    PlaceholderText="|"
-                                    Text="{Binding PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <TextBox
-                                    Grid.Row="1"
-                                    Margin="0,8,0,0"
-                                    Header="{x:Bind _viewModel.AppLang.MenuMatchFilesJoinParamTip}"
-                                    PlaceholderText="{}{path}"
-                                    Text="{Binding ParamForMultipleFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    Visibility="{Binding AcceptMultipleFilesFlag, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
-
-                                <TextBlock Grid.Row="2" FontStyle="Italic" IsTextSelectionEnabled="True"> {path} {parent} {path0} {name0} {nameNoExt0} {extension0}</TextBlock>
-                            </Grid>
-
-                        </controls:SettingItem.BottomContent>
-                    </controls:SettingItem>
-
-                    <TextBlock Margin="0,8,0,8" Text="{x:Bind _viewModel.AppLang.MenuConfigAdvancedGroup}" />
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuShowWindowFlag}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF5ED;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.RightContent>
-                            <ComboBox
-                                MinWidth="160"
-                                HorizontalAlignment="Stretch"
-                                DisplayMemberPath="Label"
-                                ItemsSource="{x:Bind _viewModel.ShowWindowFlagEnumItems}"
-                                SelectedValue="{Binding ShowWindowFlag, Mode=TwoWay}"
-                                SelectedValuePath="Value"
-                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuShowWindowFlagTips}" />
-                        </controls:SettingItem.RightContent>
-                    </controls:SettingItem>
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuWorkingDirectory}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xED25;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.ActionContent>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <TextBox PlaceholderText="{x:Bind _viewModel.AppLang.MenuWorkingDirectoryTips}" Text="{Binding WorkingDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Grid.Row="1" FontStyle="Italic" IsTextSelectionEnabled="True">{parent} {path0}</TextBlock>
-                            </Grid>
-                        </controls:SettingItem.ActionContent>
-                    </controls:SettingItem>
-
-                    <TextBlock Margin="0,8,0,8" Text="{x:Bind _viewModel.AppLang.MenuFileGroup}" />
-
-                    <controls:SettingItem Margin="0,0,0,8" Header="{x:Bind _viewModel.AppLang.MenuFileFileName}">
-                        <controls:SettingItem.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8AC;" />
-                        </controls:SettingItem.Icon>
-                        <controls:SettingItem.ActionContent>
-                            <TextBlock
-                                IsTextSelectionEnabled="True"
-                                Text="{Binding FileName}"
-                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuFileFileNameTip}" />
-                        </controls:SettingItem.ActionContent>
-                    </controls:SettingItem>
-
-                </StackPanel>
-            </ScrollViewer>
+                MenuItem="{x:Bind (menu:MenuItem)CommandList.SelectedItem, Mode=OneWay}"
+                Visibility="{x:Bind CommandList.SelectedItem, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
 
             <Grid
                 Grid.Row="1"
@@ -470,7 +208,9 @@
                     Content="{x:Bind _viewModel.AppLang.MenuListAdd}" />
             </Grid>
 
-            <CommandBar Grid.Row="2" DefaultLabelPosition="Right">
+            <CommandBar
+                Grid.Row="2"
+                DefaultLabelPosition="Right">
                 <CommandBar.PrimaryCommands>
                     <AppBarButton
                         Click="OpenHelp_Click"
@@ -510,7 +250,9 @@
                         Label="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabled}"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabledTips}">
                         <AppBarButton.Icon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE733;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE733;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
 
@@ -530,7 +272,9 @@
                         Label="{x:Bind _viewModel.AppLang.MenuCommandSave}"
                         ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandSaveTips}">
                         <AppBarButton.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="S" Modifiers="Control" />
+                            <KeyboardAccelerator
+                                Key="S"
+                                Modifiers="Control" />
                         </AppBarButton.KeyboardAccelerators>
                     </AppBarButton>
 

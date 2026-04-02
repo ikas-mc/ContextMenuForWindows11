@@ -1,13 +1,12 @@
-﻿using ContextMenuCustomApp.View.Common;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using ContextMenuCustomApp.View.Common;
 using System;
+using System.Text.Json.Serialization;
 using Windows.Storage;
 
 namespace ContextMenuCustomApp.Service.Menu
 {
-    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class MenuItem : BaseModel
+    //[JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
+    public partial class MenuItem : BaseModel
     {
         [JsonIgnore]
         public StorageFile File { get; set; }
@@ -29,7 +28,7 @@ namespace ContextMenuCustomApp.Service.Menu
             get => _enabled;
             set => SetProperty(ref _enabled, value);
         }
-       
+
         private string _title;
         private int _index;
         private string _exe;
@@ -51,43 +50,44 @@ namespace ContextMenuCustomApp.Service.Menu
 
         private int _showWindowFlag;
         private string _workingDirectory;
+        private int _runAsFlag;
 
-        [JsonProperty(Order = 0)]
+        [JsonPropertyOrder(0)]
         public string Title
         {
             get => _title;
             set => SetProperty(ref _title, value);
         }
 
-        [JsonProperty(Order = 2)]
+        [JsonPropertyOrder(2)]
         public int Index
         {
             get => _index;
             set => SetProperty(ref _index, value);
         }
 
-        [JsonProperty(Order = 4)]
+        [JsonPropertyOrder(4)]
         public string Exe
         {
             get => _exe;
             set => SetProperty(ref _exe, value);
         }
 
-        [JsonProperty(Order = 6)]
+        [JsonPropertyOrder(6)]
         public string Param
         {
             get => _param;
             set => SetProperty(ref _param, value);
         }
 
-        [JsonProperty(Order = 8)]
+        [JsonPropertyOrder(8)]
         public string Icon
         {
             get => _icon;
             set => SetProperty(ref _icon, value);
         }
 
-        [JsonProperty(Order = 10)]
+        [JsonPropertyOrder(10)]
         public string IconDark
         {
             get => _iconDark;
@@ -95,7 +95,8 @@ namespace ContextMenuCustomApp.Service.Menu
         }
 
         [Obsolete()]
-        [JsonProperty(Order = 20)]
+        [JsonIgnore]
+        [JsonPropertyOrder(20)]
         public bool AcceptDirectory
         {
             get => _acceptDirectory;
@@ -103,7 +104,7 @@ namespace ContextMenuCustomApp.Service.Menu
         }
         public bool ShouldSerializeAcceptDirectory() => false;
 
-        [JsonProperty(Order = 22)]
+        [JsonPropertyOrder(22)]
         public int AcceptDirectoryFlag
         {
             get => _acceptDirectoryFlag;
@@ -111,7 +112,8 @@ namespace ContextMenuCustomApp.Service.Menu
         }
 
         [Obsolete()]
-        [JsonProperty(Order = 30)]
+        [JsonPropertyOrder(30)]
+        [JsonIgnore]
         public bool AcceptFile
         {
             get => _acceptFile;
@@ -119,60 +121,91 @@ namespace ContextMenuCustomApp.Service.Menu
         }
         public bool ShouldSerializeAcceptFile() => false;
 
-        [JsonProperty(Order = 32)]
+        [JsonPropertyOrder(32)]
         public int AcceptFileFlag
         {
             get => _acceptFileFlag;
             set => SetProperty(ref _acceptFileFlag, value);
         }
 
-        [JsonProperty(Order = 34)]
+        [JsonPropertyOrder(34)]
         public string AcceptExts
         {
             get => _acceptExts;
             set => SetProperty(ref _acceptExts, string.IsNullOrEmpty(value) ? value : value.ToLower());
-        } 
+        }
 
-        [JsonProperty(Order = 36)]
+        [JsonPropertyOrder(36)]
         public string AcceptFileRegex
         {
             get => _acceptFileRegex;
             set => SetProperty(ref _acceptFileRegex, value);
         }
 
-        [JsonProperty(Order = 40)]
+        [JsonPropertyOrder(40)]
         public int AcceptMultipleFilesFlag
         {
             get => _acceptMultipleFilesFlag;
             set => SetProperty(ref _acceptMultipleFilesFlag, value);
         }
 
-        [JsonProperty(Order = 42)]
+        [JsonPropertyOrder(42)]
         public string PathDelimiter
         {
             get => _pathDelimiter;
             set => SetProperty(ref _pathDelimiter, value);
         }
 
-        [JsonProperty(Order = 44)]
+        [JsonPropertyOrder(44)]
         public string ParamForMultipleFiles
         {
             get => _paramForMultipleFiles;
             set => SetProperty(ref _paramForMultipleFiles, value);
         }
 
-        [JsonProperty(Order = 50)]
+        [JsonPropertyOrder(50)]
         public int ShowWindowFlag
         {
             get => _showWindowFlag;
             set => SetProperty(ref _showWindowFlag, value);
         }
 
-        [JsonProperty(Order = 52)]
+        [JsonPropertyOrder(51)]
+        public int RunAsFlag
+        {
+            get => _runAsFlag;
+            set => SetProperty(ref _runAsFlag, value);
+        }
+
+        [JsonPropertyOrder(52)]
         public string WorkingDirectory
         {
             get => _workingDirectory;
             set => SetProperty(ref _workingDirectory, value);
+        }
+
+        public void CopyMenuFrom(MenuItem other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            Title = other.Title;
+            Index = other.Index;
+            Exe = other.Exe;
+            Param = other.Param;
+            Icon = other.Icon;
+            IconDark = other.IconDark;
+            AcceptDirectoryFlag = other.AcceptDirectoryFlag;
+            AcceptFileFlag = other.AcceptFileFlag;
+            AcceptExts = other.AcceptExts;
+            AcceptFileRegex = other.AcceptFileRegex;
+            AcceptMultipleFilesFlag = other.AcceptMultipleFilesFlag;
+            PathDelimiter = other.PathDelimiter;
+            ParamForMultipleFiles = other.ParamForMultipleFiles;
+            ShowWindowFlag = other.ShowWindowFlag;
+            WorkingDirectory = other.WorkingDirectory;
+            RunAsFlag = other.RunAsFlag;
         }
     }
 }

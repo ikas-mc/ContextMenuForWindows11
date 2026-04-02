@@ -1,6 +1,11 @@
-﻿using System;
+using System;
+#if WINUI3
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+#else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+#endif
 
 namespace ContextMenuCustomApp.View.Converter
 {
