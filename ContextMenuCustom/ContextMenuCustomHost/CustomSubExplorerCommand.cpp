@@ -249,14 +249,16 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 	if (count > 1 && _accept_multiple_files_flag == FILES_JOIN) {
 		if (const auto paths = FilterAcceptedPaths(selection); !paths.empty()) {
 			std::wstring joinedPaths;
+			constexpr size_t kQuotesPerPath = 2;
+			constexpr size_t kReserveSafetyMarginPerPath = 4;
 			size_t estimatedLength = 0;
 			for (const auto& path : paths) {
-				estimatedLength += path.length() + 2;
+				estimatedLength += path.length() + kQuotesPerPath;
 			}
 			if (paths.size() > 1) {
 				estimatedLength += (paths.size() - 1) * _path_delimiter.length();
 			}
-			joinedPaths.reserve(estimatedLength + paths.size() * 4);
+			joinedPaths.reserve(estimatedLength + paths.size() * kReserveSafetyMarginPerPath);
 			for (size_t i = 0; i < paths.size(); ++i) {
 				joinedPaths += L'"';
 				joinedPaths += paths[i];
