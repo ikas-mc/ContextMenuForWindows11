@@ -137,6 +137,52 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, con
 	return false;
 }
 
+bool CustomSubExplorerCommand::AcceptPath(const std::wstring& path) {
+	if (path.empty()) {
+		return false;
+	}
+
+	bool isDirectory = false;
+	std::wstring name;
+	std::wstring ext;
+	PathHelper::getExt(path, isDirectory, name, ext);
+	if (name.empty()) {
+		return false;
+	}
+
+	if (!isDirectory) {
+		return Accept(false, FileType::File, name, ext);
+	}
+
+	FileType fileType = FileType::Directory;
+	const auto pathLength = path.length();
+	if (pathLength == 2 || pathLength == 3 && PathIsRoot(path.data())) {
+		fileType = FileType::Drive;
+	}
+	return Accept(false, fileType, name, ext);
+}
+
+std::vector<std::wstring> CustomSubExplorerCommand::FilterAcceptedPaths(IShellItemArray* selection) {
+	std::vector<std::wstring> acceptedPaths;
+	if (const auto paths = PathHelper::getPathList(selection); !paths.empty()) {
+		for (const auto& path : paths) {
+			if (AcceptPath(path)) {
+				acceptedPaths.emplace_back(path);
+			}
+		}
+	}
+	return acceptedPaths;
+}
+
+bool CustomSubExplorerCommand::AcceptAny(IShellItemArray* selection) {
+	if (!Accept(true, FileType::File, L"", L"")) {
+		return false;
+	}
+
+	const auto acceptedPaths = FilterAcceptedPaths(selection);
+	return !acceptedPaths.empty();
+}
+
 IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon) {
 	wil::assign_null_to_opt_param(icon);
 
@@ -191,17 +237,27 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 	DEBUG_LOG(L"CustomSubExplorerCommand::Invoke  menu={}, selection size={}", _title, count);
 
 	if (count > 1 && _accept_multiple_files_flag == FILES_JOIN) {
-		if (const auto paths = PathHelper::getPaths(selection, _path_delimiter); !paths.empty()) {
-			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, join, paths={}", _title, paths);
+		if (const auto paths = FilterAcceptedPaths(selection); !paths.empty()) {
+			std::wstring joinedPaths;
+			joinedPaths.reserve(paths.size() * 8);
+			for (size_t i = 0; i < paths.size(); ++i) {
+				joinedPaths += L'"';
+				joinedPaths += paths[i];
+				joinedPaths += L'"';
+				if (i + 1 < paths.size()) {
+					joinedPaths += _path_delimiter;
+				}
+			}
+			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, join, paths={}", _title, joinedPaths);
 
 			const std::wstring_view paramView{ _param_for_multiple_files.empty() ? _param : _param_for_multiple_files };
 			std::unordered_map<std::wstring_view, std::wstring> replacements(5);
 			std::wstring parentPath;
-			if (const auto firstPath = PathHelper::getPath(selection); !firstPath.empty()) {
+			if (const auto& firstPath = paths.front(); !firstPath.empty()) {
 				const std::filesystem::path file(firstPath);
 				parentPath = file.parent_path().wstring();
 				replacements.emplace(PARAM_PARENT, parentPath);
-				replacements.emplace(PARAM_PATH, paths);
+				replacements.emplace(PARAM_PATH, joinedPaths);
 				//TODO
 				replacements.emplace(PARAM_PATH0, firstPath);
 				replacements.emplace(PARAM_NAME0, file.filename().wstring());
@@ -227,7 +283,7 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 		}
 	}
 	else if (count > 1 && _accept_multiple_files_flag == FILES_EACH) {
-		if (const auto paths = PathHelper::getPathList(selection); !paths.empty()) {
+		if (const auto paths = FilterAcceptedPaths(selection); !paths.empty()) {
 			DEBUG_LOG(L"CustomSubExplorerCommand::Invoke menu={}, each", _title);
 
 			for (auto& path : paths) {

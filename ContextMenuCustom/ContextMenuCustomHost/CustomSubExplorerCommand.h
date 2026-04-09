@@ -2,6 +2,7 @@
 #include "BaseExplorerCommand.h"
 #include <string>
 #include <unordered_set>
+#include <vector>
 
 enum FilesMatchFlagEnum {
 	FILES_OFF = 0,
@@ -49,10 +50,13 @@ public:
 	IFACEMETHODIMP GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) override;
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept override;
 	virtual bool Accept(bool multipleFiles, FileType fileType, const std::wstring& name, const std::wstring& ext);
+	bool AcceptAny(IShellItemArray* selection);
 
 private:
 	void DoInvoke(HWND parent, const std::wstring& path);
 	void Execute(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory);
+	bool AcceptPath(const std::wstring& path);
+	std::vector<std::wstring> FilterAcceptedPaths(IShellItemArray* selection);
 	std::wstring _exe;
 	std::wstring _param;
 	bool _accept_directory;

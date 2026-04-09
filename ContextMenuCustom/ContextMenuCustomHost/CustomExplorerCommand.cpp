@@ -100,7 +100,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	//
 	if (count > 1) {
 		const std::wstring currentPath;
-		ReadCommands(true, false, false, false, currentPath);
+		ReadCommands(true, false, false, false, currentPath, selection);
 	}
 	else if (count == 1) {
 		winrt::com_ptr<IShellItem> item;
@@ -113,7 +113,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 				const std::wstring currentPath{ path.get() };
 				DEBUG_LOG(L"CustomExplorerCommand::GetState isDirectory={}", isDirectory);
 
-				ReadCommands(false, isDirectory, false, false, currentPath);
+				ReadCommands(false, isDirectory, false, false, currentPath, selection);
 			}
 		}
 	}
@@ -141,7 +141,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 						DEBUG_LOG(L"CustomExplorerCommand::GetState isDesktop={}, path={}", isDesktop, desktopPath);
 					}
 
-					ReadCommands(false, true, true, isDesktop, currentPath);
+					ReadCommands(false, true, true, isDesktop, currentPath, selection);
 				}
 			}
 		}
@@ -168,7 +168,7 @@ IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnum
 	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
-void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, bool isBackground, bool isDesktop, const std::wstring& currentPath) {
+void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, bool isBackground, bool isDesktop, const std::wstring& currentPath, IShellItemArray* selection) {
 	std::wstring ext;
 	std::wstring name;
 	FileType fileType;
@@ -219,7 +219,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 				{
 					if (auto content = winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L""); !content.empty()) {
 						const auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
-						if (command->Accept(multipleFiles, fileType, name, ext)) {
+						if (command->Accept(multipleFiles, fileType, name, ext) && (!multipleFiles || command->AcceptAny(selection))) {
 							m_commands.push_back(command);
 						}
 					}
@@ -266,7 +266,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 						//DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content);
 
 						auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
-						if (command->Accept(multipleFiles, fileType, name, ext)) {
+						if (command->Accept(multipleFiles, fileType, name, ext) && (!multipleFiles || command->AcceptAny(selection))) {
 							m_commands.push_back(command);
 						}
 					}
