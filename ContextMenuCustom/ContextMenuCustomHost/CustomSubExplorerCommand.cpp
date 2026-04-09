@@ -28,6 +28,7 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 		_accept_exts = result.GetNamedString(L"acceptExts", L"");
 
 		_accept_multiple_files_flag = static_cast<int>(result.GetNamedNumber(L"acceptMultipleFilesFlag", 0));
+		_accept_multiple_files_match_flag = static_cast<int>(result.GetNamedNumber(L"acceptMultipleFilesMatchFlag", FILES_RULE_ANY));
 		_path_delimiter = result.GetNamedString(L"pathDelimiter", L"");
 		_param_for_multiple_files = result.GetNamedString(L"paramForMultipleFiles", L"");
 
@@ -165,6 +166,15 @@ bool CustomSubExplorerCommand::AcceptPath(const std::wstring& path) {
 std::vector<std::wstring> CustomSubExplorerCommand::FilterAcceptedPaths(IShellItemArray* selection) {
 	std::vector<std::wstring> acceptedPaths;
 	if (const auto paths = PathHelper::getPathList(selection); !paths.empty()) {
+		if (_accept_multiple_files_match_flag == FILES_RULE_ALL) {
+			for (const auto& path : paths) {
+				if (!AcceptPath(path)) {
+					return {};
+				}
+			}
+			return paths;
+		}
+
 		for (const auto& path : paths) {
 			if (AcceptPath(path)) {
 				acceptedPaths.emplace_back(path);
@@ -174,8 +184,17 @@ std::vector<std::wstring> CustomSubExplorerCommand::FilterAcceptedPaths(IShellIt
 	return acceptedPaths;
 }
 
-bool CustomSubExplorerCommand::HasAcceptedPath(IShellItemArray* selection) {
+bool CustomSubExplorerCommand::MatchSelectionRule(IShellItemArray* selection) {
 	if (const auto paths = PathHelper::getPathList(selection); !paths.empty()) {
+		if (_accept_multiple_files_match_flag == FILES_RULE_ALL) {
+			for (const auto& path : paths) {
+				if (!AcceptPath(path)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
 		for (const auto& path : paths) {
 			if (AcceptPath(path)) {
 				return true;
@@ -190,7 +209,7 @@ bool CustomSubExplorerCommand::AcceptAny(IShellItemArray* selection) {
 		return false;
 	}
 
-	return HasAcceptedPath(selection);
+	return MatchSelectionRule(selection);
 }
 
 IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon) {

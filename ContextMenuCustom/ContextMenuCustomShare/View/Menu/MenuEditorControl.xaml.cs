@@ -43,6 +43,7 @@ namespace ContextMenuCustomApp.View.Menu
         public readonly AppLang _appLang;
         public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
         public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
+        public ObservableCollection<EnumItem> FilesMatchRuleEnumItems { get; }
         public ObservableCollection<EnumItem> ShowWindowFlagEnumItems { get; }
         public ObservableCollection<EnumItem> RunAsFlagEnumItems { get; }
         public MenuEditorControl()
@@ -63,6 +64,12 @@ namespace ContextMenuCustomApp.View.Menu
                     new EnumItem() { Label = _appLang.MenuMatchFilesOptionOff, Value = (int)FilesMatchFlagEnum.None },
                     new EnumItem() { Label = _appLang.MenuMatchFilesOptionEach, Value = (int)FilesMatchFlagEnum.Each },
                     new EnumItem() { Label = _appLang.MenuMatchFilesOptionJoin, Value = (int)FilesMatchFlagEnum.Join },
+                }
+                );
+            FilesMatchRuleEnumItems = new ObservableCollection<EnumItem>(
+                  new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionAny, Value = (int)FilesMatchRuleFlagEnum.Any },
+                    new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionAll, Value = (int)FilesMatchRuleFlagEnum.All },
                 }
                 );
 

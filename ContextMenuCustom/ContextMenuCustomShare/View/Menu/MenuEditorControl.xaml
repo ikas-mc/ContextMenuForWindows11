@@ -309,6 +309,25 @@
                 </controls:SettingItem.BottomContent>
             </controls:SettingItem>
 
+            <controls:SettingItem
+                Margin="0,0,0,8"
+                Header="{x:Bind _appLang.MenuMatchFilesRule}"
+                Visibility="{x:Bind MenuItem.AcceptMultipleFilesFlag, Mode=OneWay, Converter={StaticResource VisibilityConverter}}">
+                <controls:SettingItem.Icon>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE8C8;" />
+                </controls:SettingItem.Icon>
+                <controls:SettingItem.RightContent>
+                    <ComboBox
+                        MinWidth="160"
+                        HorizontalAlignment="Stretch"
+                        ItemTemplate="{StaticResource EnumComboxItem}"
+                        ItemsSource="{x:Bind FilesMatchRuleEnumItems, Mode=OneWay}"
+                        SelectedIndex="{x:Bind MenuItem.AcceptMultipleFilesMatchFlag, Mode=TwoWay}" />
+                </controls:SettingItem.RightContent>
+            </controls:SettingItem>
+
             <TextBlock
                 Margin="0,8,0,8"
                 Text="{x:Bind _appLang.MenuConfigAdvancedGroup, Mode=OneWay}" />

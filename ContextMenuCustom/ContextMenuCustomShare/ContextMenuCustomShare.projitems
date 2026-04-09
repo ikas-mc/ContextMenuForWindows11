@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\RunAsFlagEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FileMatchFlagEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FilesMatchFlagEnum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FilesMatchRuleFlagEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\MenuItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\MenuService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\ShowWindowFlagEnum.cs" />

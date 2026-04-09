@@ -45,6 +45,12 @@
       "description": "Multiple file match mode: 0=None (not supported), 1=Each (execute for each file), 2=Join (merge parameters, execute once for all paths).",
       "enum": [0, 1, 2]
     },
+    "acceptMultipleFilesMatchFlag": {
+      "type": "integer",
+      "description": "Multiple file selection rule: 0=Any (show/execute when any selected item matches file rules), 1=All (show/execute only when all selected items match file rules).",
+      "enum": [0, 1],
+      "default": 0
+    },
     "pathDelimiter": {
       "type": "string",
       "description": "Delimiter for multiple file paths in Join mode. Each path is automatically quoted. For example, ',' → \"path1\",\"path2\", ':' → \"path1\":\"path2\", \"','\" → \"path1\"','\"path2\".",

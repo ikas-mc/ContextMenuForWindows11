@@ -10,6 +10,11 @@ enum FilesMatchFlagEnum {
 	FILES_JOIN = 2
 };
 
+enum FilesMatchRuleFlagEnum {
+	FILES_RULE_ANY = 0,
+	FILES_RULE_ALL = 1
+};
+
 enum FileMatchFlagEnum {
 	FILE_OFF = 0,
 	FILE_EXT = 1,
@@ -56,7 +61,7 @@ private:
 	void DoInvoke(HWND parent, const std::wstring& path);
 	void Execute(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory);
 	bool AcceptPath(const std::wstring& path);
-	bool HasAcceptedPath(IShellItemArray* selection);
+	bool MatchSelectionRule(IShellItemArray* selection);
 	std::vector<std::wstring> FilterAcceptedPaths(IShellItemArray* selection);
 	std::wstring _exe;
 	std::wstring _param;
@@ -64,6 +69,7 @@ private:
 	bool _accept_file;
 	std::wstring _accept_exts;
 	int _accept_multiple_files_flag;
+	int _accept_multiple_files_match_flag;
 	std::wstring _path_delimiter;
 	std::wstring _param_for_multiple_files;
 	std::wstring _icon;
