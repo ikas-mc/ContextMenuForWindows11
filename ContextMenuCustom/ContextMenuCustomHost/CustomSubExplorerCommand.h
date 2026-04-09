@@ -55,14 +55,12 @@ public:
 	IFACEMETHODIMP GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) override;
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept override;
 	virtual bool Accept(bool multipleFiles, FileType fileType, const std::wstring& name, const std::wstring& ext);
-	bool AcceptAny(IShellItemArray* selection);
+	void SetAcceptedPaths(std::vector<std::wstring> acceptedPaths);
+	int GetMultipleFilesMatchFlag() const;
 
 private:
 	void DoInvoke(HWND parent, const std::wstring& path);
 	void Execute(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory);
-	bool AcceptPath(const std::wstring& path);
-	bool MatchSelectionRule(IShellItemArray* selection);
-	std::vector<std::wstring> FilterAcceptedPaths(IShellItemArray* selection);
 	std::wstring _exe;
 	std::wstring _param;
 	bool _accept_directory;
@@ -81,6 +79,7 @@ private:
 	int _show_window_flag;
 	std::wstring _working_directory;
 	std::unordered_set<std::wstring_view> _accept_exts_set;
+	std::vector<std::wstring> _accepted_paths;
 	int _run_as_flag;
 
 public:
