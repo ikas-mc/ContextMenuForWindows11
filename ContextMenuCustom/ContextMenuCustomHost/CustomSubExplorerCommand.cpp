@@ -156,7 +156,7 @@ bool CustomSubExplorerCommand::AcceptPath(const std::wstring& path) {
 
 	FileType fileType = FileType::Directory;
 	const auto pathLength = path.length();
-	if (pathLength == 2 || pathLength == 3 && PathIsRoot(path.data())) {
+	if ((pathLength == 2) || (pathLength == 3 && PathIsRoot(path.data()))) {
 		fileType = FileType::Drive;
 	}
 	return Accept(false, fileType, name, ext);
@@ -239,7 +239,6 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 	if (count > 1 && _accept_multiple_files_flag == FILES_JOIN) {
 		if (const auto paths = FilterAcceptedPaths(selection); !paths.empty()) {
 			std::wstring joinedPaths;
-			joinedPaths.reserve(paths.size() * 8);
 			for (size_t i = 0; i < paths.size(); ++i) {
 				joinedPaths += L'"';
 				joinedPaths += paths[i];
