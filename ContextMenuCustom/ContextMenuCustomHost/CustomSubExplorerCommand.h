@@ -56,6 +56,7 @@ private:
 	void DoInvoke(HWND parent, const std::wstring& path);
 	void Execute(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory);
 	bool AcceptPath(const std::wstring& path);
+	bool HasAcceptedPath(IShellItemArray* selection);
 	std::vector<std::wstring> FilterAcceptedPaths(IShellItemArray* selection);
 	std::wstring _exe;
 	std::wstring _param;

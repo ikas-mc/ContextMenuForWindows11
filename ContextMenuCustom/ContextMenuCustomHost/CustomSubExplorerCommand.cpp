@@ -174,13 +174,23 @@ std::vector<std::wstring> CustomSubExplorerCommand::FilterAcceptedPaths(IShellIt
 	return acceptedPaths;
 }
 
+bool CustomSubExplorerCommand::HasAcceptedPath(IShellItemArray* selection) {
+	if (const auto paths = PathHelper::getPathList(selection); !paths.empty()) {
+		for (const auto& path : paths) {
+			if (AcceptPath(path)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 bool CustomSubExplorerCommand::AcceptAny(IShellItemArray* selection) {
 	if (!Accept(true, FileType::File, L"", L"")) {
 		return false;
 	}
 
-	const auto acceptedPaths = FilterAcceptedPaths(selection);
-	return !acceptedPaths.empty();
+	return HasAcceptedPath(selection);
 }
 
 IFACEMETHODIMP CustomSubExplorerCommand::GetIcon(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* icon) {
@@ -239,6 +249,14 @@ IFACEMETHODIMP CustomSubExplorerCommand::Invoke(_In_opt_ IShellItemArray* select
 	if (count > 1 && _accept_multiple_files_flag == FILES_JOIN) {
 		if (const auto paths = FilterAcceptedPaths(selection); !paths.empty()) {
 			std::wstring joinedPaths;
+			size_t reserveLength = 0;
+			for (const auto& path : paths) {
+				reserveLength += path.length() + 2;
+			}
+			if (paths.size() > 1) {
+				reserveLength += (paths.size() - 1) * _path_delimiter.length();
+			}
+			joinedPaths.reserve(reserveLength);
 			for (size_t i = 0; i < paths.size(); ++i) {
 				joinedPaths += L'"';
 				joinedPaths += paths[i];
