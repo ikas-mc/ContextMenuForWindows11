@@ -166,18 +166,15 @@ bool CustomSubExplorerCommand::AcceptPath(const std::wstring& path) {
 std::vector<std::wstring> CustomSubExplorerCommand::FilterAcceptedPaths(IShellItemArray* selection) {
 	std::vector<std::wstring> acceptedPaths;
 	if (const auto paths = PathHelper::getPathList(selection); !paths.empty()) {
-		if (_accept_multiple_files_match_flag == FILES_RULE_ALL) {
-			for (const auto& path : paths) {
-				if (!AcceptPath(path)) {
-					return {};
-				}
-			}
-			return paths;
-		}
+		acceptedPaths.reserve(paths.size());
+		const bool requiresAllMatched = _accept_multiple_files_match_flag == FILES_RULE_ALL;
 
 		for (const auto& path : paths) {
 			if (AcceptPath(path)) {
 				acceptedPaths.emplace_back(path);
+			}
+			else if (requiresAllMatched) {
+				return {};
 			}
 		}
 	}
