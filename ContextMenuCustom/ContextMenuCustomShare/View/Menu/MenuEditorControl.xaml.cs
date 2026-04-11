@@ -79,6 +79,7 @@ namespace ContextMenuCustomApp.View.Menu
                new System.Collections.Generic.List<EnumItem>() {
                     new EnumItem() { Label = _appLang.MenuRunAsOptionDefault, Value = (int)RunAsFlagEnum.Default },
                     new EnumItem() { Label = _appLang.MenuRunAsOptionAdmin, Value = (int)RunAsFlagEnum.RunAsAdmin },
+                    new EnumItem() { Label = _appLang.MenuRunAsOptionAdminWhileShift, Value = (int)RunAsFlagEnum.RunAsAdminWhileShift },
                     //TODO other
                }
              );

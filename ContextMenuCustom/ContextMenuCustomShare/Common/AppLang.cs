@@ -41,6 +41,7 @@ namespace ContextMenuCustomApp.Common
         public string MenuRunAsFlagTips { get; set; } = "Run as with other user";
         public string MenuRunAsOptionDefault { get; set; } = "Default";
         public string MenuRunAsOptionAdmin { get; set; } = "Admin";
+        public string MenuRunAsOptionAdminWhileShift { get; set; } = "Admin, while holding shift";
         public string MenuRunAsOptionOther { get; set; } = "Custom user";
         public string MenuWorkingDirectory { get; set; } = "Working Directory";
         public string MenuWorkingDirectoryTips { get; set; } = "empty as default, supported variables: {parent}";
