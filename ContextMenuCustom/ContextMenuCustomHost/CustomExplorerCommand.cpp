@@ -263,13 +263,16 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 			hasMatched = hasMatched || isMatched;
 		}
 
-		return matchRuleFlag == FILES_RULE_ALL ? true : hasMatched;
+		if (matchRuleFlag == FILES_RULE_ALL) {
+			return true;
+		}
+		return hasMatched;
 	};
 
 	const auto getMatchRuleFlag = [&](const winrt::hstring& content) {
 		try {
 			const auto result = JsonObject::Parse(content);
-			return static_cast<int>(result.GetNamedNumber(L"acceptMultipleFilesMatchFlag", FILES_RULE_OFF));
+			return static_cast<int>(result.GetNamedNumber(L"acceptMultipleFilesMatchFlag", static_cast<double>(FILES_RULE_OFF)));
 		}
 		catch (...) {
 			return FILES_RULE_OFF;
