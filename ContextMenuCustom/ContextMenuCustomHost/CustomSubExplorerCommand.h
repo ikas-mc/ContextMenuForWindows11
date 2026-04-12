@@ -28,6 +28,7 @@ enum DirectoryMatchFlagEnum {
 enum RunAsFlagEnum {
 	Default = 0,
 	RunAsAdmin = 1,
+	RunAsAdminWhileShift = 2,
 	RunAsOther = 99,//TODO
 };
 

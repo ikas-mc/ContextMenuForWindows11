@@ -282,13 +282,10 @@ void CustomSubExplorerCommand::DoInvoke(HWND parent, const std::wstring& path) {
 }
 
 void CustomSubExplorerCommand::Execute(HWND parent, const std::wstring& exePath, const std::wstring& param, const std::wstring& workingDirectory) {
-	if (_run_as_flag == RunAsFlagEnum::Default) {
-		ShellExecute(parent, L"open", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
-	}
-	else if (_run_as_flag == RunAsFlagEnum::RunAsAdmin) {
-		ShellExecute(parent, L"runas", exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
-	}
-	else if (_run_as_flag == RunAsFlagEnum::RunAsOther) {
-		//TODO
-	}
+	const bool isShiftPressed = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
+	const bool shouldLaunchAsAdmin = _run_as_flag == RunAsFlagEnum::RunAsAdmin || (_run_as_flag == RunAsFlagEnum::RunAsAdminWhileShift && isShiftPressed);
+
+	const wchar_t* verb = _run_as_flag == RunAsFlagEnum::Default || !shouldLaunchAsAdmin ? L"open" : L"runas";
+	
+	ShellExecute(parent, verb, exePath.c_str(), param.c_str(), workingDirectory.c_str(), _show_window_flag + 1);
 }
