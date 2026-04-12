@@ -172,7 +172,6 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 	std::wstring ext;
 	std::wstring name;
 	FileType fileType;
-	const std::vector<std::wstring> selectedPaths = multipleFiles ? PathHelper::getPathList(selection) : std::vector<std::wstring>{};
 
 	if (multipleFiles) {
 		fileType = FileType::File;
@@ -209,26 +208,34 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 
 	DEBUG_LOG(L"CustomExplorerCommand::ReadCommands isMultipleFiles={},isDirectory={},isBackground={},isDesktop={},fileType={},currentPath={}", multipleFiles, isDirectory, isBackground, isDesktop, static_cast<int>(fileType), currentPath);
 
-	const auto addCommandIfAccepted = [&](const ComPtr<CustomSubExplorerCommand>& command) {
-		if (!multipleFiles) {
-			if (command->Accept(false, fileType, name, ext)) {
-				m_commands.push_back(command);
+	const auto checkSelectedItems = [&](const ComPtr<CustomSubExplorerCommand>& command, int matchRuleFlag) {
+		if (matchRuleFlag == FILES_RULE_OFF) {
+			return true;
+		}
+
+		if (!selection) {
+			return false;
+		}
+
+		DWORD selectionCount = 0;
+		if (FAILED(selection->GetCount(&selectionCount)) || selectionCount == 0) {
+			return false;
+		}
+
+		bool hasMatched = false;
+		for (DWORD i = 0; i < selectionCount; ++i) {
+			winrt::com_ptr<IShellItem> selectedItem;
+			if (FAILED(selection->GetItemAt(i, selectedItem.put())) || !selectedItem) {
+				if (matchRuleFlag == FILES_RULE_ALL) {
+					return false;
+				}
+				continue;
 			}
-			return;
-		}
 
-		if (!command->Accept(true, fileType, name, ext) || selectedPaths.empty()) {
-			return;
-		}
-
-		const bool requiresAllMatched = command->GetMultipleFilesMatchFlag() == FILES_RULE_ALL;
-		std::vector<std::wstring> acceptedPaths;
-		acceptedPaths.reserve(selectedPaths.size());
-
-		for (const auto& selectedPath : selectedPaths) {
-			if (selectedPath.empty()) {
-				if (requiresAllMatched) {
-					return;
+			wil::unique_cotaskmem_string selectedPath;
+			if (FAILED(selectedItem->GetDisplayName(SIGDN_FILESYSPATH, selectedPath.put())) || !selectedPath || selectedPath.get()[0] == L'\0') {
+				if (matchRuleFlag == FILES_RULE_ALL) {
+					return false;
 				}
 				continue;
 			}
@@ -236,30 +243,55 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 			bool selectedIsDirectory = false;
 			std::wstring selectedName;
 			std::wstring selectedExt;
-			PathHelper::getExt(selectedPath, selectedIsDirectory, selectedName, selectedExt);
+			PathHelper::getExt(selectedPath.get(), selectedIsDirectory, selectedName, selectedExt);
 			if (selectedName.empty()) {
-				if (requiresAllMatched) {
-					return;
+				if (matchRuleFlag == FILES_RULE_ALL) {
+					return false;
 				}
 				continue;
 			}
 
-			FileType selectedFileType = FileType::File;
-			if (selectedIsDirectory) {
-				const auto pathLength = selectedPath.length();
-				selectedFileType = (pathLength == 2 || pathLength == 3 && PathIsRoot(selectedPath.data())) ? FileType::Drive : FileType::Directory;
+			const auto selectedType = selectedIsDirectory ? FileType::Directory : FileType::File;
+			const bool isMatched = command->Accept(false, selectedType, selectedName, selectedExt);
+			if (matchRuleFlag == FILES_RULE_ANY && isMatched) {
+				return true;
+			}
+			if (matchRuleFlag == FILES_RULE_ALL && !isMatched) {
+				return false;
 			}
 
-			if (command->Accept(false, selectedFileType, selectedName, selectedExt)) {
-				acceptedPaths.emplace_back(selectedPath);
-			}
-			else if (requiresAllMatched) {
-				return;
-			}
+			hasMatched = hasMatched || isMatched;
 		}
 
-		if (!acceptedPaths.empty()) {
-			command->SetAcceptedPaths(std::move(acceptedPaths));
+		return matchRuleFlag == FILES_RULE_ALL ? true : hasMatched;
+	};
+
+	const auto getMatchRuleFlag = [&](const winrt::hstring& content) {
+		try {
+			const auto result = JsonObject::Parse(content);
+			return static_cast<int>(result.GetNamedNumber(L"acceptMultipleFilesMatchFlag", FILES_RULE_OFF));
+		}
+		catch (...) {
+			return FILES_RULE_OFF;
+		}
+	};
+
+	const auto addCommandIfAccepted = [&](const winrt::hstring& content) {
+		const auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
+
+		if (!multipleFiles) {
+			if (command->Accept(false, fileType, name, ext)) {
+				m_commands.push_back(command);
+			}
+			return;
+		}
+
+		if (!command->Accept(true, fileType, name, ext)) {
+			return;
+		}
+
+		const auto matchRuleFlag = getMatchRuleFlag(content);
+		if (checkSelectedItems(command, matchRuleFlag)) {
 			m_commands.push_back(command);
 		}
 	};
@@ -274,8 +306,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 				try
 				{
 					if (auto content = winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L""); !content.empty()) {
-						const auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
-						addCommandIfAccepted(command);
+						addCommandIfAccepted(content);
 					}
 				}
 				catch (winrt::hresult_error const& e)
@@ -319,8 +350,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 						auto content = winrt::to_hstring(contentString);
 						//DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content);
 
-						auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
-						addCommandIfAccepted(command);
+						addCommandIfAccepted(content);
 					}
 					catch (winrt::hresult_error const& e)
 					{

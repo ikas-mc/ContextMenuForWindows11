@@ -68,6 +68,7 @@ namespace ContextMenuCustomApp.View.Menu
                 );
             FilesMatchRuleEnumItems = new ObservableCollection<EnumItem>(
                   new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionOff, Value = (int)FilesMatchRuleFlagEnum.Off },
                     new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionAny, Value = (int)FilesMatchRuleFlagEnum.Any },
                     new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionAll, Value = (int)FilesMatchRuleFlagEnum.All },
                 }

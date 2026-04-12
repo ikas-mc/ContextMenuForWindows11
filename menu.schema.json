@@ -47,9 +47,9 @@
     },
     "acceptMultipleFilesMatchFlag": {
       "type": "integer",
-      "description": "Multiple file selection rule: 0=Any (show/execute when any selected item matches file rules), 1=All (show/execute only when all selected items match file rules).",
-      "enum": [0, 1],
-      "default": 0
+      "description": "Multiple file selection rule: 2=Off (do not check each selected file), 0=Any (show/execute when any selected item matches file rules), 1=All (show/execute only when all selected items match file rules).",
+      "enum": [0, 1, 2],
+      "default": 2
     },
     "pathDelimiter": {
       "type": "string",
