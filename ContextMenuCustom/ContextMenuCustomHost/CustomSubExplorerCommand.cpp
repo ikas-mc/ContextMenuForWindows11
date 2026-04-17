@@ -62,6 +62,9 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 				start = pos + 1;
 			}
 		}
+
+		//TODO
+		m_accept_multiple_files_rule_flag = static_cast<FilesMatchRuleFlagEnum>(result.GetNamedNumber(L"acceptMultipleFilesMatchFlag", FILES_RULE_ANY));
 	}
 	catch (winrt::hresult_error const& e)
 	{
@@ -70,7 +73,7 @@ CustomSubExplorerCommand::CustomSubExplorerCommand(const winrt::hstring& configC
 	}
 }
 
-bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, const std::wstring& name, const std::wstring& ext) {
+bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, const std::wstring_view& name, const std::wstring_view& ext) {
 	DEBUG_LOG(L"CustomSubExplorerCommand::Accept menu={}, isMultipleFiles={}, fileType={}, fileName={}, fileExt={}", _title, multipleFiles, static_cast<int>(fileType), name, ext);
 
 	if (multipleFiles) {
@@ -109,7 +112,7 @@ bool CustomSubExplorerCommand::Accept(bool multipleFiles, FileType fileType, con
 			}
 
 			const std::wregex fileRegex(_accept_file_regex);
-			return std::regex_match(name, fileRegex);
+			return std::regex_match(name.begin(), name.end(), fileRegex);
 		}
 	}
 	//directory

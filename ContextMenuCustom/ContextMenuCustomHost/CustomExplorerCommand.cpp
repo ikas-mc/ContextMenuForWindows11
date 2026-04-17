@@ -62,20 +62,19 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	}
 
 	if (m_site) {
-		// hidden menu on the classic context menu.
+		// hidden menu on the classic context menu
 		// classic menu provides an IOleWindow
 		wil::com_ptr_nothrow<IOleWindow> oleWindow;
 		m_site.query_to(IID_PPV_ARGS(oleWindow.put()));
 		if (oleWindow) {
 			DEBUG_LOG(L"CustomExplorerCommand::GetState classic context menu");
-			// fix right click on explorer left tree view
-			// https://github.com/TortoiseGit/TortoiseGit/blob/master/src/TortoiseShell/ContextMenu.cpp
 			HWND hWnd = nullptr;
 			if (SUCCEEDED(oleWindow->GetWindow(&hWnd))) {
 				wchar_t szWndClassName[MAX_PATH] = { 0 };
 				GetClassName(hWnd, szWndClassName, _countof(szWndClassName));
-				// window class name: "NamespaceTreeControl"
 				DEBUG_LOG(L"CustomExplorerCommand::GetState classic context menu, window={}", szWndClassName);
+				// only show when right click on explorer left tree view, 
+				// https://github.com/TortoiseGit/TortoiseGit/blob/master/src/TortoiseShell/ContextMenu.cpp
 				if (wcscmp(szWndClassName, L"NamespaceTreeControl") != 0) {
 					*cmdState = ECS_HIDDEN;
 					return S_OK;
@@ -100,7 +99,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 	//
 	if (count > 1) {
 		const std::wstring currentPath;
-		ReadCommands(true, false, false, false, currentPath);
+		ReadCommands(selection, true, false, false, false, currentPath);
 	}
 	else if (count == 1) {
 		winrt::com_ptr<IShellItem> item;
@@ -113,7 +112,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 				const std::wstring currentPath{ path.get() };
 				DEBUG_LOG(L"CustomExplorerCommand::GetState isDirectory={}", isDirectory);
 
-				ReadCommands(false, isDirectory, false, false, currentPath);
+				ReadCommands(selection, false, isDirectory, false, false, currentPath);
 			}
 		}
 	}
@@ -141,7 +140,7 @@ IFACEMETHODIMP CustomExplorerCommand::GetState(_In_opt_ IShellItemArray* selecti
 						DEBUG_LOG(L"CustomExplorerCommand::GetState isDesktop={}, path={}", isDesktop, desktopPath);
 					}
 
-					ReadCommands(false, true, true, isDesktop, currentPath);
+					ReadCommands(selection, false, true, true, isDesktop, currentPath);
 				}
 			}
 		}
@@ -168,7 +167,7 @@ IFACEMETHODIMP CustomExplorerCommand::EnumSubCommands(__RPC__deref_out_opt IEnum
 	return customCommands->QueryInterface(IID_PPV_ARGS(enumCommands));
 }
 
-void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, bool isBackground, bool isDesktop, const std::wstring& currentPath) {
+void CustomExplorerCommand::ReadCommands(IShellItemArray* selection, bool multipleFiles, bool isDirectory, bool isBackground, bool isDesktop, const std::wstring& currentPath) {
 	std::wstring ext;
 	std::wstring name;
 	FileType fileType;
@@ -186,7 +185,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 		else {
 			const auto pathLength = currentPath.length();
 			//TODO 
-			if (pathLength==2 || pathLength==3 && PathIsRoot(currentPath.data())) {
+			if ((pathLength == 2 || pathLength == 3) && PathIsRoot(currentPath.data())) {
 				fileType = FileType::Drive;
 			}
 			else {
@@ -202,11 +201,13 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 			ext = PathFindExtension(name.data());
 		}
 		if (!ext.empty()) {
-			std::ranges::transform(ext, ext.begin(), towlower); // TODO check
+			std::ranges::transform(ext, ext.begin(), ::towlower); // TODO check
 		}
 	}
 
 	DEBUG_LOG(L"CustomExplorerCommand::ReadCommands isMultipleFiles={},isDirectory={},isBackground={},isDesktop={},fileType={},currentPath={}", multipleFiles, isDirectory, isBackground, isDesktop, static_cast<int>(fileType), currentPath);
+
+	std::vector<ComPtr<CustomSubExplorerCommand>> commands{};
 
 	const auto menus = ApplicationData::Current().LocalSettings().CreateContainer(L"menus", ApplicationDataCreateDisposition::Always).Values();
 	if (menus.Size() > 0) {
@@ -218,10 +219,8 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 				try
 				{
 					if (auto content = winrt::unbox_value_or<winrt::hstring>(current.Current().Value(), L""); !content.empty()) {
-						const auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
-						if (command->Accept(multipleFiles, fileType, name, ext)) {
-							m_commands.push_back(command);
-						}
+						auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
+						commands.emplace_back(std::move(command));
 					}
 				}
 				catch (winrt::hresult_error const& e)
@@ -250,12 +249,6 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 
 					try
 					{
-						//std::ifstream fs{ file.path() };
-						//std::stringstream buffer;
-						//buffer << fs.rdbuf(); //TODO 
-						//auto content = winrt::to_hstring(buffer.str());
-						//DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content);
-
 						std::ifstream fs(file.path(), std::ios::binary);
 						if (!fs.is_open()) {
 							DEBUG_LOG(L"CustomExplorerCommand::ReadCommands read file open failed, useCache=false,file={}", file.path().c_str());
@@ -264,11 +257,8 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 						std::string contentString{ std::istreambuf_iterator<char>{ fs },  std::istreambuf_iterator<char>{} };
 						auto content = winrt::to_hstring(contentString);
 						//DEBUG_LOG(L"CustomExplorerCommand::ReadCommands useCache={},file={},content={}", false, file.path().c_str(), content);
-
 						auto command = Make<CustomSubExplorerCommand>(content, m_theme_type, m_enable_debug);
-						if (command->Accept(multipleFiles, fileType, name, ext)) {
-							m_commands.push_back(command);
-						}
+						commands.emplace_back(std::move(command));
 					}
 					catch (winrt::hresult_error const& e)
 					{
@@ -278,6 +268,68 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 				}
 			}
 			}).wait();
+	}
+
+	for (auto& command : commands) {
+		if (multipleFiles && command->m_accept_multiple_files_rule_flag != FilesMatchRuleFlagEnum::FILES_RULE_ANY) {
+			if (!command->Accept(true, fileType, name, ext)) {
+				continue;
+			}
+
+			winrt::com_ptr<IShellItem> item;
+			DWORD count;
+			if (SUCCEEDED(selection->GetCount(&count)) && count > 0) {
+				bool itemResult = false;
+				for (DWORD i = 0; i < count; i++) {
+					if (SUCCEEDED(selection->GetItemAt(i, item.put()))) {
+						wil::unique_cotaskmem_string path;
+						if (SUCCEEDED(item->GetDisplayName(SIGDN_FILESYSPATH, path.put()))) {
+							std::wstring itemExt;
+							std::wstring_view itemName;
+							FileType itemFileType;
+
+							SFGAOF attributes;
+							item->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER | SFGAO_STREAM, &attributes);
+							const bool isDirectory = (SFGAO_FILESYSTEM & attributes) == SFGAO_FILESYSTEM && (SFGAO_FOLDER & attributes) == SFGAO_FOLDER && (SFGAO_STREAM & attributes) != SFGAO_STREAM;
+							if (!isDirectory) {
+								itemName = PathFindFileName(path.get());
+								if (!itemName.starts_with(L".")) {
+									itemExt = PathFindExtension(itemName.data());
+									if (!itemExt.empty()) {
+										std::ranges::transform(itemExt, itemExt.begin(), ::towlower); // TODO check
+									}
+								}
+								itemFileType = FileType::File;
+							}
+							else {
+								itemFileType = FileType::Directory;
+							}
+
+							if (command->Accept(false, itemFileType, itemName, itemExt)) {
+								itemResult = true;
+								if (command->m_accept_multiple_files_rule_flag == FilesMatchRuleFlagEnum::FILES_RULE_ONE) {
+									break;
+								}
+							}
+							else {
+								itemResult = false;
+								if (command->m_accept_multiple_files_rule_flag == FilesMatchRuleFlagEnum::FILES_RULE_ALL) {
+									break;
+								}
+							}
+						}
+					}
+				}
+				if (itemResult) {
+					m_commands.push_back(std::move(command));
+				}
+			}
+		}
+		else {
+			if (command->Accept(multipleFiles, fileType, name, ext)) {
+				m_commands.push_back(std::move(command));
+			}
+		}
 	}
 
 	if (m_commands.size() > 1) {
@@ -290,7 +342,7 @@ void CustomExplorerCommand::ReadCommands(bool multipleFiles, bool isDirectory, b
 }
 
 IFACEMETHODIMP CustomExplorerCommand::Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx* ctx) noexcept try {
-	if (m_commands.size() == 1){
+	if (m_commands.size() == 1) {
 		if (m_site) {
 			m_commands.at(0)->SetSite(m_site.get());
 		}

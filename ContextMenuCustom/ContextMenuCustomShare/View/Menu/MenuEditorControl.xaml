@@ -277,34 +277,36 @@
 
                 <controls:SettingItem.BottomContent>
 
+                    <StackPanel Visibility="{x:Bind ShowFilesMatchOption(MenuItem.AcceptMultipleFilesFlag), Mode=OneWay}">
+                        <ComboBox
+                            MinWidth="160"
+                            HorizontalAlignment="Stretch"
+                            Header="{x:Bind _appLang.MenuMatchFilesRule}"
+                            ItemTemplate="{StaticResource EnumComboxItem}"
+                            ItemsSource="{x:Bind FilesMatchRuleEnumItems, Mode=OneWay}"
+                            SelectedIndex="{x:Bind MenuItem.AcceptMultipleFilesRuleFlag, Mode=TwoWay}" />
 
-                    <Grid Visibility="{x:Bind MenuItem.AcceptMultipleFilesFlag, Mode=OneWay, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
                         <TextBox
                             Grid.Row="0"
                             Header="{x:Bind _appLang.MenuMatchFilesJoinDelimiterTip}"
                             PlaceholderText="|"
-                            Text="{x:Bind MenuItem.PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{x:Bind MenuItem.PathDelimiter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Visibility="{x:Bind ShowFilesMatchJoinOption(MenuItem.AcceptMultipleFilesFlag), Mode=OneWay}" />
 
                         <TextBox
-                            Grid.Row="1"
                             Margin="0,8,0,0"
                             Header="{x:Bind _appLang.MenuMatchFilesJoinParamTip, Mode=OneWay}"
                             PlaceholderText="{}{path}"
                             Text="{x:Bind MenuItem.ParamForMultipleFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Visibility="{x:Bind MenuItem.AcceptMultipleFilesFlag, Mode=OneWay, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=2}" />
+                            Visibility="{x:Bind ShowFilesMatchJoinOption(MenuItem.AcceptMultipleFilesFlag), Mode=OneWay}" />
 
                         <TextBlock
-                            Grid.Row="2"
                             FontStyle="Italic"
-                            IsTextSelectionEnabled="True">
+                            IsTextSelectionEnabled="True"
+                            Visibility="{x:Bind ShowFilesMatchJoinOption(MenuItem.AcceptMultipleFilesFlag), Mode=OneWay}">
                             {path} {parent} {path0} {name0} {nameNoExt0} {extension0}
                         </TextBlock>
-                    </Grid>
+                    </StackPanel>
 
                 </controls:SettingItem.BottomContent>
             </controls:SettingItem>

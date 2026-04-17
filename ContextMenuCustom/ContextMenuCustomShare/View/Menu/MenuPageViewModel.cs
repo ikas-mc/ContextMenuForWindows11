@@ -57,6 +57,7 @@ namespace ContextMenuCustomApp.View.Menu
                 AcceptFileFlag = (int)FileMatchFlagEnum.All,
                 AcceptDirectoryFlag = (int)(DirectoryMatchFlagEnum.Directory | DirectoryMatchFlagEnum.Background | DirectoryMatchFlagEnum.Desktop),
                 AcceptMultipleFilesFlag = (int)FilesMatchFlagEnum.Each,
+                AcceptMultipleFilesRuleFlag = (int)FilesMatchRuleFlagEnum.Any,
                 Index = 0,
                 Enabled = true
             };

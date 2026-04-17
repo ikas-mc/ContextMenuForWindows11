@@ -45,6 +45,7 @@ namespace ContextMenuCustomApp.Service.Menu
         private string _acceptFileRegex;
 
         private int _acceptMultipleFilesFlag;
+        private int _acceptMultipleFilesRuleFlag;
         private string _pathDelimiter;
         private string _paramForMultipleFiles;
 
@@ -147,6 +148,13 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             get => _acceptMultipleFilesFlag;
             set => SetProperty(ref _acceptMultipleFilesFlag, value);
+        }
+
+        [JsonPropertyOrder(41)]
+        public int AcceptMultipleFilesRuleFlag
+        {
+            get => _acceptMultipleFilesRuleFlag;
+            set => SetProperty(ref _acceptMultipleFilesRuleFlag, value);
         }
 
         [JsonPropertyOrder(42)]

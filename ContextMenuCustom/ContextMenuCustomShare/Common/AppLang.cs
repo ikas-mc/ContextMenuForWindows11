@@ -74,6 +74,10 @@ namespace ContextMenuCustomApp.Common
         public string MenuMatchFilesJoinDelimiterTip { get; set; } = "Path Delimiter";
         public string MenuMatchFilesJoinParamTip { get; set; } = "Param";
         public string MenuMatchFilesJoin { get; set; } = "Join";
+        public string MenuMatchFilesRule { get; set; } = "Multi File Rule";
+        public string MenuMatchFilesRuleOptionAny { get; set; } = "Any";
+        public string MenuMatchFilesRuleOptionOne { get; set; } = "One Or More Matched";
+        public string MenuMatchFilesRuleOptionAll { get; set; } = "All Matched";
 
         //config file
         public string MenuFileGroup { get; set; } = "Menu File";

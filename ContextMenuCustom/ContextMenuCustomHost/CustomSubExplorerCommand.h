@@ -32,6 +32,12 @@ enum RunAsFlagEnum {
 	RunAsOther = 99,//TODO
 };
 
+enum FilesMatchRuleFlagEnum {
+	FILES_RULE_ANY = 0,
+	FILES_RULE_ONE = 1,
+	FILES_RULE_ALL = 2
+};
+
 constexpr std::wstring_view PARAM_PATH = L"{path}";
 constexpr std::wstring_view PARAM_PATH0 = L"{path0}";
 constexpr std::wstring_view PARAM_NAME = L"{name}";
@@ -49,7 +55,7 @@ public:
 	IFACEMETHODIMP GetIcon(_In_opt_ IShellItemArray*, _Outptr_result_nullonfailure_ PWSTR* icon) override;
 	IFACEMETHODIMP GetState(_In_opt_ IShellItemArray* selection, _In_ BOOL okToBeSlow, _Out_ EXPCMDSTATE* cmdState) override;
 	IFACEMETHODIMP Invoke(_In_opt_ IShellItemArray* selection, _In_opt_ IBindCtx*) noexcept override;
-	virtual bool Accept(bool multipleFiles, FileType fileType, const std::wstring& name, const std::wstring& ext);
+	virtual bool Accept(bool multipleFiles, FileType fileType, const std::wstring_view& name, const std::wstring_view& ext);
 
 private:
 	void DoInvoke(HWND parent, const std::wstring& path);
@@ -75,4 +81,5 @@ private:
 
 public:
 	int m_index;
+	FilesMatchRuleFlagEnum m_accept_multiple_files_rule_flag;
 };

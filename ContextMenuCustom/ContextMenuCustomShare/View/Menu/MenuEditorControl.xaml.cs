@@ -45,6 +45,8 @@ namespace ContextMenuCustomApp.View.Menu
         public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
         public ObservableCollection<EnumItem> ShowWindowFlagEnumItems { get; }
         public ObservableCollection<EnumItem> RunAsFlagEnumItems { get; }
+        public ObservableCollection<EnumItem> FilesMatchRuleEnumItems { get; }
+
         public MenuEditorControl()
         {
             _settings = AppContext.AppSettings;
@@ -83,6 +85,15 @@ namespace ContextMenuCustomApp.View.Menu
                     //TODO other
                }
              );
+
+            FilesMatchRuleEnumItems = new ObservableCollection<EnumItem>(
+                  new System.Collections.Generic.List<EnumItem>() {
+                    new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionAny, Value = (int)FilesMatchRuleFlagEnum.Any },
+                    new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionOne, Value = (int)FilesMatchRuleFlagEnum.One },
+                    new EnumItem() { Label = _appLang.MenuMatchFilesRuleOptionAll, Value = (int)FilesMatchRuleFlagEnum.All },
+                }
+                );
+
             this.InitializeComponent();
         }
 
@@ -94,6 +105,16 @@ namespace ContextMenuCustomApp.View.Menu
 
         public static readonly DependencyProperty MenuItemProperty =
             DependencyProperty.Register(nameof(MenuItem), typeof(MenuItem), typeof(MenuEditorControl), new PropertyMetadata(0));
+
+        public Visibility ShowFilesMatchOption(int filesMatchFlag)
+        {
+            return (int)FilesMatchFlagEnum.None != filesMatchFlag ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public Visibility ShowFilesMatchJoinOption(int filesMatchFlag)
+        {
+            return (int)FilesMatchFlagEnum.Join == filesMatchFlag ? Visibility.Visible : Visibility.Collapsed;
+        }
 
         private async void OpenExeButton_OnClick(object sender, RoutedEventArgs e)
         {

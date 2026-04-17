@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\DirectoryMatchFlagEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\EnumItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\EnumItemUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FilesMatchRuleFlagEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\RunAsFlagEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FileMatchFlagEnum.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Menu\FilesMatchFlagEnum.cs" />
