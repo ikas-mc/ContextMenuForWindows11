@@ -60,9 +60,11 @@
                 </controls:SettingItem.Icon>
                 <controls:SettingItem.ActionContent>
                     <muxc:NumberBox
+                        x:Name="IndexNumberBox"
                         LargeChange="10"
-                        Maximum="999999"
-                        Minimum="-999999"
+                        Loaded="IndexNumberBox_OnLoaded"
+                        Maximum="2147483647"
+                        Minimum="-2147483648"
                         PlaceholderText="0"
                         SmallChange="1"
                         SpinButtonPlacementMode="Inline"

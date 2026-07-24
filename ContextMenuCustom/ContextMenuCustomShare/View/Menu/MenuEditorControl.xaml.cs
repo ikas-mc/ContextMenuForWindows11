@@ -1,8 +1,11 @@
 using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.Service.Menu;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
 using Windows.Storage.Pickers;
+using Windows.UI.Input.Preview.Text;
+
 #if WINUI3
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,6 +15,7 @@ using AppContext = ContextMenuBuilder.AppContext;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 #endif
 
 namespace ContextMenuCustomApp.View.Menu
@@ -41,11 +45,26 @@ namespace ContextMenuCustomApp.View.Menu
 
         public readonly Settings _settings;
         public readonly AppLang _appLang;
-        public ObservableCollection<EnumItem> FileMatchEnumItems { get; }
-        public ObservableCollection<EnumItem> FilesMatchFlagEnumItems { get; }
-        public ObservableCollection<EnumItem> ShowWindowFlagEnumItems { get; }
-        public ObservableCollection<EnumItem> RunAsFlagEnumItems { get; }
-        public ObservableCollection<EnumItem> FilesMatchRuleEnumItems { get; }
+        public ObservableCollection<EnumItem> FileMatchEnumItems
+        {
+            get;
+        }
+        public ObservableCollection<EnumItem> FilesMatchFlagEnumItems
+        {
+            get;
+        }
+        public ObservableCollection<EnumItem> ShowWindowFlagEnumItems
+        {
+            get;
+        }
+        public ObservableCollection<EnumItem> RunAsFlagEnumItems
+        {
+            get;
+        }
+        public ObservableCollection<EnumItem> FilesMatchRuleEnumItems
+        {
+            get;
+        }
 
         public MenuEditorControl()
         {
@@ -99,8 +118,14 @@ namespace ContextMenuCustomApp.View.Menu
 
         public MenuItem MenuItem
         {
-            get { return (MenuItem)GetValue(MenuItemProperty); }
-            set { SetValue(MenuItemProperty, value); }
+            get
+            {
+                return (MenuItem)GetValue(MenuItemProperty);
+            }
+            set
+            {
+                SetValue(MenuItemProperty, value);
+            }
         }
 
         public static readonly DependencyProperty MenuItemProperty =
@@ -188,6 +213,39 @@ namespace ContextMenuCustomApp.View.Menu
                     {
                         menuItem.Icon = iconPath;
                     }
+                }
+            }
+        }
+
+        // workaround for issues/258
+        public void IndexNumberBox_OnLoaded(object sender, RoutedEventArgs args)
+        {
+            if (sender is NumberBox numberBox && VisualTreeHelper.GetChild(numberBox, 0) is Grid grid)
+            {
+                foreach (var item in grid.Children)
+                {
+                    if (item is TextBox textBox && textBox.Name == "InputBox")
+                    {
+                        textBox.Tag = numberBox;
+                        textBox.TextChanged -= IndexNumberBoxTextBox_TextChanged;
+                        textBox.TextChanged += IndexNumberBoxTextBox_TextChanged;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private static void IndexNumberBoxTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox textBox && textBox.Tag is NumberBox numberBox)
+            {
+                if (double.TryParse(textBox.Text, out double value))
+                {
+                    numberBox.Value = (int)Math.Clamp(value, int.MinValue, int.MaxValue);
+                }
+                else
+                {
+                    numberBox.Value = 0;
                 }
             }
         }
