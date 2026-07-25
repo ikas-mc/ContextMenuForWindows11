@@ -2,6 +2,7 @@ using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.Service.Menu;
 using ContextMenuCustomApp.View.Common;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -175,6 +176,16 @@ namespace ContextMenuCustomApp.View.Menu
                      return _menuService.ConvertMenuToJson(menuItem, indented);
                  });
              });
+        }
+
+        public async Task SaveAllOrdersAsync()
+        {
+            await RunWith(async () =>
+            {
+                await _menuService.SaveAllOrdersAsync(new List<MenuItem>(MenuItems));
+                await UpdateCache();
+                OnMessage("Save All Successfully");
+            });
         }
 
         #endregion menu

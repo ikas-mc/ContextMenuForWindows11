@@ -69,6 +69,12 @@ namespace ContextMenuCustomApp.Common
             set => DllSettingDao.SetValue("Custom_Menu_Enable_Debug", value);
         }
 
+        public bool EnableDragSort
+        {
+            get => MainSettingDao.GetValue(nameof(EnableDragSort), false);
+            set => MainSettingDao.SetValue(nameof(EnableDragSort), value);
+        }
+
         public T GetValue<T>(string key, T defaultValue = default)
         {
             return MainSettingDao.GetValue(key, defaultValue);

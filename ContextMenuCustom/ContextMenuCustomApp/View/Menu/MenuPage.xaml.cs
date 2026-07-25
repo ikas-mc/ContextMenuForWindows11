@@ -30,6 +30,11 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 _ = _viewModel.LoadAsync();
             }
+
+            var enableDragSort = _viewModel.AppSetting.EnableDragSort;
+            CommandList.AllowDrop = enableDragSort;
+            CommandList.CanDragItems = enableDragSort;
+            CommandList.CanReorderItems = enableDragSort;
         }
 
         private async void Refresh_Click(object sender, RoutedEventArgs e)
@@ -106,11 +111,37 @@ namespace ContextMenuCustomApp.View.Menu
             }
         }
 
-
-
-        private void CommandList_DragItemsCompleted(Windows.UI.Xaml.Controls.ListViewBase sender, Windows.UI.Xaml.Controls.DragItemsCompletedEventArgs args)
+        private async void CommandList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
+            if (!_viewModel.AppSetting.EnableDragSort)
+            {
+                return;
+            }
 
+            if (args.DropResult != DataPackageOperation.Move)
+            {
+                return;
+            }
+
+            if (args.Items.FirstOrDefault() is MenuItem menuItem)
+            {
+                CommandList.AllowDrop = false;
+                CommandList.CanDragItems = false;
+                CommandList.CanReorderItems = false;
+
+                CommandList.SelectedItem = menuItem;
+
+                try
+                {
+                    await _viewModel.SaveAllOrdersAsync();
+                }
+                finally
+                {
+                    CommandList.AllowDrop = _viewModel.AppSetting.EnableDragSort;
+                    CommandList.CanDragItems = _viewModel.AppSetting.EnableDragSort;
+                    CommandList.CanReorderItems = _viewModel.AppSetting.EnableDragSort;
+                }
+            }
         }
 
         private void OpenSetting_Click(object sender, RoutedEventArgs e)

@@ -121,5 +121,10 @@ namespace ContextMenuCustomApp.Common
         public string SettingCacheContent { get; set; } = "Caching Menus to Optimize Loading Speed";
         public string SettingCacheTime { get; set; } = "Cache Time:";
         public string SettingCacheButtonOk { get; set; } = "Ok";
+
+        //
+        public string SettingEnableDragSort { get; set; } = "Enable Drag Sort";
+        public string SettingEnableDragSortTip { get; set; } = "Drag sort will recalculate Index values, custom Index values will be overwritten.";
+
     }
 }
