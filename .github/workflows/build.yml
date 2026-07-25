@@ -17,12 +17,12 @@ jobs:
     runs-on: windows-2025-vs2026
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         ref: main
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2
+      uses: microsoft/setup-msbuild@v3
       
     - name: Decode Cert
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -69,7 +69,7 @@ jobs:
       run: Remove-Item -path "${{github.workspace}}\GitHubActionsWorkflow.pfx"
 
     - name: Upload Packages
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: ContextMenuCustom-${{ matrix.package }}-${{ matrix.platform }}
         path: |
