@@ -124,6 +124,21 @@ namespace ContextMenuCustomApp.Service.Menu
             }
         }
 
+        public async Task SaveAllOrdersAsync(List<MenuItem> items)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (item.File == null)
+                {
+                    continue;
+                }
+
+                item.Index = i * 10;
+                await SaveAsync(item);
+            }
+        }
+
         public async Task<StorageFile> RenameMenuFile(MenuItem item, string name)
         {
             if (null == item)

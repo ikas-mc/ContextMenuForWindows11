@@ -26,8 +26,11 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition
+                Width="*"
+                MinWidth="220"
+                MaxWidth="360" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
 
         <muxc:ProgressBar
@@ -54,9 +57,7 @@
                 x:Name="CommandList"
                 Grid.Row="1"
                 Grid.Column="0"
-                AllowDrop="False"
-                CanDragItems="False"
-                CanReorderItems="False"
+                Padding="0,0,8,0"
                 DragItemsCompleted="CommandList_DragItemsCompleted"
                 ItemsSource="{x:Bind _viewModel.MenuItems, Mode=OneWay}"
                 SelectionMode="Single">

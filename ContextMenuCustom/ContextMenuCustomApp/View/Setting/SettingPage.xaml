@@ -92,7 +92,7 @@
 
         <Grid
             Grid.Column="1"
-            Padding="8,40,8,0"
+            Padding="8,40,0,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{ThemeResource NavContentBackGroundColor}">
@@ -105,7 +105,9 @@
                 Margin="0,-8,0,0"
                 FontSize="28"
                 Text="{x:Bind _viewModel.AppLang.Setting}" />
-            <ScrollViewer Grid.Row="1">
+            <ScrollViewer
+                Grid.Row="1"
+                Padding="0,0,12,4">
                 <StackPanel>
                     <TextBlock
                         Margin="0,8,0,4"
@@ -205,6 +207,27 @@
                             </StackPanel>
 
                         </controls:SettingItem.RightContent>
+                    </controls:SettingItem>
+
+                    <controls:SettingItem
+                        Margin="0,0,0,8"
+                        Header="{x:Bind _viewModel.AppLang.SettingEnableDragSort}">
+                        <controls:SettingItem.Icon>
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE8CB;" />
+                        </controls:SettingItem.Icon>
+                        <controls:SettingItem.RightContent>
+                            <ToggleSwitch
+                                Margin="0,4"
+                                IsOn="{x:Bind _viewModel.Settings.EnableDragSort, Mode=TwoWay}"
+                                Style="{ThemeResource ToggleSwitchContentLeft}" />
+                        </controls:SettingItem.RightContent>
+                        <controls:SettingItem.ActionContent>
+                            <TextBlock
+                                Foreground="{ThemeResource SystemAccentColorLight1}"
+                                Text="{x:Bind _viewModel.AppLang.SettingEnableDragSortTip}" />
+                        </controls:SettingItem.ActionContent>
                     </controls:SettingItem>
 
                     <TextBlock
