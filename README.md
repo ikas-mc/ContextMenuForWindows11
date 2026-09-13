@@ -11,9 +11,11 @@
 
 Windows store|Github release|Github Action
 ------------ | ------------- | -------------
-<a href="https://apps.microsoft.com/detail/9pc7bzz28g0x?referrer=appbadge&mode=direct"><img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/></a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release </a> | Github Action
+<a href="https://apps.microsoft.com/detail/9pc7bzz28g0x?referrer=appbadge&mode=direct"><img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/></a>|<a href="https://github.com/ikas-mc/ContextMenuForWindows11/releases">Github release</a>, <a href="https://scoop.sh/#/apps?p=1&q=contextmenucustom-np&id=8851fe4118aee5fe613089958b0c6c42b5bddaca">Scoop</a> | Github Action
 free , no limit , buy = coffee | use self-signed certificate |  test only
 store package | github package , dev package | github package, dev package
+
+Scoop
 
 * store : ...m9vp3t2f55f5t.Msixbundle
 * github : ContextMenuCustomGithubPackage
