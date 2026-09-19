@@ -10,6 +10,8 @@ namespace ContextMenuCustomApp.Service.Menu
 {
     public class MenuService
     {
+        private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
+
         private readonly StorageFolder _menusFolder;
 
         public static async Task<StorageFolder> CreateDefualtMenusFolderAsync()
@@ -65,16 +67,18 @@ namespace ContextMenuCustomApp.Service.Menu
                 }
             }
 
-            result.Sort((l, r) => l.Index - r.Index);
+            result.Sort((l, r) => l.Index.CompareTo(r.Index));
             return result;
         }
 
         private async Task<StorageFile> CreateMenuFileAsync(string name)
         {
+            if (IsInvalidFileName(name))
+            {
+                name = ReplaceInvalidFileNameChars(name);
+            }
             return await _menusFolder.CreateFileAsync(name, CreationCollisionOption.GenerateUniqueName);
         }
-
-
 
         public async Task SaveAsync(MenuItem item)
         {
@@ -94,13 +98,12 @@ namespace ContextMenuCustomApp.Service.Menu
             {
                 var fileName = $"{item.Title}.json";
                 menuFile = await CreateMenuFileAsync(fileName);
+                item.Enabled = true;
             }
 
             var content = ConvertMenuToJson(item, true);
             await FileIO.WriteTextAsync(menuFile, content);
-
             item.File = menuFile;
-            item.Enabled = true;
         }
 
         public async Task<MenuItem> ReadAsync(StorageFile menuFile)
@@ -145,20 +148,18 @@ namespace ContextMenuCustomApp.Service.Menu
             {
                 throw new Exception("Menu is null");
             }
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new Exception("New name is empty");
+            }
 
             var file = (item?.File) ?? throw new Exception("Menu file is null");
 
-            string newName = null;
-            if (!string.IsNullOrEmpty(name))
+            if (IsInvalidFileName(name))
             {
-                newName = Path.GetFileName(name);
+                throw new Exception("New name contains invalid chars");
             }
-            if (string.IsNullOrEmpty(newName))
-            {
-                throw new Exception("New Name is empty");
-            }
-
-            await file.RenameAsync(newName, NameCollisionOption.GenerateUniqueName);
+            await file.RenameAsync(name, NameCollisionOption.GenerateUniqueName);
             return file;
         }
 
@@ -198,7 +199,7 @@ namespace ContextMenuCustomApp.Service.Menu
             {
                 throw new Exception("Menu file is null");
             }
-            return file.Name.ToLower().EndsWith(".json") == true;
+            return file.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         private bool IsDisabled(StorageFile file)
@@ -207,7 +208,7 @@ namespace ContextMenuCustomApp.Service.Menu
             {
                 throw new Exception("Menu file is null");
             }
-            return file.Name.ToLower().EndsWith(".json.disabled") == true;
+            return file.Name.EndsWith(".json.disabled", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public async Task<StorageFile> EnableAsync(MenuItem item, bool enabled)
@@ -307,6 +308,24 @@ namespace ContextMenuCustomApp.Service.Menu
         public IStorageFolder GetMenusFolder()
         {
             return _menusFolder;
+        }
+
+        public static bool IsInvalidFileName(string fileName)
+        {
+            return fileName.IndexOfAny(InvalidFileNameChars) >= 0;
+        }
+
+        public static string ReplaceInvalidFileNameChars(string name, char replacement = '_')
+        {
+            char[] chars = name.ToCharArray();
+            for (int i = 0; i < chars.Length; i++)
+            {
+                if (Array.IndexOf(InvalidFileNameChars, chars[i]) >= 0)
+                {
+                    chars[i] = replacement;
+                }
+            }
+            return new string(chars);
         }
     }
 }
