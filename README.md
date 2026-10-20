@@ -27,8 +27,15 @@ Scoop
 ##  Guides
 ### wiki
 https://github.com/ikas-mc/ContextMenuForWindows11/wiki
-### create menus using AI
-https://github.com/ikas-mc/ContextMenuForWindows11/discussions/220
+
+### create menu using AI
+
+skills
+https://github.com/ikas-mc/ContextMenuForWindows11/tree/main/ai/skills
+
+conf schema
+https://github.com/ikas-mc/ContextMenuForWindows11/tree/main/menu.schema.json
+
 
 ## Samples
 ### new   
@@ -62,7 +69,6 @@ https://github.com/ikas-mc/ContextMenuForWindows11/tree/main/menuSample
 ```
 some from https://github.com/ikas-mc/ContextMenuForWindows11/issues 
 thanks for share
-
 
 
 ##  Build   
