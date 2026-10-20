@@ -1,0 +1,209 @@
+<Page
+    x:Class="ContextMenuCustomApp.Shell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:r="using:ContextMenuCustomApp"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <!--  Store-style rail entry: 56x56 tile, icon over label, selection via SelectionStates  -->
+        <Style
+            x:Key="NavRailButtonStyle"
+            TargetType="AppBarButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{ThemeResource AppBarButtonForeground}" />
+            <Setter Property="Padding" Value="0,8" />
+            <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+            <Setter Property="Width" Value="56" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="AppBarButton">
+                        <Grid
+                            x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <Grid
+                                x:Name="ContentRoot"
+                                Padding="{TemplateBinding Padding}">
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.AccessKey="{TemplateBinding AutomationProperties.AccessKey}"
+                                    Content="{TemplateBinding Content}"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                            <Rectangle
+                                x:Name="SelectionIndicator"
+                                Width="3"
+                                Height="24"
+                                HorizontalAlignment="Left"
+                                Fill="{ThemeResource AppBarButtonForegroundPressed}"
+                                Opacity="0" />
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <VisualState.Setters>
+                                            <Setter Target="Root.Background" Value="{ThemeResource AppBarButtonRevealBackgroundPointerOver}" />
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource AppBarButtonForegroundPointerOver}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter Target="Root.Background" Value="{ThemeResource AppBarButtonRevealBackgroundPressed}" />
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource AppBarButtonForegroundPressed}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <VisualState.Setters>
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource AppBarButtonForegroundDisabled}" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Target="Root.Background" Value="{ThemeResource AppBarButtonRevealBackgroundPointerOver}" />
+                                            <Setter Target="SelectionIndicator.Opacity" Value="1" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    <Grid Margin="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid
+            x:Name="AppTitleBar"
+            Grid.ColumnSpan="2"
+            Height="40"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Canvas.ZIndex="1"
+            IsHitTestVisible="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Image
+                x:Name="AppFontIcon"
+                Grid.Column="0"
+                Width="24"
+                Height="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="Assets/Square44x44Logo.png" />
+
+            <TextBlock
+                x:Name="AppTitle"
+                Grid.Column="1"
+                Margin="8,0,0,0"
+                VerticalAlignment="Center"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="{x:Bind AppName()}" />
+            <muxc:ProgressRing
+                x:Name="StatusInfo"
+                Grid.Column="2"
+                Width="16"
+                Height="16"
+                Margin="12,0,0,0"
+                IsActive="False" />
+        </Grid>
+
+        <Grid
+            x:Name="NavRail"
+            Grid.Column="0"
+            Width="80"
+            Margin="0,0,0,0"
+            Padding="0,40,0,0"
+            Background="{ThemeResource ContentBackGroundColor}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <AppBarButton
+                x:Name="NavMenu"
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                Click="NavEntry_Click"
+                Label="{x:Bind r:AppContext.AppLang.ShellNavMenu}"
+                LabelPosition="Default"
+                Tag="1">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE70F;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton
+                x:Name="NavWin11ShellMenu"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Click="NavEntry_Click"
+                Label="{x:Bind r:AppContext.AppLang.Win11ShellMenuNavLabel}"
+                Tag="2"
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.Win11ShellMenuNavLabel}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE71D;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton
+                Grid.Row="3"
+                HorizontalAlignment="Center"
+                Click="NavEntry_Click"
+                Icon="Globe"
+                Label="{x:Bind r:AppContext.AppLang.MenuCommandHelp}"
+                Tag="3"
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MenuCommandHelpTips}" />
+
+            <AppBarButton
+                x:Name="NavSetting"
+                Grid.Row="4"
+                HorizontalAlignment="Center"
+                Click="NavEntry_Click"
+                Label="{x:Bind r:AppContext.AppLang.Setting}"
+                Tag="4"
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.SettingOpenButtonTips}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE713;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+        </Grid>
+
+        <Frame
+            x:Name="ShellFrame"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Navigated="ShellFrame_Navigated" />
+
+        <muxc:InfoBar
+            x:Name="AppInfoBar"
+            Grid.ColumnSpan="2"
+            Margin="0,8,0,0"
+            HorizontalAlignment="Center"
+            IsOpen="False"
+            Message=""
+            Severity="Warning" />
+    </Grid>
+</Page>

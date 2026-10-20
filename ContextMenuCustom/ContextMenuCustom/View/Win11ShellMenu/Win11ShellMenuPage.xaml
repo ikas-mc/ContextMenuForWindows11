@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="ContextMenuCustomApp.View.Win11ShellMenu.Win11ShellMenuPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:ContextMenuCustomApp.View.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ContextMenuCustomApp.View.Win11ShellMenu"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:ContextMenuCustomApp"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+
+        <ItemsPanelTemplate x:Key="ListPanelTemplate">
+            <ItemsStackPanel HorizontalAlignment="Stretch" />
+        </ItemsPanelTemplate>
+
+        <MenuFlyout
+            x:Key="PackageContextFlyout"
+            x:Name="PackageContextFlyout">
+            <MenuFlyoutItem
+                Click="OnOpenAppClicked"
+                Text="{x:Bind r:AppContext.AppLang.Win11ShellMenuOpenAppLabel}">
+                <MenuFlyoutItem.Icon>
+                    <SymbolIcon Symbol="Play" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Click="OnOpenInstallFolderClicked"
+                Text="{x:Bind r:AppContext.AppLang.Win11ShellMenuOpenFolderLabel}">
+                <MenuFlyoutItem.Icon>
+                    <SymbolIcon Symbol="Folder" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
+
+        <!--  COM item context menu  -->
+        <MenuFlyout
+            x:Key="ComItemContextFlyout"
+            x:Name="ComItemContextFlyout">
+            <MenuFlyoutItem
+                Click="OnComItemContextToggleClicked"
+                Text="{x:Bind r:AppContext.AppLang.Win11ShellMenuEnableLabel}">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE73A;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Click="OnComItemContextToggleClicked"
+                Text="{x:Bind r:AppContext.AppLang.Win11ShellMenuDisableLabel}">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE733;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
+
+        <DataTemplate
+            x:Key="PackageHeaderTemplate"
+            x:DataType="local:Win11ShellPackageRow">
+            <Grid
+                Margin="0,0,0,0"
+                Padding="8,12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                ColumnSpacing="10"
+                ContextRequested="OnPackageContextRequested"
+                CornerRadius="6"
+                Tag="{x:Bind}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image
+                    Width="24"
+                    Height="24"
+                    VerticalAlignment="Center"
+                    local:AppLogoLoader.StreamSource="{x:Bind PackageLogo, Mode=OneWay}"
+                    Stretch="Uniform" />
+                <StackPanel
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Spacing="1">
+                    <TextBlock
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        Text="{x:Bind DisplayLabel}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="{x:Bind ItemCountLabel}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <!--  COM item row  -->
+        <DataTemplate
+            x:Key="ComItemRowTemplate"
+            x:DataType="local:Win11ShellComItem">
+            <Grid
+                Height="56"
+                Padding="0,8,4,8"
+                Background="Transparent"
+                ColumnSpacing="12"
+                ContextRequested="OnComItemContextRequested"
+                Tag="{x:Bind}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Text="└" />
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="{x:Bind MenuName, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    Text="{x:Bind MenuComId, Mode=OneWay}" />
+
+                <CheckBox
+                    Grid.Column="2"
+                    MinWidth="0"
+                    Click="OnBlockToggled"
+                    IsChecked="{x:Bind IsEnabled, Mode=OneWay}"
+                    IsTapEnabled="True"
+                    Tag="{x:Bind}" />
+            </Grid>
+        </DataTemplate>
+
+        <local:Win11ShellRowTemplateSelector
+            x:Key="RowTemplateSelector"
+            ComItemTemplate="{StaticResource ComItemRowTemplate}"
+            PackageTemplate="{StaticResource PackageHeaderTemplate}" />
+
+    </Page.Resources>
+
+    <Grid
+        Padding="4,40,4,0"
+        RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:PageHeader
+            Header="{x:Bind r:AppContext.AppLang.Win11ShellMenuTitle, Mode=OneWay}"
+            ShowProgress="{x:Bind ViewModel.IsBusy, Mode=OneWay}" />
+
+        <StackPanel
+            Grid.Row="1"
+            Margin="8,0,8,0"
+            Orientation="Horizontal"
+            Spacing="8">
+            <TextBox
+                Width="320"
+                PlaceholderText="{x:Bind r:AppContext.AppLang.Win11ShellMenuFilterPlaceholder, Mode=OneWay}"
+                Text="{x:Bind ViewModel.FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Margin="0,0,0,-1"
+                Click="OnRefreshClicked"
+                Content="{x:Bind r:AppContext.AppLang.Win11ShellMenuRefreshButton, Mode=OneWay}" />
+        </StackPanel>
+
+        <GridView
+            x:Name="ItemsListView"
+            Grid.Row="2"
+            Margin="8,8,0,0"
+            IsItemClickEnabled="False"
+            ItemContainerStyle="{StaticResource YukiGridViewItemStyle}"
+            ItemTemplateSelector="{StaticResource RowTemplateSelector}"
+            ItemsPanel="{StaticResource ListPanelTemplate}"
+            ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}"
+            SelectionMode="Single" />
+
+        <TextBlock
+            Grid.Row="3"
+            Margin="8,0,8,8"
+            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+            Style="{ThemeResource CaptionTextBlockStyle}"
+            Text="{x:Bind ViewModel.Message, Mode=OneWay}"
+            TextWrapping="Wrap" />
+
+        <!--  Back navigation (this app hosts pages in the shell frame, like SettingPage)  -->
+        <AppBarButton
+            Grid.Row="4"
+            Width="40"
+            Margin="8,0,8,8"
+            HorizontalAlignment="Left"
+            Click="Back_Click"
+            Label="{x:Bind r:AppContext.AppLang.SettingBackButton}"
+            LabelPosition="Collapsed"
+            ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.SettingBackButtonTips}">
+            <AppBarButton.Icon>
+                <FontIcon
+                    FontFamily="Segoe Fluent Icons"
+                    Glyph="&#xE830;" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+    </Grid>
+</Page>

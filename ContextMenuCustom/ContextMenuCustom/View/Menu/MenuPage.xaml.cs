@@ -1,0 +1,240 @@
+using ContextMenuCustomApp.Service.Menu;
+using ContextMenuCustomApp.View.Common;
+using ContextMenuCustomApp.View.Setting;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
+
+namespace ContextMenuCustomApp.View.Menu
+{
+    public sealed partial class MenuPage
+    {
+        private readonly MenuPageViewModel _viewModel;
+
+        public MenuPage()
+        {
+            NavigationCacheMode = NavigationCacheMode.Required;
+            InitializeComponent();
+            _viewModel = new MenuPageViewModel(AppContext.GetService<MenuService>(), false);
+            this.RegisterMessageHandler(_viewModel);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                _ = _viewModel.LoadAsync();
+            }
+
+            var enableDragSort = _viewModel.AppSetting.EnableDragSort;
+            CommandList.AllowDrop = enableDragSort;
+            CommandList.CanDragItems = enableDragSort;
+            CommandList.CanReorderItems = enableDragSort;
+        }
+
+        private async void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = CommandList.SelectedItem as MenuItem;
+            await _viewModel.LoadAsync();
+            if (null != selectedItem?.File)
+            {
+                CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(item => Equals(selectedItem.File.Path, item.File.Path));
+            }
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _viewModel.CreateMenu();
+            CommandList.SelectedItem = item;
+        }
+
+        private async void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                await _viewModel.SaveAsync(menuItem);
+                if (null != menuItem.File)
+                {
+                    CommandList.SelectedItem = _viewModel.MenuItems.FirstOrDefault(menu => Equals(menuItem.File.Path, menu.File.Path));
+                }
+            }
+        }
+
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                var appLang = _viewModel.AppLang;
+                var result = await Alert.ChooseAsync("Delete Menu ?", appLang.CommonWarning, appLang.CommonOk, appLang.CommonCancel);
+                if (result)
+                {
+                    await _viewModel.DeleteAsync(menuItem);
+                }
+            }
+        }
+
+        private async void Open_Folder_Click(object sender, RoutedEventArgs e)
+        {
+            await _viewModel.OpenMenusFolderAsync();
+        }
+
+        private async void Open_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                await _viewModel.OpenMenuFileAsync(menuItem);
+            }
+        }
+
+        private async void Rename_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                var file = menuItem.File;
+                if (file == null)
+                {
+                    this.ShowMessage("Menu is not saved", MessageType.Warning);
+                    return;
+                }
+
+                var dialog = new MenuFileRenameDialog(menuItem);
+                (bool result, string name) = await dialog.ShowAsync(this.XamlRoot);
+                if (result)
+                {
+                    await _viewModel.RenameMenuFile(menuItem, name);
+                }
+            }
+        }
+
+        private async void CommandList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            if (!_viewModel.AppSetting.EnableDragSort)
+            {
+                return;
+            }
+
+            if (args.DropResult != DataPackageOperation.Move)
+            {
+                return;
+            }
+
+            if (args.Items.FirstOrDefault() is MenuItem menuItem)
+            {
+                CommandList.AllowDrop = false;
+                CommandList.CanDragItems = false;
+                CommandList.CanReorderItems = false;
+
+                CommandList.SelectedItem = menuItem;
+
+                try
+                {
+                    await _viewModel.SaveAllOrdersAsync();
+                }
+                finally
+                {
+                    CommandList.AllowDrop = _viewModel.AppSetting.EnableDragSort;
+                    CommandList.CanDragItems = _viewModel.AppSetting.EnableDragSort;
+                    CommandList.CanReorderItems = _viewModel.AppSetting.EnableDragSort;
+                }
+            }
+        }
+
+        private void OpenSetting_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SettingPage));
+        }
+
+
+
+        private async void Refresh_Menu_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem) && menuItem.File is StorageFile)
+            {
+                await _viewModel.RefreshMenuAsync(menuItem);
+            }
+        }
+
+        private async void CopyToClipboard_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                var json = await _viewModel.ToJson(menuItem, true);
+                if (string.IsNullOrEmpty(json))
+                {
+                    return;
+                }
+
+                var dataPackage = new DataPackage
+                {
+                    RequestedOperation = DataPackageOperation.Copy
+                };
+                dataPackage.SetText(json);
+                Clipboard.SetContent(dataPackage);
+                this.ShowMessage("Copy To Clipboard Successfully", MessageType.Success);
+            }
+
+        }
+
+
+        //TODO refactor
+        private async void CopyFromClipboard_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                var json = string.Empty;
+                DataPackageView dataPackageView = Clipboard.GetContent();
+                if (dataPackageView.Contains(StandardDataFormats.Text))
+                {
+                    json = await dataPackageView.GetTextAsync();
+                }
+
+                if (string.IsNullOrEmpty(json))
+                {
+                    this.ShowMessage("Clipboard text is empty", MessageType.Warning);
+                    return;
+                }
+
+                //bad
+                if (await _viewModel.UpdateMenuFromJson(menuItem, json))
+                {
+                    this.ShowMessage("Copy From Clipboard Successfully", MessageType.Success);
+                }
+            }
+        }
+
+        private bool GetSeletedMenu(bool showWarnning, out MenuItem selectedMenuItem)
+        {
+            if (CommandList.SelectedItem is MenuItem menuItem)
+            {
+                selectedMenuItem = menuItem;
+                return true;
+            }
+
+            if (showWarnning)
+            {
+                this.ShowMessage("No selected menu", MessageType.Warning);
+            }
+
+            selectedMenuItem = null;
+            return false;
+        }
+
+        private async void Enable_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetSeletedMenu(true, out MenuItem menuItem))
+            {
+                var file = menuItem.File;
+                if (file == null)
+                {
+                    this.ShowMessage("Menu is not saved", MessageType.Warning);
+                    return;
+                }
+                await _viewModel.EnableMenuFile(menuItem, !menuItem.Enabled);
+            }
+        }
+    }
+}

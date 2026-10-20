@@ -1,0 +1,26 @@
+<UserControl
+    x:Class="ContextMenuCustomApp.View.Controls.PageHeader"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    MinHeight="40"
+    mc:Ignorable="d">
+
+    <Grid>
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="8,0,160,0"
+            VerticalAlignment="Top"
+            Style="{ThemeResource TitleTextBlockStyle}"
+            Text="{x:Bind Header, Mode=OneWay}" />
+
+        <muxc:ProgressBar
+            Grid.Row="0"
+            VerticalAlignment="Bottom"
+            IsIndeterminate="True"
+            Visibility="{x:Bind ShowProgress, Mode=OneWay}" />
+    </Grid>
+</UserControl>

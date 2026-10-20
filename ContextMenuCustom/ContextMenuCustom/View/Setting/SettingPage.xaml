@@ -1,0 +1,386 @@
+<Page
+    x:Class="ContextMenuCustomApp.View.Setting.SettingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="using:ContextMenuCustomApp.View.Common"
+    xmlns:controls="using:ContextMenuCustomApp.View.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lang="using:ContextMenuCustomApp.Service.Lang"
+    xmlns:local="using:ContextMenuCustomApp.View.Setting"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <x:Double x:Key="ToggleSwitchPreContentMargin">0</x:Double>
+        <x:Double x:Key="ToggleSwitchPostContentMargin">0</x:Double>
+    </Page.Resources>
+
+    <Grid Padding="8,0,8,8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+        <TextBlock
+            Grid.Row="1"
+            FontSize="28"
+            Text="{x:Bind _viewModel.AppLang.Setting}" />
+        <StackPanel
+            Grid.Row="2"
+            Grid.Column="1"
+            Padding="8,0,0,0"
+            Spacing="4">
+            <TextBlock
+                Grid.Row="0"
+                Text="{x:Bind _viewModel.AppLang.SettingAbout}" />
+            <TextBlock
+                Margin="0,4,0,0"
+                Text="{x:Bind _viewModel.Version()}" />
+            <TextBlock Text="{x:Bind _viewModel.AppLang.SettingAboutAuthor}" />
+            <HyperlinkButton
+                Margin="0,4,0,0"
+                Padding="0,0"
+                Content="{x:Bind _viewModel.AppLang.SettingAboutHelp}"
+                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki" />
+            <HyperlinkButton
+                Padding="0,0"
+                Content="{x:Bind _viewModel.AppLang.SettingAboutIssue}"
+                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/issues" />
+            <HyperlinkButton
+                Padding="0,0"
+                Content="{x:Bind _viewModel.AppLang.SettingAboutChangeLog}"
+                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/releases" />
+            <HyperlinkButton
+                Padding="0,0"
+                Content="{x:Bind _viewModel.AppLang.SettingAboutPrivacy}"
+                NavigateUri="https://raw.githubusercontent.com/ikas-mc/ContextMenuForWindows11/main/privacy.md" />
+        </StackPanel>
+
+        <ScrollViewer
+            Grid.Row="2"
+            Padding="0,0,12,4">
+            <StackPanel>
+                <TextBlock
+                    Margin="0,8,0,4"
+                    Text="{x:Bind _viewModel.AppLang.SettingStyleGroup}" />
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingStyleTheme}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE790;" />
+                    </controls:SettingItem.Icon>
+
+                    <controls:SettingItem.ActionContent>
+                        <TextBlock />
+                    </controls:SettingItem.ActionContent>
+
+                    <controls:SettingItem.RightContent>
+                        <ComboBox
+                            x:Name="ThemeSelect"
+                            MinWidth="100"
+                            SelectedIndex="{x:Bind _viewModel.ThemeType, Mode=TwoWay}">
+                            <ComboBoxItem>
+                                <TextBlock Text="{x:Bind _viewModel.AppLang.SettingStyleThemeAuto}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{x:Bind _viewModel.AppLang.SettingStyleThemeDark}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{x:Bind _viewModel.AppLang.SettingStyleThemeLight}" />
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
+
+
+                <TextBlock
+                    Margin="0,8,0,4"
+                    Text="{x:Bind _viewModel.AppLang.SettingMenuGroup}" />
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingMenuTitle}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xEDE3;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.ActionContent>
+                        <TextBox Text="{x:Bind _viewModel.Settings.MenuName, Mode=TwoWay}" />
+                    </controls:SettingItem.ActionContent>
+
+                </controls:SettingItem>
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingMenuIcon}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE8B9;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.ActionContent>
+                        <StackPanel>
+                            <TextBox
+                                x:Name="MenuLightIconPath"
+                                Margin="0,0,0,8"
+                                PlaceholderText="{x:Bind _viewModel.AppLang.SettingMenuIconLightInputTip}"
+                                Text="{x:Bind _viewModel.Settings.MenuLightIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingMenuIconLightInputTip}" />
+                            <TextBox
+                                x:Name="MenuDarkIconPath"
+                                Margin="0,0,0,8"
+                                PlaceholderText="{x:Bind _viewModel.AppLang.SettingMenuIconDarkInputTip}"
+                                Text="{x:Bind _viewModel.Settings.MenuDarkIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingMenuIconDarkInputTip}" />
+                        </StackPanel>
+                    </controls:SettingItem.ActionContent>
+                    <controls:SettingItem.RightContent>
+                        <StackPanel>
+                            <Button
+                                Width="56"
+                                Margin="8,1,0,8"
+                                Click="OpenIconButton_OnClick"
+                                Tag="Light"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingMenuIconPathOpenTip}">
+                                <SymbolIcon Symbol="OpenFile" />
+                            </Button>
+                            <Button
+                                Width="56"
+                                Margin="8,-1,0,8"
+                                Click="OpenIconButton_OnClick"
+                                Tag="Dark"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingMenuIconPathOpenTip}">
+                                <SymbolIcon Symbol="OpenFile" />
+                            </Button>
+                        </StackPanel>
+
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingEnableDragSort}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE8CB;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.RightContent>
+                        <ToggleSwitch
+                            Margin="0,4"
+                            IsOn="{x:Bind _viewModel.Settings.EnableDragSort, Mode=TwoWay}"
+                            Style="{ThemeResource ToggleSwitchContentLeft}" />
+                    </controls:SettingItem.RightContent>
+                    <controls:SettingItem.ActionContent>
+                        <TextBlock
+                            Foreground="{ThemeResource SystemAccentColorLight1}"
+                            Text="{x:Bind _viewModel.AppLang.SettingEnableDragSortTip}" />
+                    </controls:SettingItem.ActionContent>
+                </controls:SettingItem>
+
+                <TextBlock
+                    Margin="0,8,0,4"
+                    Text="{x:Bind _viewModel.AppLang.SettingLanguagesGroup}" />
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingLanguages}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF2B7;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.ActionContent>
+                        <Grid
+                            Margin="0,0,4,0"
+                            HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <ComboBox
+                                x:Name="LanguageOverrideComboBox"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="0"
+                                HorizontalAlignment="Stretch"
+                                ItemsSource="{x:Bind _viewModel.Languages, Mode=OneWay}"
+                                PlaceholderText="-">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="lang:LangInfo">
+                                        <TextBlock>
+                                            <Run Text="{x:Bind DisplayName, Mode=OneWay}" />
+                                            <Run Text=" (" />
+                                            <Run Text="{x:Bind FileName, Mode=OneWay}" />
+                                            <Run Text=")" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button
+                                Grid.Column="2"
+                                Width="56"
+                                Margin="4,0,0,0"
+                                Click="{x:Bind _viewModel.LoadLanguages}"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingLanguagesReloadTip}">
+                                <SymbolIcon Symbol="Refresh" />
+                            </Button>
+
+                            <HyperlinkButton
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,4,0,4"
+                                Padding="0"
+                                HorizontalAlignment="Left"
+                                Content="{x:Bind _viewModel.AppLang.SettingLanguagesHelp}"
+                                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Languages" />
+                            <HyperlinkButton
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="8,4,0,4"
+                                Padding="0"
+                                HorizontalAlignment="Left"
+                                Content="{x:Bind _viewModel.AppLang.SettingLanguagesShare}"
+                                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/discussions/categories/languages" />
+                        </Grid>
+                    </controls:SettingItem.ActionContent>
+                    <controls:SettingItem.RightContent>
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Grid.Column="2"
+                                Width="56"
+                                Margin="4,0,0,0"
+                                Click="ExportButton_Click"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingLanguagesExportTip}">
+                                <SymbolIcon Symbol="Download" />
+                            </Button>
+                            <Button
+                                Grid.Column="2"
+                                Width="56"
+                                Margin="4,0,0,0"
+                                Click="ImportButton_Click"
+                                ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingLanguagesImportTip}">
+                                <SymbolIcon Symbol="Add" />
+                            </Button>
+                        </StackPanel>
+
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingLanguagesEnableRtl}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF2B7;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.RightContent>
+                        <ToggleSwitch
+                            Margin="0,4"
+                            IsOn="{x:Bind _viewModel.Settings.RTLEnablded, Mode=TwoWay}"
+                            Style="{ThemeResource ToggleSwitchContentLeft}" />
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
+
+                <TextBlock
+                    Margin="0,8,0,4"
+                    Text="{x:Bind _viewModel.AppLang.SettingDataGroup}" />
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingEnableDebug}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE946;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.RightContent>
+                        <ToggleSwitch
+                            Margin="0,4"
+                            IsOn="{x:Bind _viewModel.Settings.EnableDebug, Mode=TwoWay}"
+                            Style="{ThemeResource ToggleSwitchContentLeft}" />
+
+                    </controls:SettingItem.RightContent>
+                    <controls:SettingItem.ActionContent>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>
+                                <Run Text="{x:Bind _viewModel.AppLang.SettingEnableDebugTip}" />
+                            </TextBlock>
+                            <HyperlinkButton
+                                Margin="4,0,0,0"
+                                Padding="8,0"
+                                Background="Transparent"
+                                Content="{x:Bind _viewModel.AppLang.SettingEnableDebugHelp}"
+                                NavigateUri="https://github.com/ikas-mc/ContextMenuForWindows11/wiki/Debug" />
+                        </StackPanel>
+
+                    </controls:SettingItem.ActionContent>
+                </controls:SettingItem>
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingDataTitle}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE96A;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.RightContent>
+                        <Button
+                            x:Name="OpenDataFolderBtn"
+                            Width="56"
+                            Click="{x:Bind _viewModel.OpenDataFolder}"
+                            ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingDataButtonTip}">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE838;" />
+                        </Button>
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
+
+                <TextBlock
+                    Margin="0,8,0,4"
+                    Text="{x:Bind _viewModel.AppLang.SettingOther}" />
+
+                <controls:SettingItem
+                    Margin="0,0,0,8"
+                    Header="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
+                    <controls:SettingItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF83E;" />
+                    </controls:SettingItem.Icon>
+                    <controls:SettingItem.RightContent>
+                        <Button
+                            x:Name="RestartAppBtn"
+                            Width="56"
+                            Click="RestartAppBtn_Click"
+                            ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingOtherRestart}">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xF83E;" />
+                        </Button>
+                    </controls:SettingItem.RightContent>
+                </controls:SettingItem>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+
+</Page>

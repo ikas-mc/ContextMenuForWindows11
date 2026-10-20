@@ -1,0 +1,279 @@
+<Page
+    x:Class="ContextMenuCustomApp.View.Menu.MenuPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="using:ContextMenuCustomApp.View.Common"
+    xmlns:controls="using:ContextMenuCustomApp.View.Controls"
+    xmlns:converter="using:ContextMenuCustomApp.View.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ContextMenuCustomApp.View.Menu"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:menu="using:ContextMenuCustomApp.Service.Menu"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    DataContext="{x:Bind _viewModel}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converter:VisibilityConverter x:Key="VisibilityConverter" />
+        <converter:EqualsVisibilityConverter x:Key="EqualsVisibilityConverter" />
+    </Page.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition
+                Width="*"
+                MinWidth="260"
+                MaxWidth="360" />
+            <ColumnDefinition Width="4*" />
+        </Grid.ColumnDefinitions>
+
+        <muxc:ProgressBar
+            Grid.Row="0"
+            Grid.Column="1"
+            VerticalAlignment="Top"
+            IsIndeterminate="True"
+            Visibility="{x:Bind _viewModel.IsBusy, Mode=OneWay}" />
+
+        <Grid
+            Grid.Column="0"
+            Padding="4,40,4,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="{ThemeResource NavContentBackGroundColor}"
+            BorderThickness="0,0,1,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ListView
+                x:Name="CommandList"
+                Grid.Row="1"
+                Grid.Column="0"
+                Padding="0,0,12,0"
+                DragItemsCompleted="CommandList_DragItemsCompleted"
+                ItemsSource="{x:Bind _viewModel.MenuItems, Mode=OneWay}"
+                SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="menu:MenuItem">
+                        <Grid
+                            Height="48"
+                            ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="36"
+                                Height="36"
+                                Background="{ThemeResource YukiListItemImageBorderBrush}"
+                                CornerRadius="8">
+                                <Image
+                                    Grid.Row="0"
+                                    Width="24"
+                                    Height="24"
+                                    VerticalAlignment="Center"
+                                    local:MenuItemIconLoader.Source="{x:Bind (menu:MenuItem), Mode=OneWay}"
+                                    Stretch="Uniform" />
+                            </Border>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Text="{x:Bind Title, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"
+                                ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}" />
+
+                            <FontIcon
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xF140;"
+                                Visibility="{x:Bind Enabled, Mode=OneWay, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=False}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <CommandBar
+                Grid.Row="0"
+                Grid.Column="0"
+                DefaultLabelPosition="Collapsed">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton
+                        Width="40"
+                        Click="Add_Click"
+                        LabelPosition="Collapsed"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListAddTis}">
+                        <AppBarButton.Icon>
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE109;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        Width="40"
+                        Click="Refresh_Click"
+                        LabelPosition="Collapsed"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListRefreshTips}">
+                        <AppBarButton.Icon>
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE72C;" />
+                        </AppBarButton.Icon>
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="F5" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                    <AppBarButton
+                        Width="40"
+                        Click="Open_Folder_Click"
+                        LabelPosition="Collapsed"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuListOpenFolderTips}">
+                        <AppBarButton.Icon>
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE838;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
+
+            <Grid
+                Grid.Row="2"
+                Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    Margin="16,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{x:Bind _viewModel.AppLang.SettingCache}"
+                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheTips}" />
+                <ToggleSwitch
+                    Grid.Column="1"
+                    MinWidth="0"
+                    MinHeight="40"
+                    HorizontalAlignment="Right"
+                    IsOn="{x:Bind _viewModel.CacheEnabled, Mode=TwoWay}"
+                    Style="{ThemeResource ToggleSwitchContentLeft}"
+                    ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingCacheTips}" />
+            </Grid>
+
+        </Grid>
+
+        <Grid
+            Grid.Column="1"
+            Padding="4,40,4,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="0" />
+            </Grid.RowDefinitions>
+
+            <local:MenuEditorControl
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="0"
+                Padding="4,4,16,4"
+                MenuItem="{x:Bind (menu:MenuItem)CommandList.SelectedItem, Mode=OneWay}"
+                Visibility="{x:Bind CommandList.SelectedItem, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+
+            <Grid
+                Grid.Row="1"
+                Grid.Column="2"
+                Padding="0"
+                HorizontalAlignment="Center"
+                Visibility="{x:Bind CommandList.SelectedItem, Converter={StaticResource VisibilityConverter}, ConverterParameter=!}">
+                <Button
+                    HorizontalAlignment="Center"
+                    Background="Transparent"
+                    Click="Add_Click"
+                    Content="{x:Bind _viewModel.AppLang.MenuListAdd}" />
+            </Grid>
+
+            <CommandBar
+                Grid.Row="0"
+                DefaultLabelPosition="Right">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton
+                        Click="Open_Click"
+                        Icon="OpenFile"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandOpen}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandOpenTips}" />
+
+                    <AppBarSeparator />
+
+                    <AppBarButton
+                        Click="CopyToClipboard_Click"
+                        Icon="Copy"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandClipboardCopy}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandClipboardCopyTips}" />
+
+                    <AppBarButton
+                        Click="CopyFromClipboard_Click"
+                        Icon="Paste"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandClipboardPaste}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandClipboardPasteTips}" />
+                    <AppBarSeparator />
+
+                    <AppBarButton
+                        Click="Rename_Click"
+                        Icon="Rename"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandRename}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandRenameTips}" />
+
+                    <AppBarButton
+                        Click="Enable_Click"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabled}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandToggleEnabledTips}">
+                        <AppBarButton.Icon>
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE733;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+
+                    <AppBarSeparator />
+
+                    <AppBarButton
+                        Click="Delete_Click"
+                        Icon="Delete"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandDelete}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandDeleteTips}">
+                        <Button.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="Delete" />
+                        </Button.KeyboardAccelerators>
+                    </AppBarButton>
+
+                    <AppBarButton
+                        Click="Save_Click"
+                        Icon="Save"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandSave}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandSaveTips}">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator
+                                Key="S"
+                                Modifiers="Control" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+
+                    <AppBarButton
+                        Click="Refresh_Menu_Click"
+                        Icon="Refresh"
+                        Label="{x:Bind _viewModel.AppLang.MenuCommandRefresh}"
+                        ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.MenuCommandRefreshTips}" />
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
+        </Grid>
+    </Grid>
+</Page>

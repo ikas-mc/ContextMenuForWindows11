@@ -1,53 +1,60 @@
-﻿// Copyright (c) Microsoft Corporation and Contributors.
-// Licensed under the MIT License.
-
+﻿using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.View.Common;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace ContextMenuCustom
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
     public partial class App : Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
+        private MainWindow? _window;
+
         public App()
         {
-            this.InitializeComponent();
+            ContextMenuCustomApp.AppContext.Init();
+            InitializeComponent();
+            ContextMenuCustomApp.Patchs.Patch1.Run();
         }
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow();
-            m_window.Activate();
+            ContextMenuCustomApp.AppContext.WaitAll();
+
+            _window = new MainWindow();
+
+            SetTheme();
+            SetFlowDirection();
+            _window.Activate();
         }
 
-        private Window m_window;
+        public void SetTheme()
+        {
+            ThemeHelper.Initialize();
+            var themeType = Settings.Default.ThemeType;
+
+            if (themeType == 1)
+            {
+                ThemeHelper.RootTheme = ElementTheme.Dark;
+            }
+            else if (themeType == 2)
+            {
+                ThemeHelper.RootTheme = ElementTheme.Light;
+            }
+            else
+            {
+                ThemeHelper.RootTheme = ElementTheme.Default;
+            }
+        }
+
+        public void SetFlowDirection()
+        {
+            var rootFrame = MainWindow.Instance?.AppRootFrame;
+            if (rootFrame == null)
+            {
+                return;
+            }
+
+            var enabldRTL = Settings.Default.RTLEnablded;
+            rootFrame.FlowDirection = enabldRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+        }
     }
 }

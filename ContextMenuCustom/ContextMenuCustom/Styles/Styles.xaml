@@ -1,0 +1,53 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    mc:Ignorable="d">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush
+                x:Key="YukiListItemImageBorderBrush"
+                Color="#55666666" />
+            <SolidColorBrush
+                x:Key="YukiListItemBorderBrush"
+                Color="#22bbbbbb" />
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush
+                x:Key="YukiListItemImageBorderBrush"
+                Color="#55555555" />
+            <SolidColorBrush
+                x:Key="YukiListItemBorderBrush"
+                Color="#22000000" />
+        </ResourceDictionary>
+
+    </ResourceDictionary.ThemeDictionaries>
+
+    <Style
+        x:Key="YukiGridViewItemStyle"
+        BasedOn="{StaticResource DefaultGridViewItemStyle}"
+        TargetType="GridViewItem">
+        <Setter Property="Margin" Value="0,0,8,8" />
+        <Setter Property="Background" Value="{ThemeResource YukiListItemBorderBrush}" />
+        <Setter Property="Padding" Value="0,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <Style
+        x:Key="YukiGridViewItemStyle2"
+        BasedOn="{StaticResource DefaultGridViewItemStyle}"
+        TargetType="GridViewItem">
+        <Setter Property="Margin" Value="0,0,4,4" />
+        <Setter Property="Padding" Value="0,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <SolidColorBrush
+        x:Key="SystemColorAccentBrush"
+        Color="{ThemeResource SystemColorControlAccentColor}" />
+
+</ResourceDictionary>

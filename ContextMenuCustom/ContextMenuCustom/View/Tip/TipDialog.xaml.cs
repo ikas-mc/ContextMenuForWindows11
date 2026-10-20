@@ -1,0 +1,43 @@
+using Microsoft.UI.Xaml.Controls;
+using System;
+using System.Threading.Tasks;
+
+namespace ContextMenuCustomApp.View.Tip
+{
+    public sealed partial class TipDialog : UserControl
+    {
+        public TipDialog()
+        {
+            this.InitializeComponent();
+        }
+
+        public string Tip1 { get; set; }
+        public string Tip1Content { get; set; }
+        public string Tip2 { get; set; }
+        public string Tip2Content { get; set; }
+        public async Task ShowAsync()
+        {
+            var dialog = new ContentDialog
+            {
+                Title = AppContext.AppLang.UpdateTipTitle,
+                CloseButtonText = AppContext.AppLang.UpdateTipCloseButton,
+                DefaultButton = ContentDialogButton.Close,
+                Content = this,
+                XamlRoot = ContextMenuCustom.MainWindow.Instance?.AppRootFrame?.XamlRoot
+            };
+            await dialog.ShowAsync();
+        }
+
+        public static TipDialog CreateUpdateTipDialog()
+        {
+            var appLang=AppContext.AppLang;
+            return new TipDialog
+            {
+                Tip1 = appLang.UpdateTip1,
+                Tip1Content = appLang.UpdateTip1Content,
+                Tip2 = appLang.UpdateTip2,
+                Tip2Content = appLang.UpdateTip2Content
+            };
+        }
+    }
+}
