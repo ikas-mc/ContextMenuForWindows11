@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.System;
-#if WINUI3
+#if ContextMenuBuilder
 using AppContext = ContextMenuBuilder.AppContext;
 #else
 #endif
@@ -17,9 +17,18 @@ namespace ContextMenuCustomApp.View.Menu
     public partial class MenuPageViewModel : BaseViewModel
     {
         private readonly MenuService _menuService;
-        public ObservableCollection<MenuItem> MenuItems { get; }
-        public AppLang AppLang { get; private set; }
-        public Settings AppSetting { get; private set; }
+        public ObservableCollection<MenuItem> MenuItems
+        {
+            get;
+        }
+        public AppLang AppLang
+        {
+            get; private set;
+        }
+        public Settings AppSetting
+        {
+            get; private set;
+        }
 
         private readonly bool _ignoredCache;
 
@@ -195,7 +204,10 @@ namespace ContextMenuCustomApp.View.Menu
         // move to MenuService 
         public bool CacheEnabled
         {
-            get { return AppSetting.CacheEnabled; }
+            get
+            {
+                return AppSetting.CacheEnabled;
+            }
             set
             {
                 AppSetting.CacheEnabled = value;

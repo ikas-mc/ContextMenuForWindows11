@@ -4,18 +4,23 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
 using Windows.Storage.Pickers;
-using Windows.UI.Input.Preview.Text;
 
 #if WINUI3
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
-using AppContext = ContextMenuBuilder.AppContext;
+using Microsoft.UI.Xaml.Media;
 #else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+#endif
+
+#if ContextMenuBuilder
+using AppContext = ContextMenuBuilder.AppContext;
+using PickerHelper = ContextMenuBuilder.Modules.File.PickerHelper;
+#elif ContextMenuCustom
+using PickerHelper = ContextMenuCustomApp.View.Common.PickerHelper;
 #endif
 
 namespace ContextMenuCustomApp.View.Menu
@@ -160,7 +165,7 @@ namespace ContextMenuCustomApp.View.Menu
                 fileOpenPicker.FileTypeFilter.Add(".js");
                 fileOpenPicker.FileTypeFilter.Add(".jse");
 #if WINUI3
-                ContextMenuBuilder.Modules.File.PickerHelper.TryAttachWindow(fileOpenPicker);
+                PickerHelper.TryAttachWindow(fileOpenPicker);
 #endif
                 var file = await fileOpenPicker.PickSingleFileAsync();
                 if (null != file)
@@ -190,7 +195,7 @@ namespace ContextMenuCustomApp.View.Menu
                     fileOpenPicker.FileTypeFilter.Add(fileType);
                 }
 #if WINUI3
-                ContextMenuBuilder.Modules.File.PickerHelper.TryAttachWindow(fileOpenPicker);
+                PickerHelper.TryAttachWindow(fileOpenPicker);
 #endif
                 var file = await fileOpenPicker.PickSingleFileAsync();
                 if (null != file)

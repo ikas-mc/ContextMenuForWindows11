@@ -10,10 +10,9 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #endif
-#if WINUI3
+#if ContextMenuBuilder
 using AppContext = ContextMenuBuilder.AppContext;
 #else
-using AppContext= ContextMenuCustomApp.AppContext;
 #endif
 
 namespace ContextMenuCustomApp.View.Menu
@@ -29,8 +28,11 @@ namespace ContextMenuCustomApp.View.Menu
             _appLang = AppContext.AppLang;
             this.InitializeComponent();
         }
-
+#if WINUI3
+        public async Task<(bool, string)> ShowAsync(XamlRoot xamlRoot)
+#else
         public async Task<(bool, string)> ShowAsync()
+#endif
         {
             this.FileNameTextBox.Text = _menuItem.File != null ? _menuItem.File.Name : SyncFromMenuTitle(_menuItem.Title);
             UpdateSelection();
@@ -41,7 +43,10 @@ namespace ContextMenuCustomApp.View.Menu
                 PrimaryButtonText = _appLang.CommonOk,
                 CloseButtonText = _appLang.CommonCancel,
                 DefaultButton = ContentDialogButton.Primary,
-                Content = this
+                Content = this,
+#if WINUI3
+                XamlRoot = xamlRoot
+#endif
             };
             var result = await dialog.ShowAsync();
             return (result == ContentDialogResult.Primary, this.FileNameTextBox.Text);
