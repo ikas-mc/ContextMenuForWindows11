@@ -63,8 +63,8 @@
     },
     "runAsFlag": {
       "type": "integer",
-      "description": "Run as flag: 0=Default, 1=Admin",
-      "enum": [0, 1],
+      "description": "Run as flag: 0=Default, 1=Admin, 2=Admin(Key Shift)",
+      "enum": [0, 1, 2],
       "default": 0
     },
     "workingDirectory": {
