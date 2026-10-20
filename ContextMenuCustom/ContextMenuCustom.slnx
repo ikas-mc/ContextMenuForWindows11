@@ -1,0 +1,31 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="ContextMenuCustom/ContextMenuCustom.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Deploy />
+  </Project>
+  <Project Path="ContextMenuCustomAnyPackage/ContextMenuCustomAnyPackage.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5">
+    <Deploy />
+  </Project>
+  <Project Path="ContextMenuCustomApp/ContextMenuCustomApp.csproj" Id="dcba3fbf-3a4f-427e-bdc9-42fd0d7a27f1">
+    <BuildDependency Project="ContextMenuCustomHost/ContextMenuCustomHost.vcxproj" />
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="*|x64" Project="x64" />
+    <Build Solution="Release|x64" Project="false" />
+  </Project>
+  <Project Path="ContextMenuCustomDevPackage/ContextMenuCustomDevPackage.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5">
+    <Deploy />
+  </Project>
+  <Project Path="ContextMenuCustomGithubPackage/ContextMenuCustomGithubPackage.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5">
+    <Deploy />
+  </Project>
+  <Project Path="ContextMenuCustomHost/ContextMenuCustomHost.vcxproj" Id="d1e66555-fe87-448f-a748-3a54dd7eab9b" />
+  <Project Path="ContextMenuCustomPackage/ContextMenuCustomPackage.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5">
+    <Deploy />
+  </Project>
+  <Project Path="ContextMenuCustomShare/ContextMenuCustomShare.shproj" />
+</Solution>
