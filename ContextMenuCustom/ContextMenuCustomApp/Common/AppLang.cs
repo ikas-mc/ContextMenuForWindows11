@@ -57,10 +57,10 @@ namespace ContextMenuCustomApp.Common
         public string SettingOtherRestart { get; set; } = "Restart App";
 
         //update tip
-        public string UpdateTipTitle { get; } = "V5.8";
+        public string UpdateTipTitle { get; } = "V5.9";
         public string UpdateTipCloseButton { get; set; } = "Close";
         public string UpdateTip1 { get; } = "ChangeLog";
-        public string UpdateTip1Content { get; } = "1. Refactor to support menu package builder.\r\n2. Add support for multiple-files match rule.\r\n3. Support running as administrator.\r\n4. Other fixes.";
+        public string UpdateTip1Content { get; } = "1. The menu list supports drag sorting (enable it in settings).\r\n2. Other fixes.";
         public string UpdateTip2 { get; set; } = "Tips";
         public string UpdateTip2Content { get; set; } = "1. Restart explorer after update if no menu";
     }
