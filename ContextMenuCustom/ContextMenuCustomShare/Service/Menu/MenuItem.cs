@@ -9,7 +9,10 @@ namespace ContextMenuCustomApp.Service.Menu
     public partial class MenuItem : BaseModel
     {
         [JsonIgnore]
-        public StorageFile File { get; set; }
+        public StorageFile File
+        {
+            get; set;
+        }
 
         [JsonIgnore]
         public string FileName
@@ -209,11 +212,34 @@ namespace ContextMenuCustomApp.Service.Menu
             AcceptExts = other.AcceptExts;
             AcceptFileRegex = other.AcceptFileRegex;
             AcceptMultipleFilesFlag = other.AcceptMultipleFilesFlag;
+            AcceptMultipleFilesRuleFlag = other.AcceptMultipleFilesRuleFlag;
             PathDelimiter = other.PathDelimiter;
             ParamForMultipleFiles = other.ParamForMultipleFiles;
             ShowWindowFlag = other.ShowWindowFlag;
             WorkingDirectory = other.WorkingDirectory;
             RunAsFlag = other.RunAsFlag;
+        }
+
+        public bool IsEqualMenu(MenuItem other)
+        {
+            return other != null
+                && Title == other.Title
+                && Index == other.Index
+                && Exe == other.Exe
+                && Param == other.Param
+                && Icon == other.Icon
+                && IconDark == other.IconDark
+                && AcceptDirectoryFlag == other.AcceptDirectoryFlag
+                && AcceptFileFlag == other.AcceptFileFlag
+                && AcceptExts == other.AcceptExts
+                && AcceptFileRegex == other.AcceptFileRegex
+                && AcceptMultipleFilesFlag == other.AcceptMultipleFilesFlag
+                && AcceptMultipleFilesRuleFlag == other.AcceptMultipleFilesRuleFlag
+                && PathDelimiter == other.PathDelimiter
+                && ParamForMultipleFiles == other.ParamForMultipleFiles
+                && ShowWindowFlag == other.ShowWindowFlag
+                && WorkingDirectory == other.WorkingDirectory
+                && RunAsFlag == other.RunAsFlag;
         }
     }
 }

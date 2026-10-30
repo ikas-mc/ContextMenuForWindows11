@@ -8,6 +8,8 @@ namespace ContextMenuCustomApp.Common
         public string CommonWarning { get; set; } = "Warning";
         public string CommonError { get; set; } = "Error";
 
+        public string MenuResetConfirm { get; set; } = "Unsaved changes will be lost. Reset from config file?";
+
         //menu list
         public string MenuListAdd { get; set; } = "Add";
         public string MenuListAddTis { get; set; } = "Add Menu";
@@ -85,8 +87,8 @@ namespace ContextMenuCustomApp.Common
         public string MenuFileFileNameTip { get; set; } = "Menu Config File Name";
 
         //menu command bar
-        public string MenuCommandRefresh { get; set; } = "Refresh";
-        public string MenuCommandRefreshTips { get; set; } = "Refresh Menu From Config File";
+        public string MenuCommandRefresh { get; set; } = "Reset";
+        public string MenuCommandRefreshTips { get; set; } = "Reset Menu From Config File";
         public string MenuCommandSave { get; set; } = "Save";
         public string MenuCommandSaveTips { get; set; } = "Save Menu";
         public string MenuCommandDelete { get; set; } = "Delete";
