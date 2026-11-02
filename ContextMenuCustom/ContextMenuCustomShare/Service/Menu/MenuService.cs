@@ -6,6 +6,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 
+#if WINUI3
+using AppContext = ContextMenuBuilder.AppContext;
+#endif
+
 namespace ContextMenuCustomApp.Service.Menu
 {
     public class MenuService
@@ -59,7 +63,7 @@ namespace ContextMenuCustomApp.Service.Menu
                 {
                     var item = new MenuItem
                     {
-                        Title = $"<Error> config file:{file.Name}",
+                        Title = AppContext.AppLang.MenuEditorErrorConfigFile + file.Name,
                         File = file
                     };
                     result.Add(item);
@@ -84,7 +88,7 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == item)
             {
-                throw new Exception("Menu is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorMenuIsNull);
             }
 
             var (result, message) = CheckMenu(item);
@@ -110,7 +114,7 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == menuFile)
             {
-                throw new Exception("Menu file is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorFileIsNull);
             }
 
             var content = await FileIO.ReadTextAsync(menuFile);
@@ -123,7 +127,7 @@ namespace ContextMenuCustomApp.Service.Menu
             }
             catch (Exception e)
             {
-                throw new Exception("Read From Menu file error", e);
+                throw new Exception(AppContext.AppLang.MenuEditorErrorReadFile, e);
             }
         }
 
@@ -146,18 +150,18 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == item)
             {
-                throw new Exception("Menu is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorMenuIsNull);
             }
             if (string.IsNullOrEmpty(name))
             {
-                throw new Exception("New name is empty");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorNewNameEmpty);
             }
 
-            var file = (item?.File) ?? throw new Exception("Menu file is null");
+            var file = (item?.File) ?? throw new Exception(AppContext.AppLang.MenuEditorErrorFileIsNull);
 
             if (IsInvalidFileName(name))
             {
-                throw new Exception("New name contains invalid chars");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorNewNameInvalid);
             }
             await file.RenameAsync(name, NameCollisionOption.GenerateUniqueName);
             return file;
@@ -167,7 +171,7 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == item)
             {
-                throw new Exception("Menu is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorMenuIsNull);
             }
 
             var menuFile = item.File;
@@ -181,7 +185,7 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == item)
             {
-                throw new Exception("Menu is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorMenuIsNull);
             }
 
             //TODO
@@ -197,7 +201,7 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == file)
             {
-                throw new Exception("Menu file is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorFileIsNull);
             }
             return file.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase) == true;
         }
@@ -206,7 +210,7 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == file)
             {
-                throw new Exception("Menu file is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorFileIsNull);
             }
             return file.Name.EndsWith(".json.disabled", StringComparison.OrdinalIgnoreCase) == true;
         }
@@ -215,10 +219,10 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (null == item)
             {
-                throw new Exception("Menu is null");
+                throw new Exception(AppContext.AppLang.MenuEditorErrorMenuIsNull);
             }
 
-            var file = (item?.File) ?? throw new Exception("Menu file is null");
+            var file = (item?.File) ?? throw new Exception(AppContext.AppLang.MenuEditorErrorFileIsNull);
 
             var fileName = file.Name;
             if (enabled && IsDisabled(file))
@@ -294,12 +298,12 @@ namespace ContextMenuCustomApp.Service.Menu
         {
             if (string.IsNullOrEmpty(content.Title))
             {
-                return (false, "Title is empty");
+                return (false, AppContext.AppLang.MenuEditorErrorTitleEmpty);
             }
 
             if (string.IsNullOrEmpty(content.Exe))
             {
-                return (false, "Exe is empty");
+                return (false, AppContext.AppLang.MenuEditorErrorExeEmpty);
             }
 
             return (true, string.Empty);

@@ -70,7 +70,7 @@ namespace ContextMenuCustomApp.View.Menu
             if (GetSeletedMenu(true, out MenuItem menuItem))
             {
                 var appLang = _viewModel.AppLang;
-                var result = await Alert.ChooseAsync("Delete Menu ?", appLang.CommonWarning, appLang.CommonOk, appLang.CommonCancel);
+                var result = await Alert.ChooseAsync(appLang.MenuEditorDeleteConfirm, appLang.CommonWarning, appLang.CommonOk, appLang.CommonCancel);
                 if (result)
                 {
                     await _viewModel.DeleteAsync(menuItem);
@@ -98,7 +98,7 @@ namespace ContextMenuCustomApp.View.Menu
                 var file = menuItem.File;
                 if (file == null)
                 {
-                    this.ShowMessage("Menu is not saved", MessageType.Warning);
+                    this.ShowMessage(_viewModel.AppLang.MenuEditorNotSaved, MessageType.Warning);
                     return;
                 }
 
@@ -178,7 +178,7 @@ namespace ContextMenuCustomApp.View.Menu
                 };
                 dataPackage.SetText(json);
                 Clipboard.SetContent(dataPackage);
-                this.ShowMessage("Copy To Clipboard Successfully", MessageType.Success);
+                this.ShowMessage(_viewModel.AppLang.MenuEditorCopyToClipboardSuccess, MessageType.Success);
             }
 
         }
@@ -198,14 +198,14 @@ namespace ContextMenuCustomApp.View.Menu
 
                 if (string.IsNullOrEmpty(json))
                 {
-                    this.ShowMessage("Clipboard text is empty", MessageType.Warning);
+                    this.ShowMessage(_viewModel.AppLang.MenuEditorClipboardTextEmpty, MessageType.Warning);
                     return;
                 }
 
                 //bad
                 if (await _viewModel.UpdateMenuFromJson(menuItem, json))
                 {
-                    this.ShowMessage("Copy From Clipboard Successfully", MessageType.Success);
+                    this.ShowMessage(_viewModel.AppLang.MenuEditorCopyFromClipboardSuccess, MessageType.Success);
                 }
             }
         }
@@ -220,7 +220,7 @@ namespace ContextMenuCustomApp.View.Menu
 
             if (showWarnning)
             {
-                this.ShowMessage("No selected menu", MessageType.Warning);
+                this.ShowMessage(_viewModel.AppLang.MenuEditorNotSelected, MessageType.Warning);
             }
 
             selectedMenuItem = null;
@@ -234,7 +234,7 @@ namespace ContextMenuCustomApp.View.Menu
                 var file = menuItem.File;
                 if (file == null)
                 {
-                    this.ShowMessage("Menu is not saved", MessageType.Warning);
+                    this.ShowMessage(_viewModel.AppLang.MenuEditorNotSaved, MessageType.Warning);
                     return;
                 }
                 await _viewModel.EnableMenuFile(menuItem, !menuItem.Enabled);

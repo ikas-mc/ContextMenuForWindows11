@@ -104,6 +104,24 @@ namespace ContextMenuCustomApp.Common
         public string MenuCommandToggleEnabled { get; set; } = "Toggle Enabled";
         public string MenuCommandToggleEnabledTips { get; set; } = "Enable Or Disable Menu";
 
+        //menu editor
+        public string MenuEditorSaveSuccess { get; set; } = "Saved Successfully";
+        public string MenuEditorDeleteSuccess { get; set; } = "Deleted Successfully";
+        public string MenuEditorRenameSuccess { get; set; } = "Renamed Successfully";
+        public string MenuEditorEnableSuccess { get; set; } = "Enabled Successfully";
+        public string MenuEditorDisableSuccess { get; set; } = "Disabled Successfully";
+        public string MenuEditorSaveAllSuccess { get; set; } = "Saved All Successfully";
+
+        //menu editor error
+        public string MenuEditorErrorMenuIsNull { get; set; } = "Menu is null";
+        public string MenuEditorErrorFileIsNull { get; set; } = "Menu file is null";
+        public string MenuEditorErrorReadFile { get; set; } = "Failed to read the menu file";
+        public string MenuEditorErrorNewNameEmpty { get; set; } = "New name cannot be empty";
+        public string MenuEditorErrorNewNameInvalid { get; set; } = "New name contains invalid characters";
+        public string MenuEditorErrorTitleEmpty { get; set; } = "Title cannot be empty";
+        public string MenuEditorErrorExeEmpty { get; set; } = "Exe cannot be empty";
+        public string MenuEditorErrorConfigFile { get; set; } = "<Error> config file: ";
+
         //
         public string MenuFileRenameTitle { get; set; } = "Rename Menu File";
         public string MenuFileRenameInputTips { get; set; } = "Menu File Name";
@@ -121,6 +139,8 @@ namespace ContextMenuCustomApp.Common
         public string SettingCacheContent { get; set; } = "Caching Menus to Optimize Loading Speed";
         public string SettingCacheTime { get; set; } = "Cache Time:";
         public string SettingCacheButtonOk { get; set; } = "Ok";
+        public string SettingCacheBuildSuccess { get; set; } = "Cache Built Successfully";
+        public string SettingCacheClearSuccess { get; set; } = "Cache Cleared Successfully";
 
         //
         public string SettingEnableDragSort { get; set; } = "Enable Drag Sort";

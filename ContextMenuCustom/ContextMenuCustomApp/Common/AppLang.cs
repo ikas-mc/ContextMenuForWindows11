@@ -3,6 +3,13 @@ namespace ContextMenuCustomApp.Common
     public partial class AppLang
     {
 
+        //menu editor
+        public string MenuEditorNotSaved { get; set; } = "Menu has not been saved";
+        public string MenuEditorNotSelected { get; set; } = "No menu selected";
+        public string MenuEditorDeleteConfirm { get; set; } = "Delete menu?";
+        public string MenuEditorCopyToClipboardSuccess { get; set; } = "Copied to clipboard successfully";
+        public string MenuEditorCopyFromClipboardSuccess { get; set; } = "Pasted from clipboard successfully";
+        public string MenuEditorClipboardTextEmpty { get; set; } = "Clipboard is empty";
 
         //setting about
         public string SettingAbout { get; set; } = "About";
@@ -42,6 +49,8 @@ namespace ContextMenuCustomApp.Common
         public string SettingLanguagesImportTip { get; set; } = "Import Language";
         public string SettingLanguagesFolderOpenTip { get; set; } = "Open Languages Folder";
         public string SettingLanguagesEnableRtl { get; set; } = "Enable RTL";
+        public string SettingLanguagesFileFormatError { get; set; } = "Language file format is not JSON";
+        public string SettingLanguagesParseError { get; set; } = "Language file parse error: ";
 
         //setting data
         public string SettingDataGroup { get; set; } = "Data";

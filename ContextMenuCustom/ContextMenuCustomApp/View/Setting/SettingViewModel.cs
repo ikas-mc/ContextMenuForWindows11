@@ -28,7 +28,7 @@ namespace ContextMenuCustomApp.View.Setting
         public string Version()
         {
             var version = Package.Current.Id.Version;
-            return $"Version: {version.Major}.{version.Minor}.{version.Build}";
+            return version.Major + "." + version.Minor + "." + version.Build;
         }
 
         public int ThemeType
