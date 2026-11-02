@@ -17,9 +17,18 @@ namespace ContextMenuCustomApp.View.Menu
     public partial class MenuPageViewModel : BaseViewModel
     {
         private readonly MenuService _menuService;
-        public ObservableCollection<MenuItem> MenuItems { get; }
-        public AppLang AppLang { get; private set; }
-        public Settings AppSetting { get; private set; }
+        public ObservableCollection<MenuItem> MenuItems
+        {
+            get;
+        }
+        public AppLang AppLang
+        {
+            get; private set;
+        }
+        public Settings AppSetting
+        {
+            get; private set;
+        }
 
         private readonly bool _ignoredCache;
 
@@ -73,7 +82,7 @@ namespace ContextMenuCustomApp.View.Menu
                 await _menuService.SaveAsync(item);
                 await UpdateCache();
                 await LoadAsync();
-                OnMessage("Save Successfully");
+                OnMessage(AppLang.MenuEditorSaveSuccess);
             });
         }
 
@@ -99,7 +108,7 @@ namespace ContextMenuCustomApp.View.Menu
                 //await LoadAsync();
                 await UpdateCache();
                 MenuItems.Remove(item);
-                OnMessage("Delete Successfully");
+                OnMessage(AppLang.MenuEditorDeleteSuccess);
             });
         }
 
@@ -111,7 +120,7 @@ namespace ContextMenuCustomApp.View.Menu
                 item.File = newFile;
                 item.FileName = newFile.Name;//TODO 
                 item.Enabled = _menuService.IsEnabled(item);//TODO 
-                OnMessage("Rename Successfully");
+                OnMessage(AppLang.MenuEditorRenameSuccess);
             });
         }
 
@@ -124,7 +133,7 @@ namespace ContextMenuCustomApp.View.Menu
                 item.FileName = newFile.Name;//TODO 
                 item.Enabled = _menuService.IsEnabled(item);//TODO 
                 await UpdateCache();
-                OnMessage($"{(enabled ? "Enable " : "Disable")} Successfully");
+                OnMessage(enabled ? AppLang.MenuEditorEnableSuccess : AppLang.MenuEditorDisableSuccess);
             });
         }
 
@@ -184,7 +193,7 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 await _menuService.SaveAllOrdersAsync(new List<MenuItem>(MenuItems));
                 await UpdateCache();
-                OnMessage("Save All Successfully");
+                OnMessage(AppLang.MenuEditorSaveAllSuccess);
             });
         }
 
@@ -195,7 +204,10 @@ namespace ContextMenuCustomApp.View.Menu
         // move to MenuService 
         public bool CacheEnabled
         {
-            get { return AppSetting.CacheEnabled; }
+            get
+            {
+                return AppSetting.CacheEnabled;
+            }
             set
             {
                 AppSetting.CacheEnabled = value;
@@ -233,7 +245,7 @@ namespace ContextMenuCustomApp.View.Menu
             {
                 await _menuService.BuildToCacheAsync();
                 ApplicationData.Current.LocalSettings.Values["Cache_Time"] = DateTime.Now.ToString(CultureInfo.CurrentCulture);
-                OnMessage("Build Successfully");
+                OnMessage(AppLang.SettingCacheBuildSuccess);
             });
         }
 
@@ -250,7 +262,7 @@ namespace ContextMenuCustomApp.View.Menu
                 {
                     _menuService.ClearCache();
                     ApplicationData.Current.LocalSettings.Values.Remove("Cache_Time");
-                    OnMessage("Clear Successfully");
+                    OnMessage(AppLang.SettingCacheClearSuccess);
                 });
             });
         }

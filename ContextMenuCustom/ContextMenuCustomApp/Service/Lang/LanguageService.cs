@@ -116,7 +116,7 @@ namespace ContextMenuCustomApp.Service.Lang
             var fileName = file.Name;
             if (!fileName.EndsWith(".json"))
             {
-                throw new Exception("Language file format is not json");
+                throw new Exception(AppContext.AppLang.SettingLanguagesFileFormatError);
             }
 
             var langContent = await FileIO.ReadTextAsync(file);
@@ -126,7 +126,7 @@ namespace ContextMenuCustomApp.Service.Lang
             }
             catch (Exception e)
             {
-                throw new Exception($"Language file parse error,{e.Message}");
+                throw new Exception(AppContext.AppLang.SettingLanguagesParseError + e.Message);
             }
 
             var langsFolder = await GetCustomLanguagesFolderAsync();

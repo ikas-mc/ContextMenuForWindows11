@@ -146,7 +146,7 @@
                     HorizontalAlignment="Left"
                     Click="OpenSetting_Click"
                     Icon="Setting"
-                    Label="Setting"
+                    Label="{x:Bind _viewModel.AppLang.Setting}"
                     LabelPosition="Collapsed"
                     ToolTipService.ToolTip="{x:Bind _viewModel.AppLang.SettingOpenButtonTips}" />
                 <TextBlock
@@ -185,7 +185,7 @@
                 Grid.Row="0"
                 Margin="4,-8,0,0"
                 FontSize="28"
-                Text="Menu"
+                Text="{x:Bind _viewModel.AppLang.SettingMenuGroup}"
                 Visibility="Collapsed" />
 
             <local:MenuEditorControl
