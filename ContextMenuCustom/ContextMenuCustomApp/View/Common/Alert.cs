@@ -19,14 +19,14 @@ namespace ContextMenuCustomApp.View.Common
             await dialog.ShowAsync();
         }
 
-        public static async Task<bool> ChooseAsync(string content, string title = "", string primaryButton = "Ok", string closeButton = "Cancel")
+        public static async Task<bool> ChooseAsync(string content, string title = "", string primaryButton = "Ok", string closeButton = "Cancel", ContentDialogButton defaultButton = ContentDialogButton.Primary)
         {
             var dialog = new ContentDialog
             {
                 Title = title,
                 PrimaryButtonText = primaryButton,
                 CloseButtonText = closeButton,
-                DefaultButton = ContentDialogButton.Primary,
+                DefaultButton = defaultButton,
                 Content = content
             };
             var result = await dialog.ShowAsync();

@@ -17,9 +17,18 @@ namespace ContextMenuCustomApp.View.Menu
     public partial class MenuPageViewModel : BaseViewModel
     {
         private readonly MenuService _menuService;
-        public ObservableCollection<MenuItem> MenuItems { get; }
-        public AppLang AppLang { get; private set; }
-        public Settings AppSetting { get; private set; }
+        public ObservableCollection<MenuItem> MenuItems
+        {
+            get;
+        }
+        public AppLang AppLang
+        {
+            get; private set;
+        }
+        public Settings AppSetting
+        {
+            get; private set;
+        }
 
         private readonly bool _ignoredCache;
 
@@ -75,6 +84,11 @@ namespace ContextMenuCustomApp.View.Menu
                 await LoadAsync();
                 OnMessage("Save Successfully");
             });
+        }
+
+        public async Task<bool> CheckChangesAsync(MenuItem menuItem)
+        {
+            return await RunWith(() => _menuService.CheckChangesAsync(menuItem));
         }
 
         public async Task RefreshMenuAsync(MenuItem menuItem)
@@ -195,7 +209,10 @@ namespace ContextMenuCustomApp.View.Menu
         // move to MenuService 
         public bool CacheEnabled
         {
-            get { return AppSetting.CacheEnabled; }
+            get
+            {
+                return AppSetting.CacheEnabled;
+            }
             set
             {
                 AppSetting.CacheEnabled = value;

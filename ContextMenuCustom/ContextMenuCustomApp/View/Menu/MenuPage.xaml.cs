@@ -4,7 +4,6 @@ using ContextMenuCustomApp.View.Setting;
 using System;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -156,9 +155,21 @@ namespace ContextMenuCustomApp.View.Menu
 
         private async void Refresh_Menu_Click(object sender, RoutedEventArgs e)
         {
-            if (GetSeletedMenu(true, out MenuItem menuItem) && menuItem.File is StorageFile)
+            if (GetSeletedMenu(true, out MenuItem menuItem) && menuItem.File != null)
             {
-                await _viewModel.RefreshMenuAsync(menuItem);
+                var hasChanges = await _viewModel.CheckChangesAsync(menuItem);
+                if (hasChanges)
+                {
+                    var result = await Alert.ChooseAsync(_viewModel.AppLang.MenuResetConfirm, _viewModel.AppLang.CommonWarning, _viewModel.AppLang.CommonOk, _viewModel.AppLang.CommonCancel, ContentDialogButton.Close);
+                    if (result)
+                    {
+                        await _viewModel.RefreshMenuAsync(menuItem);
+                    }
+                }
+                else
+                {
+                    await _viewModel.RefreshMenuAsync(menuItem);
+                }
             }
         }
 

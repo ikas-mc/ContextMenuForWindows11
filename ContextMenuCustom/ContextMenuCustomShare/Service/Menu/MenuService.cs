@@ -127,6 +127,19 @@ namespace ContextMenuCustomApp.Service.Menu
             }
         }
 
+        public async Task<bool> CheckChangesAsync(MenuItem item)
+        {
+            var file = item?.File;
+            if (file == null)
+            {
+                return false;
+            }
+
+            var savedItem = await ReadAsync(file);
+            var same = item.IsEqualMenu(savedItem);
+            return !same;
+        }
+
         public async Task SaveAllOrdersAsync(List<MenuItem> items)
         {
             for (int i = 0; i < items.Count; i++)
